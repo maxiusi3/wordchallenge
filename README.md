@@ -13,9 +13,9 @@
 
 ## 🚀 在线体验
 
-### 🎮 [开始游戏](https://maxiusi3.github.io/word-challenge/)
+### 🎮 [开始游戏](https://maxiusi3.github.io/wordchallenge/)
 
-### 🔍 [检查网络状态](https://maxiusi3.github.io/word-challenge/online-status.html)
+### 🔍 [检查网络状态](https://maxiusi3.github.io/wordchallenge/online-status.html)
 
 ## 📱 支持的设备
 
@@ -67,8 +67,8 @@
 
 1. **克隆仓库**
    ```bash
-   git clone https://github.com/maxiusi3/word-challenge.git
-   cd word-challenge
+   git clone https://github.com/maxiusi3/wordchallenge.git
+   cd wordchallenge
    ```
 
 2. **启动本地服务器**
@@ -91,7 +91,7 @@
 ## 📁 项目结构
 
 ```
-word-challenge/
+wordchallenge/
 ├── index.html              # 主游戏页面
 ├── online-status.html      # 网络状态检查
 ├── css/
@@ -130,9 +130,9 @@ word-challenge/
 
 如果您在使用过程中遇到问题，请：
 
-1. 首先访问 [网络状态检查页面](https://maxiusi3.github.io/word-challenge/online-status.html)
+1. 首先访问 [网络状态检查页面](https://maxiusi3.github.io/wordchallenge/online-status.html)
 2. 检查浏览器控制台是否有错误信息
-3. 在 [Issues](https://github.com/maxiusi3/word-challenge/issues) 页面提交问题
+3. 在 [Issues](https://github.com/maxiusi3/wordchallenge/issues) 页面提交问题
 
 ## 📄 开源协议
 
@@ -148,7 +148,7 @@ word-challenge/
 
 ## 🎯 快速开始
 
-1. 点击 [开始游戏](https://maxiusi3.github.io/word-challenge/)
+1. 点击 [开始游戏](https://maxiusi3.github.io/wordchallenge/)
 2. 输入昵称和选择年级
 3. 开始第一关挑战
 4. 享受学习英语的乐趣！
