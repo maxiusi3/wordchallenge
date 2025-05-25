@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>单词闯关</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="单词闯关">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+</head>
+<body>
+    <iframe id="screenFrame" frameborder="0"></iframe>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="js/config.js"></script>
+    <script src="js/audio.js"></script>
+    <script>
+      lucide.createIcons();
+
+
+      // const adminIconContainer = document.getElementById('adminEntryIconContainer'); // 已移除
+
+      // if (adminIconContainer) { // 已移除
+      //     adminIconContainer.addEventListener('click', () => { // 已移除
+      //         navigateTo('admin_login'); // 已移除
+      //     }); // 已移除
+      // } // 已移除
+
+      // It's assumed that screenFrame is declared in the outer scope, e.g.:
+      // const screenFrame = document.getElementById('screenFrame');
+
+      function navigateTo(screen) {
+          const targetSrc = `screens/${screen}.html`;
+          // Ensure we have the most up-to-date references to DOM elements
+          const currentScreenFrame = document.getElementById('screenFrame');
+          // const currentAdminIconContainer = document.getElementById('adminEntryIconContainer'); // 已移除
+
+          // 管理员图标的显示/隐藏逻辑已移除，因为它现在由 welcome.html 内部管理
+          // if (currentAdminIconContainer) { // 已移除
+          //     currentAdminIconContainer.classList.remove('hidden'); // 已移除
+          //     if (screen !== 'welcome') { // 已移除
+          //         currentAdminIconContainer.classList.add('hidden'); // 已移除
+          //     } // 已移除
+          // } // 已移除
+
+          // Navigate if not already on the target screen or if src is not set
+          if (currentScreenFrame && (!currentScreenFrame.src || !currentScreenFrame.src.endsWith(targetSrc))) {
+              currentScreenFrame.src = targetSrc;
+          }
+      }
+
+      window.addEventListener('message', (event) => {
+          // 确保 screenFrame 已经加载并且 event.source 是其 contentWindow
+          const screenFrame = document.getElementById('screenFrame');
+          if (screenFrame && event.source === screenFrame.contentWindow &&
+              typeof event.data === 'object' && event.data !== null) {
+
+              // 统一处理导航请求，无论是 type: 'navigate' 还是 action: 'navigate'
+              if ((event.data.type === 'navigate' || event.data.action === 'navigate') &&
+                  typeof event.data.screen === 'string') {
+                  navigateTo(event.data.screen);
+              }
+          }
+      });
+
+      document.addEventListener('DOMContentLoaded', () => {
+          navigateTo('welcome');
+      });
+
+    </script>
+    <script src="js/main.js"></script>
+<script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then(registration => {
+              console.log('ServiceWorker registration successful with scope: ', registration.scope);
+            })
+            .catch(err => {
+              console.log('ServiceWorker registration failed: ', err);
+            });
+        });
+      }
+    </script>
+</body>
+</html>]]>

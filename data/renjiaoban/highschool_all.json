@@ -1,0 +1,612 @@
+[
+    {
+        "word": "survey",
+        "meaning": "n.调查；测验",
+        "pron": "[sɜː'veɪ]",
+        "audio": "audio/words/survey.mp3"
+    },
+    {
+        "word": "add up",
+        "meaning": "合计",
+        "audio": "audio/words/add up.mp3"
+    },
+    {
+        "word": "upset",
+        "meaning": "adj.心烦意乱的；不安的；不适的　vt.(upset,upset)使不安；使心烦",
+        "pron": "[ʌpˈset]",
+        "audio": "audio/words/upset.mp3"
+    },
+    {
+        "word": "ignore",
+        "meaning": "vt.不理睬；忽视",
+        "pron": "[ɪɡˈnɔː]",
+        "audio": "audio/words/ignore.mp3"
+    },
+    {
+        "word": "calm",
+        "meaning": "adj.平静的；镇静的；沉着的　vt.&vi.（使）平静；（使）镇定",
+        "pron": "[kɑːm]",
+        "audio": "audio/words/calm.mp3"
+    },
+    {
+        "word": "calm sb. down",
+        "meaning": "（使）平静下来；（使）镇定下来",
+        "audio": "audio/words/calm (...) down.mp3"
+    },
+    {
+        "word": "have got to",
+        "meaning": "不得不；必须",
+        "audio": "audio/words/have got to.mp3"
+    },
+    {
+        "word": "concern",
+        "meaning": "vt.（使）担忧；涉及；关系到　n.担心；关注；（利害）关系",
+        "pron": "[kənˈsɜːn]",
+        "audio": "audio/words/concern.mp3"
+    },
+    {
+        "word": "be concerned about",
+        "meaning": "关心；挂念",
+        "audio": "audio/words/be concerned about.mp3"
+    },
+    {
+        "word": "walk the dog",
+        "meaning": "遛狗",
+        "audio": "audio/words/walk the dog.mp3"
+    },
+    {
+        "word": "loose",
+        "meaning": "adj.松的；松开的",
+        "pron": "[luːs]",
+        "audio": "audio/words/loose.mp3"
+    },
+    {
+        "word": "vet",
+        "meaning": "n.兽医",
+        "pron": "[vet]",
+        "audio": "audio/words/vet.mp3"
+    },
+    {
+        "word": "go through",
+        "meaning": "经历；经受",
+        "audio": "audio/words/go through.mp3"
+    },
+    {
+        "word": "Amsterdam",
+        "meaning": "n.阿姆斯特丹（荷兰首都）",
+        "audio": "audio/words/Amsterdam.mp3"
+    },
+    {
+        "word": "Netherlands",
+        "meaning": "n.荷兰（西欧国家）",
+        "audio": "audio/words/Netherlands.mp3"
+    },
+    {
+        "word": "Jewish",
+        "meaning": "adj.犹太人的；犹太族的",
+        "pron": "['dʒuːɪʃ]",
+        "audio": "audio/words/Jewish.mp3"
+    },
+    {
+        "word": "German",
+        "meaning": "n.德国人；德语　adj.德国的；德国人的；德语的",
+        "pron": "[ˈdʒɜːmən]",
+        "audio": "audio/words/German.mp3"
+    },
+    {
+        "word": "Nazi",
+        "meaning": "n.纳粹党人　adj.纳粹党的",
+        "pron": "['nɑːtsi]",
+        "audio": "audio/words/Nazi.mp3"
+    },
+    {
+        "word": "set down",
+        "meaning": "放下；记下；登记",
+        "audio": "audio/words/set down.mp3"
+    },
+    {
+        "word": "series",
+        "meaning": "n.连续；系列",
+        "pron": "[ˈsɪəriːz/ ]",
+        "audio": "audio/words/series.mp3"
+    },
+    {
+        "word": "a series of",
+        "meaning": "一连串的；一系列；一套",
+        "audio": "audio/words/a series of.mp3"
+    },
+    {
+        "word": "Kitty",
+        "meaning": "n.基蒂（女名）",
+        "audio": "audio/words/Kitty.mp3"
+    },
+    {
+        "word": "outdoors",
+        "meaning": "adv.在户外；在野外",
+        "pron": "[aʊtˈdɔːz]",
+        "audio": "audio/words/outdoors.mp3"
+    },
+    {
+        "word": "spellbind",
+        "meaning": "vt.(spellbound,spellbound)迷住；迷惑",
+        "audio": "audio/words/spellbind.mp3"
+    },
+    {
+        "word": "on purpose",
+        "meaning": "故意",
+        "audio": "audio/words/on purpose.mp3"
+    },
+    {
+        "word": "in order to",
+        "meaning": "为了……",
+        "audio": "audio/words/in order to.mp3"
+    },
+    {
+        "word": "dusk",
+        "meaning": "n.黄昏；傍晚",
+        "pron": "[dʌsk]",
+        "audio": "audio/words/dusk.mp3"
+    },
+    {
+        "word": "at dusk",
+        "meaning": "在黄昏时刻",
+        "audio": "audio/words/at dusk.mp3"
+    },
+    {
+        "word": "thunder",
+        "meaning": "n.雷；雷声　vi.打雷；雷鸣",
+        "pron": "[ˈθʌndə]",
+        "audio": "audio/words/thunder.mp3"
+    },
+    {
+        "word": "entire",
+        "meaning": "adj.整个的；完全的；全部的",
+        "pron": "[ɪnˈtaɪə]",
+        "audio": "audio/words/entire.mp3"
+    },
+    {
+        "word": "entirely",
+        "meaning": "adv.完全地；全然地；整个地",
+        "audio": "audio/words/entirely.mp3"
+    },
+    {
+        "word": "power",
+        "meaning": "n.能力；力量；权力",
+        "pron": "[ˈpaʊdə]",
+        "audio": "audio/words/power.mp3"
+    },
+    {
+        "word": "face to face",
+        "meaning": "面对面地",
+        "audio": "audio/words/face to face.mp3"
+    },
+    {
+        "word": "curtain",
+        "meaning": "n.窗帘；门帘；幕布",
+        "pron": "[ˈkɜːt(ə)n]",
+        "audio": "audio/words/curtain.mp3"
+    },
+    {
+        "word": "dusty",
+        "meaning": "adj.积满灰尘的",
+        "pron": "[ˈdʌsti]",
+        "audio": "audio/words/dusty.mp3"
+    },
+    {
+        "word": "no longer / not … any longer",
+        "meaning": "不再……",
+        "audio": "audio/words/no longer  not … any longer.mp3"
+    },
+    {
+        "word": "partner",
+        "meaning": "n.伙伴；合作者；合伙人",
+        "pron": "[ˈpɑːtnə]",
+        "audio": "audio/words/partner.mp3"
+    },
+    {
+        "word": "settle",
+        "meaning": "vi.安家；定居；停留　vt.使定居；安排；解决",
+        "pron": "[ˈset(ə)l]",
+        "audio": "audio/words/settle.mp3"
+    },
+    {
+        "word": "suffer",
+        "meaning": "vt.&vi.遭受；忍受；经历",
+        "pron": "[ˈsʌfə]",
+        "audio": "audio/words/suffer.mp3"
+    },
+    {
+        "word": "suffer from",
+        "meaning": "遭受；患病",
+        "audio": "audio/words/suffer from.mp3"
+    },
+    {
+        "word": "loneliness",
+        "meaning": "n.孤单；寂寞",
+        "audio": "audio/words/loneliness.mp3"
+    },
+    {
+        "word": "highway",
+        "meaning": "n.公路；大路；<美>高速公路",
+        "pron": "[ˈhaɪweɪ]",
+        "audio": "audio/words/highway.mp3"
+    },
+    {
+        "word": "recover",
+        "meaning": "vi.&vt.痊愈；恢复；重新获得",
+        "pron": "[rɪˈkʌvə]",
+        "audio": "audio/words/recover.mp3"
+    },
+    {
+        "word": "get/be tired of",
+        "meaning": "对……厌烦",
+        "audio": "audio/words/getbe tired of.mp3"
+    },
+    {
+        "word": "pack",
+        "meaning": "vi.&vt.捆扎；包装；打行李　n.小包；包裹",
+        "pron": "[pæk]",
+        "audio": "audio/words/pack.mp3"
+    },
+    {
+        "word": "pack sth. up",
+        "meaning": "将（东西）装箱打包",
+        "audio": "audio/words/pack (sth) up.mp3"
+    },
+    {
+        "word": "suitcase",
+        "meaning": "n.手提箱；衣箱",
+        "pron": "[ˈsjuːtkeɪs]",
+        "audio": "audio/words/suitcase.mp3"
+    },
+    {
+        "word": "Margot",
+        "meaning": "n.玛戈特（女名）",
+        "audio": "audio/words/Margot.mp3"
+    },
+    {
+        "word": "overcoat",
+        "meaning": "n.大衣；外套",
+        "pron": "[ˈəʊvəkəʊt]",
+        "audio": "audio/words/overcoat.mp3"
+    },
+    {
+        "word": "teenager",
+        "meaning": "n.十几岁的青少年",
+        "pron": "[ˈtiːneɪdʒə]",
+        "audio": "audio/words/teenager.mp3"
+    },
+    {
+        "word": "get along with",
+        "meaning": "与……相处；进展",
+        "audio": "audio/words/get along with.mp3"
+    },
+    {
+        "word": "gossip",
+        "meaning": "vi.&n.闲话；闲谈",
+        "audio": "audio/words/gossip.mp3"
+    },
+    {
+        "word": "fall in love",
+        "meaning": "相爱；爱上",
+        "audio": "audio/words/fall in love.mp3"
+    },
+    {
+        "word": "exactly",
+        "meaning": "adv.确实如此；正是；确切地",
+        "pron": "[ɪg'zæktli]",
+        "audio": "audio/words/exactly.mp3"
+    },
+    {
+        "word": "disagree",
+        "meaning": "vi.不同意",
+        "pron": "[dɪsəˈɡriː]",
+        "audio": "audio/words/disagree.mp3"
+    },
+    {
+        "word": "grateful",
+        "meaning": "adj.感激的；表示谢意的",
+        "pron": "['greɪtfəl]",
+        "audio": "audio/words/grateful.mp3"
+    },
+    {
+        "word": "dislike",
+        "meaning": "n.&vt.不喜欢；厌恶",
+        "pron": "[dɪsˈlaɪk]",
+        "audio": "audio/words/dislike.mp3"
+    },
+    {
+        "word": "join in",
+        "meaning": "参加；加入",
+        "audio": "audio/words/join in.mp3"
+    },
+    {
+        "word": "tip",
+        "meaning": "n.提示；技巧；尖；尖端；小费　vt.倾斜；翻倒",
+        "pron": "[tɪp]",
+        "audio": "audio/words/tip.mp3"
+    },
+    {
+        "word": "secondly",
+        "meaning": "adv.第二；其次",
+        "audio": "audio/words/secondly.mp3"
+    },
+    {
+        "word": "swap",
+        "meaning": "vt.交换",
+        "pron": "[swɒp]",
+        "audio": "audio/words/swap.mp3"
+    },
+    {
+        "word": "item",
+        "meaning": "n.项目；条款",
+        "audio": "audio/words/item.mp3"
+    },
+    {
+        "word": "subway",
+        "meaning": "n.地下人行道；<美>地铁",
+        "pron": "['sʌbweɪ]",
+        "audio": "audio/words/subway.mp3"
+    },
+    {
+        "word": "elevator",
+        "meaning": "n.电梯；升降机",
+        "pron": "['elɪveɪtə]",
+        "audio": "audio/words/elevator.mp3"
+    },
+    {
+        "word": "petrol",
+        "meaning": "n.<英>汽油（=<美>gasoline）",
+        "pron": "[ˈpetr(ə)l]",
+        "audio": "audio/words/petrol.mp3"
+    },
+    {
+        "word": "gas",
+        "meaning": "n.汽油；气体；煤气；毒气",
+        "pron": "[ɡæs]",
+        "audio": "audio/words/gas.mp3"
+    },
+    {
+        "word": "official",
+        "meaning": "adj.官方的；正式的；公务的",
+        "pron": "[əˈfɪʃ(ə)l]",
+        "audio": "audio/words/official.mp3"
+    },
+    {
+        "word": "voyage",
+        "meaning": "n.航行；航海",
+        "pron": "[ˈvɒɪɪdʒ]",
+        "audio": "audio/words/voyage.mp3"
+    },
+    {
+        "word": "conquer",
+        "meaning": "vt.征服；占领",
+        "audio": "audio/words/conquer.mp3"
+    },
+    {
+        "word": "because of",
+        "meaning": "因为；由于",
+        "audio": "audio/words/because of.mp3"
+    },
+    {
+        "word": "native",
+        "meaning": "n.本地人；本国人　adj.本国的；本地的",
+        "pron": "[ˈneɪtɪv]",
+        "audio": "audio/words/native.mp3"
+    },
+    {
+        "word": "Amy",
+        "meaning": "n.艾米（女名）",
+        "audio": "audio/words/Amy.mp3"
+    },
+    {
+        "word": "come up",
+        "meaning": "走近；上来；提出",
+        "audio": "audio/words/come up.mp3"
+    },
+    {
+        "word": "apartment",
+        "meaning": "n.<美>公寓住宅；单元住宅",
+        "pron": "[əˈpɑːtmənt]",
+        "audio": "audio/words/apartment.mp3"
+    },
+    {
+        "word": "actually",
+        "meaning": "adv.实际上；事实上",
+        "pron": "['æktjʊəli]",
+        "audio": "audio/words/actually.mp3"
+    },
+    {
+        "word": "AD",
+        "meaning": "公元",
+        "pron": "[æd]",
+        "audio": "audio/words/AD.mp3"
+    },
+    {
+        "word": "base",
+        "meaning": "vt.以……为根据　n.基部；基地；基础",
+        "pron": "[beɪs]",
+        "audio": "audio/words/base.mp3"
+    },
+    {
+        "word": "at present",
+        "meaning": "现在；目前",
+        "audio": "audio/words/at present.mp3"
+    },
+    {
+        "word": "gradual",
+        "meaning": "adj.逐渐的；逐步的",
+        "pron": "[ˈgrædʒʊəl]",
+        "audio": "audio/words/gradual.mp3"
+    },
+    {
+        "word": "gradually",
+        "meaning": "adv.逐渐地；逐步地",
+        "pron": "[ˈɡrædjʊəli]",
+        "audio": "audio/words/gradually.mp3"
+    },
+    {
+        "word": "Danish",
+        "meaning": "n.丹麦语　adj.丹麦的；丹麦人的；丹麦语的",
+        "audio": "audio/words/Danish.mp3"
+    },
+    {
+        "word": "enrich",
+        "meaning": "vt.使富裕；充实；改善",
+        "audio": "audio/words/enrich.mp3"
+    },
+    {
+        "word": "vocabulary",
+        "meaning": "n.词汇；词汇量；词表",
+        "pron": "[vəˈkæbjʊləri]",
+        "audio": "audio/words/vocabulary.mp3"
+    },
+    {
+        "word": "Shakespeare",
+        "meaning": "莎士比亚（英国剧作家，诗人）",
+        "audio": "audio/words/Shakespeare.mp3"
+    },
+    {
+        "word": "make use of",
+        "meaning": "利用；使用",
+        "audio": "audio/words/make use of.mp3"
+    },
+    {
+        "word": "spelling",
+        "meaning": "n.拼写；拼法",
+        "pron": "[ˈspelɪŋ]",
+        "audio": "audio/words/spelling.mp3"
+    },
+    {
+        "word": "Samuel Johnson",
+        "meaning": "塞缪尔·约翰逊（英国作家，批评家）",
+        "audio": "audio/words/Samuel Johnson.mp3"
+    },
+    {
+        "word": "Noah Webster",
+        "meaning": "诺厄·韦伯斯特（美国词典编纂家）",
+        "audio": "audio/words/Noah Webster.mp3"
+    },
+    {
+        "word": "latter",
+        "meaning": "adj.较后的；后半的；（两者中）后者的",
+        "pron": "[ˈlætə]",
+        "audio": "audio/words/latter.mp3"
+    },
+    {
+        "word": "identity",
+        "meaning": "n.本身；本体；身份",
+        "pron": "[aɪˈdentɪti]",
+        "audio": "audio/words/identity.mp3"
+    },
+    {
+        "word": "fluent",
+        "meaning": "adj.流利的；流畅的",
+        "pron": "[ˈfluːənt]",
+        "audio": "audio/words/fluent.mp3"
+    },
+    {
+        "word": "fluently",
+        "meaning": "adv.流利地；流畅地",
+        "audio": "audio/words/fluently.mp3"
+    },
+    {
+        "word": "Singapore",
+        "meaning": "新加坡（东南亚国家）",
+        "pron": "[ˌsɪŋgəˌpɔː]",
+        "audio": "audio/words/Singapore.mp3"
+    },
+    {
+        "word": "Malaysia",
+        "meaning": "n.马来西亚（东南亚国家）；马来群岛",
+        "pron": "[mə'leɪʒə]",
+        "audio": "audio/words/Malaysia.mp3"
+    },
+    {
+        "word": "such as",
+        "meaning": "例如……；像这种的",
+        "audio": "audio/words/such as.mp3"
+    },
+    {
+        "word": "frequent",
+        "meaning": "adj.频繁的；常见的",
+        "pron": "[ˈfriːkwənt]",
+        "audio": "audio/words/frequent.mp3"
+    },
+    {
+        "word": "frequently",
+        "meaning": "adv.常常；频繁地",
+        "audio": "audio/words/frequently.mp3"
+    },
+    {
+        "word": "usage",
+        "meaning": "n.使用；用法；词语惯用法",
+        "audio": "audio/words/usage.mp3"
+    },
+    {
+        "word": "command",
+        "meaning": "n.&vt.命令；指令；掌握",
+        "pron": "[kəˈmɑːnd]",
+        "audio": "audio/words/command.mp3"
+    },
+    {
+        "word": "request",
+        "meaning": "n.&vt.请求；要求",
+        "pron": "[rɪˈkwest]",
+        "audio": "audio/words/request.mp3"
+    },
+    {
+        "word": "dialect",
+        "meaning": "n.方言",
+        "audio": "audio/words/dialect.mp3"
+    },
+    {
+        "word": "expression",
+        "meaning": "n.词语；表示；表达",
+        "pron": "[ɪks'preʃən]",
+        "audio": "audio/words/expression.mp3"
+    },
+    {
+        "word": "midwestern",
+        "meaning": "adj.中西部的；有中西部特性的",
+        "audio": "audio/words/midwestern.mp3"
+    },
+    {
+        "word": "African",
+        "meaning": "adj.非洲的；非洲人的；非洲语言的",
+        "pron": "[ˈæfrɪkən]",
+        "audio": "audio/words/African.mp3"
+    },
+    {
+        "word": "Spanish",
+        "meaning": "adj.西班牙的；西班牙人的；西班牙语的　n.西班牙人；西班牙语",
+        "pron": "[ˈspænɪʃ]",
+        "audio": "audio/words/Spanish.mp3"
+    },
+    {
+        "word": "play a part in",
+        "meaning": "扮演一个角色；参与",
+        "audio": "audio/words/play a part (in).mp3"
+    },
+    {
+        "word": "eastern",
+        "meaning": "adj.东方的；东部的",
+        "pron": "[ˈiːst(ə)n]",
+        "audio": "audio/words/eastern.mp3"
+    },
+    {
+        "word": "southeastern",
+        "meaning": "adj.东南方的；来自东南的",
+        "audio": "audio/words/southeastern.mp3"
+    },
+    {
+        "word": "northwestern",
+        "meaning": "adj.西北方的；来自西北的",
+        "audio": "audio/words/northwestern.mp3"
+    },
+    {
+        "word": "recognize",
+        "meaning": "vt.辨认出；承认；公认",
+        "audio": "audio/words/recognize.mp3"
+    }
+]

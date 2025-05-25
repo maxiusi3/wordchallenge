@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>欢迎 - 单词闯关</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* 可以添加一些针对此页面的特定 Kahoot 风格化 */
+        html {
+            background-color: transparent; /* 确保 body 背景能完全显示 */
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Prevent scrollbars on html element itself */
+        }
+        body {
+            /* Kahoot-like gradient or bright color */
+            background: linear-gradient(135deg, #864cbf 0%, #4f46e5 100%);
+            font-family: 'Arial', sans-serif; /* Or a more playful font if available */
+            overflow: hidden; /* 防止内部滚动 */
+            margin: 0; /* Ensure no default body margin */
+        }
+        .start-button {
+            transition: transform 0.1s ease-out, box-shadow 0.1s ease-out;
+        }
+        .start-button:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center h-screen text-white p-8">
+
+    <div class="text-center">
+        <h1 class="text-6xl md:text-8xl font-bold mb-6 animate-bounce">
+            单词闯关
+        </h1>
+
+        <button id="startButton"
+                class="start-button bg-white text-indigo-600 font-bold text-3xl md:text-4xl py-6 px-16 rounded-lg shadow-xl hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-indigo-300">
+            开始挑战!
+        </button>
+
+        <!-- 网络状态提示 -->
+        <div id="networkStatus" class="mt-4 text-sm opacity-75">
+            <span id="networkIndicator">🌐</span>
+            <span id="networkText">检查网络状态...</span>
+        </div>
+    </div>
+
+    <!-- 管理员入口图标 -->
+    <div id="adminEntryIconContainerWelcome" class="admin-icon" style="position: absolute; top: 20px; right: 20px; cursor: pointer; z-index: 1000;">
+         <!-- 使用 Lucide Settings Icon -->
+         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 .54 1.85l-.01.45a2 2 0 0 1-1 1.74l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 .54 1.85l-.01.45a2 2 0 0 1-1 1.74l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 .54 1.85v.19a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-.54-1.85l.01-.45a2 2 0 0 1 1-1.74l.43.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l-.22.38a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-.54-1.85v-.19a2 2 0 0 0-2-2h-.44Z"/><circle cx="12" cy="12" r="3"/></svg>
+    </div>
+
+    <script>
+        // let welcomeMessageSent = false; // Flag is no longer needed
+        // Remove the load event listener as it might cause flickering
+        /*
+        window.addEventListener('load', () => {
+            // 通知父页面当前是 welcome 屏，让父页面显示管理员图标
+            if (!welcomeMessageSent && window.parent && window.parent.postMessage) {
+                window.parent.postMessage({ action: 'navigate', screen: 'welcome' }, '*');
+                welcomeMessageSent = true; // Set flag after sending
+            }
+        });
+        */
+
+        const startButton = document.getElementById('startButton');
+        const networkIndicator = document.getElementById('networkIndicator');
+        const networkText = document.getElementById('networkText');
+
+        // 检查网络状态
+        function updateNetworkStatus() {
+            const isOnline = navigator.onLine;
+            if (isOnline) {
+                networkIndicator.textContent = '✅';
+                networkText.textContent = '网络连接正常';
+                startButton.disabled = false;
+                startButton.classList.remove('opacity-50', 'cursor-not-allowed');
+            } else {
+                networkIndicator.textContent = '❌';
+                networkText.textContent = '网络连接不可用';
+                startButton.disabled = true;
+                startButton.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        // 初始检查网络状态
+        updateNetworkStatus();
+
+        // 监听网络状态变化
+        window.addEventListener('online', updateNetworkStatus);
+        window.addEventListener('offline', updateNetworkStatus);
+
+        startButton.addEventListener('click', async () => { // Make the handler async
+            // 检查网络状态
+            if (!navigator.onLine) {
+                alert('网络连接不可用，请检查网络连接后重试。');
+                return;
+            }
+            try {
+                // 尝试初始化 AudioContext (必须在用户交互后)
+                if (window.parent && typeof window.parent.initAudioContext === 'function') {
+                    await window.parent.initAudioContext(); // Wait for initialization/resume
+                    // 如果初始化成功，尝试预加载音效
+                    if (window.parent && typeof window.parent.preloadSounds === 'function') {
+                        await window.parent.preloadSounds(); // Wait for preloading
+                    }
+                } else {
+                    console.warn('initAudioContext or preloadSounds function not found in parent.');
+                }
+            } catch (error) {
+                console.error("Audio initialization/preload failed on start button click:", error);
+            }
+
+            // 播放点击音效 (如果 audio.js 已实现且音效已加载)
+            if (window.parent && typeof window.parent.playSound === 'function') {
+                window.parent.playSound('click');
+            }
+
+            // 通知父页面导航到 info_input 屏幕
+            if (window.parent && window.parent.postMessage) {
+                window.parent.postMessage({ action: 'navigate', screen: 'info_input' }, '*');
+            } else {
+                console.error("无法与父窗口通信以进行导航。");
+                // 备用方案：直接尝试修改父窗口 iframe src (如果同源)
+                // try { window.parent.document.getElementById('screenFrame').src = 'screens/info_input.html'; } catch(e) {}
+            }
+        });
+
+        // 管理员入口图标逻辑
+        const adminIconElement = document.getElementById('adminEntryIconContainerWelcome');
+        if (adminIconElement) {
+            adminIconElement.addEventListener('click', function() {
+                // 播放点击音效 (如果 audio.js 已实现且音效已加载)
+                if (window.parent && typeof window.parent.playSound === 'function') {
+                    window.parent.playSound('click');
+                }
+                // 通知父页面导航到 admin_login 屏幕
+                if (window.parent && window.parent.postMessage) {
+                    window.parent.postMessage({ type: 'navigate', screen: 'admin_login' }, '*');
+                } else {
+                    console.error("无法与父窗口通信以导航到管理员登录页面。");
+                }
+            });
+        }
+
+        // 确保 Lucide 图标被创建
+        // DOMContentLoaded 可能已经触发，或者对于 iframe 来说行为可能不同
+        // 直接调用或确保在脚本末尾调用
+        if (typeof lucide !== 'undefined' && typeof lucide.createIcons === 'function') {
+            lucide.createIcons();
+        } else {
+            // 如果 lucide 未定义，可以尝试在 window load 时再次尝试，或者提示错误
+            window.addEventListener('load', () => {
+                if (typeof lucide !== 'undefined' && typeof lucide.createIcons === 'function') {
+                    lucide.createIcons();
+                } else {
+                    console.error('Lucide library not loaded on welcome.html');
+                }
+            });
+        }
+    </script>
+</body>
+</html>

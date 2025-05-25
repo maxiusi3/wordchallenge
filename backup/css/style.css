@@ -1,0 +1,606 @@
+/* --- Global Styles & Utilities --- */
+html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    font-family: 'Arial', sans-serif; /* Default font */
+    color: #1f2937; /* Default dark text */
+    line-height: 1; /* Override Tailwind's default 1.5 to prevent potential spacing */
+}
+
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Prevent body scroll */
+    position: relative; /* For absolute positioning of iframe */
+    background-color: #f3f4f6; /* Default light gray background */
+}
+
+/* Screen Management */
+.screen {
+    display: none; /* Hide screens by default */
+    width: 100%;
+    height: 100vh; /* Full viewport height */
+    overflow: hidden; /* Prevent internal screen scroll by default */
+    flex-direction: column; /* Default flex direction */
+    box-sizing: border-box; /* Include padding and border in element's total width and height */
+}
+
+.screen.active {
+    display: flex; /* Show active screen using flex */
+}
+
+/* Allow specific screens to scroll if needed */
+#adminConfigScreen, #resultScreen { /* Keep #resultScreen for now if old result.html is still in use */
+    overflow-y: auto;
+    justify-content: flex-start; /* Align content to top for scrollable screens */
+    padding-top: 2rem; /* Add padding for scrollable content */
+    padding-bottom: 2rem;
+}
+/* Styles for new result_success.html and result_failure.html are primarily handled by Tailwind in those files. */
+/* Specific overrides or shared non-Tailwind styles for new result pages can be added here if necessary. */
+
+/* Iframe specific styling */
+#screenFrame {
+    display: block; /* Helps remove potential default inline spacing */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none; /* Ensure no border */
+    margin: 0;    /* Ensure no margin */
+    padding: 0;   /* Ensure no padding */
+}
+
+/* --- Common Elements --- */
+
+/* Admin Entry Icon (Top Right) */
+#adminEntryIconContainer {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 40px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.3); /* Semi-transparent white background */
+    border: none;
+    border-radius: 50%; /* Circular background */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    transition: background-color 0.2s; /* Only transition background for hover */
+    /* Visibility is controlled by Tailwind 'hidden' class (display: none) */
+}
+
+#adminEntryIconContainer:hover {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+#adminEntryIconContainer svg {
+    width: 24px; /* Adjust size as needed, original SVG is 28x28 */
+    height: 24px;
+    /* stroke: #1f2937; /* Example: Dark stroke for visibility, or use currentColor from SVG */
+    /* SVG in index.html uses stroke="currentColor", which will pick up text color */
+}
+
+/* General Button Active State */
+button:not(:disabled) {
+     transition: transform 0.1s, background-color 0.2s, box-shadow 0.2s;
+}
+button:active:not(:disabled) {
+     transform: scale(0.98);
+     box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* Status Bar (Levels 1, 2, 3) */
+.status-bar {
+    background-color: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(5px);
+    color: white; /* Ensure text is white */
+    flex-shrink: 0; /* Prevent shrinking */
+}
+.status-item {
+    background-color: rgba(255, 255, 255, 0.15);
+    padding: 0.7rem 1.4rem; /* Increased padding for larger font */
+    border-radius: 0.5rem;
+    font-weight: bold;
+    font-size: 1.4rem; /* Increased font size for statistics */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    white-space: nowrap;
+    display: flex;         /* Vertically center text */
+    align-items: center;   /* Vertically center text */
+    height: auto;          /* Ensure height adjusts to content */
+}
+.box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    white-space: nowrap;
+}
+
+/* Timer Display (Levels 1, 2, 3) */
+#timer-display { /* Changed selector from .timer-display-common to #timer-display */
+    /* width: 60px; Removed */
+    /* height: 60px; Removed */
+    /* border-radius: 50%; Removed */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 4rem; /* Significantly increased font size */
+    font-weight: bold;
+    /* background-color: #f59e0b; Removed */
+    color: white !important; /* Ensure text is white, overriding potential conflicts */
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 1px 3px rgba(0,0,0,0.5); /* Stronger outline and shadow */
+    /* box-shadow: 0 4px 8px rgba(0,0,0,0.2); Removed as background is gone */
+    transition: transform 0.1s, text-shadow 0.3s, color 0.3s; /* Added color transition */
+    flex-shrink: 0;
+    position: relative; /* Ensure z-index is effective */
+    z-index: 1001; /* Keep high z-index, above admin icon */
+    opacity: 1 !important; /* Force opacity */
+    visibility: visible !important; /* Force visibility */
+    padding: 0 0.5rem; /* Add some padding so it doesn't touch other status items */
+}
+
+
+#timer-display.warning { /* Changed selector */
+    /* background-color: #ef4444; Removed */
+    color: #ef4444 !important; /* Red color for warning text */
+    font-size: 4.5rem; /* Slightly larger font size for warning */
+    animation: pulse-warning 0.7s infinite ease-in-out; /* Faster, more noticeable animation */
+}
+/* Updated animation for a more urgent "pulse" or "flash" */
+@keyframes pulse-warning {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.8; } /* Scale up and slightly fade */
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* Feedback Area (Levels 1, 2, 3) */
+.feedback-area {
+    position: absolute;
+    bottom: 12%; /* Adjusted position */
+    left: 50%;
+    padding: 1rem 2rem;
+    border-radius: 0.5rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s ease-out;
+    z-index: 20;
+    transform: translate(-50%, 20px); /* Start slightly lower */
+    color: white; /* Default text color */
+}
+.feedback-area.visible {
+    opacity: 1;
+    transform: translate(-50%, 0); /* Animate upwards */
+}
+.feedback-area.correct {
+    background-color: #10b981; /* Emerald */
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+}
+/* 使用 ::before 添加 ✅ 图标，作为更可靠的方式 */
+.feedback-area.correct::before {
+    content: '✅'; /* 直接使用 emoji */
+    margin-right: 0.5rem; /* 图标和文字间距 */
+    font-size: 1.1em; /* 调整图标大小 */
+    line-height: 1; /* 确保垂直对齐 */
+    display: inline-block; /* 确保布局正确 */
+}
+/* 保留 SVG 样式以兼容可能存在的 SVG 元素 */
+.feedback-area.correct svg {
+    stroke: white;
+    width: 24px; /* 确保大小一致 */
+    height: 24px;
+    stroke-width: 3;
+    /* 如果同时使用 ::before 和 SVG，可能需要隐藏一个 */
+    /* display: none; */ /* No longer needed here as we hide all SVGs below */
+}
+.feedback-area.incorrect {
+    background-color: #ef4444; /* Red */
+     box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+}
+/* 使用 ::before 添加 ❌ 图标 */
+.feedback-area.incorrect::before {
+    content: '❌'; /* 直接使用 emoji */
+    margin-right: 0.5rem; /* 图标和文字间距 */
+    font-size: 1.1em; /* 调整图标大小 */
+    line-height: 1; /* 确保垂直对齐 */
+    display: inline-block; /* 确保布局正确 */
+}
+.feedback-area svg { /* Style for icons inside feedback - HIDE them */
+    display: none !important; /* Hide SVG icons to prevent duplicates with ::before */
+    width: 24px;
+    height: 24px;
+    stroke-width: 3;
+    stroke: currentColor; /* Inherit color */
+}
+.feedback-area img { /* Hide img icons as well, to ensure ::before is the sole source */
+    display: none !important;
+}
+
+/* Confirm Button (Levels 1, 3) */
+.confirm-btn {
+     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.confirm-btn:active:not(:disabled) {
+     transform: scale(0.97);
+     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.confirm-btn:disabled {
+    background-color: #9ca3af !important; /* Use important to override base color */
+    cursor: not-allowed;
+    opacity: 0.7;
+    box-shadow: none;
+}
+
+/* Input Underline Style (Levels 1, 3) */
+.word-input-container {
+    display: inline-block;
+    margin: 0 5px;
+    position: relative;
+}
+.word-input {
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid white;
+    color: white;
+    font-size: 2.5rem;
+    text-align: center;
+    padding: 5px 0;
+    width: 4ch;
+    min-width: 4ch;
+    outline: none;
+    transition: border-color 0.2s, width 0.1s linear, border-bottom-style 0.2s;
+    box-sizing: content-box;
+    vertical-align: bottom;
+    caret-color: #fbbf24; /* Amber caret */
+    text-transform: lowercase;
+}
+.word-input:focus {
+    border-bottom-color: #fbbf24; /* Highlight focus with Amber */
+}
+.word-input.typing {
+     border-bottom-style: dashed;
+     border-bottom-color: #fde047; /* Lighter yellow for typing */
+}
+.word-input.entered {
+     border-bottom-color: #86efac; /* Light green for entered */
+     border-bottom-style: solid;
+}
+
+/* --- Screen Specific Styles --- */
+
+/* Welcome Screen */
+#welcomeScreen {
+    background: linear-gradient(135deg, #864cbf 0%, #4f46e5 100%);
+    color: white;
+}
+.start-button {
+    transition: transform 0.1s ease-out, box-shadow 0.1s ease-out;
+}
+.start-button:active {
+    transform: scale(0.98);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Info Input Screen */
+#infoInputScreen {
+    background: linear-gradient(135deg, #4f46e5 0%, #ec4899 100%);
+    color: white;
+}
+#infoInputScreen .confirm-button:disabled { /* Specific confirm button on this screen */
+    background-color: #9ca3af;
+    cursor: not-allowed;
+    /* Tailwind handles opacity: disabled:opacity-70 */
+}
+.grade-button {
+    transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
+}
+.grade-button.selected {
+    background-color: #fbbf24; /* Amber-400 for selected */
+    color: #4338ca; /* Indigo-700 text */
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+.grade-button:not(.selected):hover {
+     background-color: #60a5fa; /* Lighter blue on hover */
+}
+#infoInputScreen input:focus { /* Specific input focus on this screen */
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.5); /* Blue-400 focus ring */
+    border-color: #60a5fa; /* Ensure border color changes too */
+}
+
+/* Level 1 Screen */
+#level1Screen {
+    background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%); /* Emerald to Blue */
+    color: white;
+}
+
+/* Level 2 Screen */
+#level2Screen {
+    background: linear-gradient(135deg, #ec4899 0%, #f59e0b 100%); /* Pink to Amber */
+    color: white;
+}
+.option-button {
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #374151;
+    border: 2px solid transparent;
+    transition: transform 0.1s, background-color 0.2s, border-color 0.2s, box-shadow 0.2s, opacity 0.2s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.option-button:hover:not(:disabled) {
+    background-color: white;
+    border-color: #f59e0b;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+.option-button:active:not(:disabled) {
+    transform: scale(0.98);
+}
+.option-button.selected {
+     border-color: #3b82f6;
+     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.4);
+}
+.option-button.correct {
+    background-color: #10b981;
+    color: white;
+    border-color: #059669;
+    transform: scale(1.02);
+    box-shadow: 0 5px 10px rgba(16, 185, 129, 0.3);
+}
+.option-button.incorrect {
+    background-color: #ef4444;
+    color: white;
+    border-color: #dc2626;
+    opacity: 0.8;
+     box-shadow: 0 5px 10px rgba(239, 68, 68, 0.3);
+}
+.option-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+.option-button.correct::after, .option-button.incorrect::after {
+    content: ''; display: inline-block; width: 24px; height: 24px;
+    margin-left: 10px; vertical-align: middle; background-size: contain;
+    background-repeat: no-repeat; background-position: center;
+}
+.option-button.correct::after {
+     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>');
+}
+ .option-button.incorrect::after {
+     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>');
+}
+
+/* Level 3 Screen */
+#level3Screen {
+    background: linear-gradient(135deg, #3b82f6 0%, #a855f7 100%); /* Blue to Purple */
+    color: white;
+}
+.play-audio-button-common {
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #6d28d9; /* Purple text */
+    border: none;
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transition: transform 0.1s, background-color 0.2s, box-shadow 0.2s, opacity 0.2s;
+}
+.play-audio-button-common:hover:not(:disabled) {
+    background-color: white;
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+ .play-audio-button-common:active:not(:disabled) {
+     transform: scale(0.95);
+     box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+ }
+ .play-audio-button-common:disabled {
+     background-color: #d1d5db;
+     cursor: not-allowed;
+     opacity: 0.7;
+     box-shadow: none;
+ }
+ .play-audio-button-common.playing {
+     animation: pulse-audio 1.5s infinite ease-in-out;
+ }
+ @keyframes pulse-audio {
+     0% { transform: scale(1); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); }
+     50% { transform: scale(1.03); box-shadow: 0 8px 20px rgba(168, 85, 247, 0.4); }
+     100% { transform: scale(1); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); }
+ }
+
+/* --- Old Result Screen Styles (screens/result.html) --- */
+/* These styles are for the old result.html. */
+/* New result_success.html and result_failure.html primarily use Tailwind CSS. */
+
+#resultScreen { /* Styles for the original result.html, if still in use */
+    color: #333;
+    padding: 1rem;
+    /* background and color for success/failure are handled by Tailwind in new files */
+}
+
+/* Styles for .result-card, .stat-item, .wrong-answer-item, .back-button if they are */
+/* still used by the old result.html and NOT intended to be overridden by Tailwind in new files. */
+/* If new files completely replace these, these old styles can be further cleaned up or removed. */
+
+.result-card { /* This class might be used by old result.html */
+    background-color: rgba(255, 255, 255, 0.85); /* Default, new files use Tailwind opacity */
+    backdrop-filter: blur(10px); /* New files use Tailwind backdrop-blur */
+    border-radius: 1rem; /* Tailwind: rounded-xl */
+    padding: 2rem 2.5rem; /* Tailwind: p-X */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Tailwind: shadow-xl */
+    color: #1f2937;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* Specific background for old result screen cards - new files handle this with Tailwind */
+/* #resultScreen.success .result-card { background-color: rgba(255, 255, 255, 0.9); } */
+/* #resultScreen.failure .result-card { background-color: rgba(255, 255, 255, 0.85); } */
+
+.result-title-common { /* Used by old result.html */
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+}
+/* Color for titles in old result.html - new files use Tailwind */
+/* #resultScreen.success .result-title-common { color: #059669; } */
+/* #resultScreen.failure .result-title-common { color: #dc2626; } */
+
+.stat-item { /* Used by old result.html */
+    text-align: center;
+    padding: 1rem;
+    background-color: rgba(0, 0, 0, 0.04);
+    border-radius: 0.5rem;
+}
+.stat-label { /* Used by old result.html */
+    display: block; font-size: 1rem; color: #6b7280; margin-bottom: 0.25rem;
+}
+.stat-value { /* Used by old result.html */
+    font-size: 1.75rem; font-weight: bold; color: #111827;
+}
+
+.wrong-answers-section-common { /* Used by old result.html */
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+.wrong-answer-item { /* Used by old result.html */
+    background-color: rgba(255, 230, 230, 0.5); /* Default, new files use Tailwind for this */
+    border: 1px solid rgba(220, 38, 38, 0.2); /* Default, new files use Tailwind */
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    color: #4b5563;
+    line-height: 1.6;
+}
+ .wrong-answer-item strong { color: #1f2937; } /* Used by old result.html */
+ .wrong-answer-item .user-answer-wrong { color: #dc2626; font-weight: bold; } /* Used by old result.html */
+ .wrong-answer-item .user-answer-timeout { color: #f97316; font-style: italic; font-weight: bold;} /* Used by old result.html */
+ .wrong-answer-item .correct-answer { color: #059669; font-weight: bold; } /* Used by old result.html */
+
+.back-button { /* Style for the back button on old result.html */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    /* Background colors for success/failure on old result.html - new files use Tailwind */
+}
+/* #resultScreen.success .back-button { background-color: #10b981; color: white; } */
+/* #resultScreen.success .back-button:hover { background-color: #059669; } */
+/* #resultScreen.failure .back-button { background-color: #ef4444; color: white; } */
+/* #resultScreen.failure .back-button:hover { background-color: #dc2626; } */
+/* Focus rings for old result.html - new files use Tailwind */
+/* #resultScreen.success .back-button:focus { ring-color: #6ee7b7; } */
+/* #resultScreen.failure .back-button:focus { ring-color: #fca5a5; } */
+
+/* Admin Login Screen */
+#adminLoginScreen {
+    background: linear-gradient(135deg, #6b7280 0%, #374151 100%);
+}
+.login-card { /* Specific card style for login */
+    background-color: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(8px);
+}
+#adminLoginScreen input[type="password"]:focus {
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.5);
+    border-color: #6366f1;
+}
+.error-message { /* Style for error message div */
+    background-color: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #b91c1c;
+}
+
+/* Admin Config Screen */
+#adminConfigScreen {
+    background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+    color: #1f2937;
+}
+.config-card { /* Specific card style for config */
+    background-color: white;
+    border-radius: 1rem;
+    padding: 2rem 2.5rem;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    max-width: 700px;
+    margin: 0 auto; /* Center horizontally */
+}
+.level-config-section {
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    background-color: #f9fafb;
+}
+#adminConfigScreen label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #4b5563;
+}
+#adminConfigScreen input[type="number"] {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    font-size: 1rem;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+}
+ #adminConfigScreen input[type="number"]:focus {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.3);
+    outline: none;
+}
+/* Hide number input spinners */
+#adminConfigScreen input[type=number]::-webkit-inner-spin-button,
+#adminConfigScreen input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+#adminConfigScreen input[type=number] {
+  -moz-appearance: textfield; /* Firefox */
+}
+
+.status-message { /* Style for status message div in config */
+    padding: 0.75rem 1rem;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+.status-message.status-success {
+    background-color: #d1fae5; color: #065f46; border: 1px solid #6ee7b7;
+}
+.status-message.status-error {
+    background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5;
+}
+/* --- Footer Breathing Effect --- */
+@keyframes breathing-colors {
+  0%, 100% {
+    color: cyan;
+    text-shadow: 0 0 1px white, 0 0 2px white;
+  }
+  33% {
+    color: black;
+    text-shadow: 0 0 1px white, 0 0 2px white;
+  }
+  66% {
+    color: red;
+    text-shadow: 0 0 1px white, 0 0 2px white;
+  }
+  100% {
+    color: black;
+    text-shadow: 0 0 1px white, 0 0 2px white;
+  }
+}
+
+.footer-breathing-text {
+  animation: breathing-colors 6s infinite ease-in-out;
+  font-weight: bold; /* 使文字略微突出 */
+}

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理员配置 - 单词闯关</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="../css/style.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%); /* Light Gray gradient */
+            font-family: 'Arial', sans-serif;
+            overflow-y: auto; /* Allow scrolling if needed */
+            color: #1f2937; /* Dark gray text */
+        }
+        .config-card {
+            background-color: white;
+            border-radius: 1rem;
+            padding: 2rem 2.5rem;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            max-width: 700px;
+            margin: 2rem auto;
+        }
+        .level-config-section {
+            border: 1px solid #e5e7eb; /* Light border */
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            background-color: #f9fafb; /* Very light gray background */
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #4b5563;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #d1d5db; /* Gray border */
+            border-radius: 0.375rem;
+            font-size: 1rem;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.05);
+        }
+         input[type="number"]:focus {
+            border-color: #4f46e5; /* Indigo */
+            box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.3);
+            outline: none;
+        }
+        /* Hide number input spinners */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+        input[type=number] {
+          -moz-appearance: textfield; /* Firefox */
+        }
+
+        .status-message {
+            padding: 0.75rem 1rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            text-align: center;
+            margin-bottom: 1.5rem; /* Added margin bottom */
+        }
+        .status-success {
+            background-color: #d1fae5; /* Green light */
+            color: #065f46; /* Green dark */
+            border: 1px solid #6ee7b7;
+        }
+        .status-error {
+            background-color: #fee2e2; /* Red light */
+            color: #991b1b; /* Red dark */
+            border: 1px solid #fca5a5;
+        }
+         button {
+             transition: transform 0.1s, background-color 0.2s, box-shadow 0.2s;
+             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        button:active {
+             transform: scale(0.98);
+             box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="config-card">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-8">关卡参数配置</h1>
+
+        <div id="status-message" class="status-message hidden"></div>
+
+        <form id="config-form">
+            <!-- Level 1 Config -->
+            <div class="level-config-section">
+                <h2 class="text-xl font-semibold mb-4 text-indigo-700">第一关：看中文写英文</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="level1-total">题目总数:</label>
+                        <input type="number" id="level1-total" name="level1-total" min="1" required>
+                    </div>
+                    <div>
+                        <label for="level1-target">通关所需正确数:</label>
+                        <input type="number" id="level1-target" name="level1-target" min="1" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Level 2 Config -->
+            <div class="level-config-section">
+                <h2 class="text-xl font-semibold mb-4 text-pink-700">第二关：看英文选中文</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="level2-total">题目总数:</label>
+                        <input type="number" id="level2-total" name="level2-total" min="1" required>
+                    </div>
+                    <div>
+                        <label for="level2-target">通关所需正确数:</label>
+                        <input type="number" id="level2-target" name="level2-target" min="1" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Level 3 Config -->
+            <div class="level-config-section">
+                <h2 class="text-xl font-semibold mb-4 text-purple-700">第三关：听写英文</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="level3-total">题目总数:</label>
+                        <input type="number" id="level3-total" name="level3-total" min="1" required>
+                    </div>
+                    <div>
+                        <label for="level3-target">通关所需正确数:</label>
+                        <input type="number" id="level3-target" name="level3-target" min="1" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="mt-8 flex flex-col md:flex-row gap-4">
+                <button type="submit" id="save-button"
+                        class="w-full md:w-auto flex-grow bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg py-3 px-6 rounded-lg focus:outline-none focus:ring-4 focus:ring-blue-300">
+                    保存设置
+                </button>
+                <button type="button" id="back-button"
+                        class="w-full md:w-auto bg-gray-500 hover:bg-gray-600 text-white font-bold text-lg py-3 px-6 rounded-lg focus:outline-none focus:ring-4 focus:ring-gray-300">
+                    返回首页
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Element References
+        const form = document.getElementById('config-form');
+        const statusMessage = document.getElementById('status-message');
+        const saveButton = document.getElementById('save-button');
+        const backButton = document.getElementById('back-button');
+
+        const inputs = {
+            l1Total: document.getElementById('level1-total'),
+            l1Target: document.getElementById('level1-target'),
+            l2Total: document.getElementById('level2-total'),
+            l2Target: document.getElementById('level2-target'),
+            l3Total: document.getElementById('level3-total'),
+            l3Target: document.getElementById('level3-target'),
+        };
+
+        // Function to display status messages
+        function showStatus(message, isError = false) {
+            statusMessage.textContent = message;
+            statusMessage.classList.remove('hidden', 'status-success', 'status-error');
+            statusMessage.classList.add(isError ? 'status-error' : 'status-success');
+            // Auto-hide success message after a delay
+            if (!isError) {
+                setTimeout(() => {
+                    statusMessage.classList.add('hidden');
+                }, 3000); // Hide after 3 seconds
+            }
+        }
+
+        // Function to load config data into inputs
+        function loadConfig(config) {
+            if (!config) return;
+            inputs.l1Total.value = config.level1?.totalQuestions ?? '';
+            inputs.l1Target.value = config.level1?.targetScore ?? '';
+            inputs.l2Total.value = config.level2?.totalQuestions ?? '';
+            inputs.l2Target.value = config.level2?.targetScore ?? '';
+            inputs.l3Total.value = config.level3?.totalQuestions ?? '';
+            inputs.l3Target.value = config.level3?.targetScore ?? '';
+        }
+
+        // --- Event Listeners ---
+
+        // Form submission (Save Settings)
+        form.addEventListener('submit', (event) => {
+            event.preventDefault(); // Prevent default form submission
+            statusMessage.classList.add('hidden'); // Hide previous messages
+
+            // Read values and convert to numbers
+            const config = {
+                level1: {
+                    totalQuestions: parseInt(inputs.l1Total.value, 10),
+                    targetScore: parseInt(inputs.l1Target.value, 10)
+                },
+                level2: {
+                    totalQuestions: parseInt(inputs.l2Total.value, 10),
+                    targetScore: parseInt(inputs.l2Target.value, 10)
+                },
+                level3: {
+                    totalQuestions: parseInt(inputs.l3Total.value, 10),
+                    targetScore: parseInt(inputs.l3Target.value, 10)
+                }
+            };
+
+            // Validation
+            let isValid = true;
+            let errorMessage = '';
+
+            for (const levelKey in config) {
+                 // Use hasOwnProperty check for safety, though likely unnecessary here
+                 if (Object.hasOwnProperty.call(config, levelKey)) {
+                    const { totalQuestions, targetScore } = config[levelKey];
+                    const levelNum = levelKey.replace('level',''); // Get level number for message
+
+                    if (isNaN(totalQuestions) || isNaN(targetScore) || totalQuestions < 1 || targetScore < 1) {
+                        isValid = false;
+                        errorMessage = `关卡 ${levelNum} 的设置必须是有效的正整数。`;
+                        break;
+                    }
+                    if (targetScore > totalQuestions) {
+                        isValid = false;
+                        errorMessage = `关卡 ${levelNum} 的通关所需正确数 (${targetScore}) 不能大于题目总数 (${totalQuestions})。`;
+                        break;
+                    }
+                 }
+            }
+
+            if (!isValid) {
+                showStatus(errorMessage, true);
+                if (typeof window.parent.playSound === 'function') window.parent.playSound('error');
+                return; // Stop if validation fails
+            }
+
+            // Play sound
+             if (typeof window.parent.playSound === 'function') window.parent.playSound('confirm');
+
+
+            // Send valid config to parent
+            if (window.parent && window.parent.postMessage) {
+                console.log("Sending config to save:", config); // Debugging
+                window.parent.postMessage({ action: 'saveAdminConfig', payload: config }, '*');
+            } else {
+                console.error("Cannot communicate with parent window.");
+                showStatus("无法连接到主程序保存设置。", true);
+            }
+        });
+
+        // Back Button
+        backButton.addEventListener('click', () => {
+             if (typeof window.parent.playSound === 'function') window.parent.playSound('cancel');
+            if (window.parent && window.parent.postMessage) {
+                window.parent.postMessage({ action: 'navigate', screen: 'welcome' }, '*');
+            } else {
+                console.error("Cannot communicate with parent window.");
+            }
+        });
+
+        // Listen for messages from parent
+        window.addEventListener('message', (event) => {
+            // Add origin check
+            // if (event.origin !== window.location.origin) return;
+
+            if (event.data && event.data.action) {
+                switch (event.data.action) {
+                    case 'loadAdminConfig':
+                        console.log("Received config to load:", event.data.payload); // Debugging
+                        loadConfig(event.data.payload);
+                        break;
+                    case 'adminConfigSaved':
+                        showStatus("设置已成功保存！", false);
+                         if (typeof window.parent.playSound === 'function') window.parent.playSound('success');
+                        break;
+                    case 'adminConfigSaveFailed':
+                         showStatus("保存设置失败，请稍后重试。", true);
+                          if (typeof window.parent.playSound === 'function') window.parent.playSound('error');
+                         break;
+                }
+            }
+        });
+
+        // Request config on load
+        window.addEventListener('load', () => {
+            if (window.parent && window.parent.postMessage) {
+                window.parent.postMessage({ action: 'requestAdminConfig' }, '*');
+            } else {
+                 console.error("Cannot communicate with parent window to request config.");
+                 showStatus("无法加载当前配置。", true);
+            }
+        });
+
+    </script>
+</body>
+</html>
