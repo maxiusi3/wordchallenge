@@ -63,9 +63,7 @@
             </button>
         </div>
 
-        <div id="errorDetails" class="mt-6 text-xs text-red-200 hidden">
-            <!-- 错误详情将在这里显示 -->
-        </div>
+
     </div>
 
     <script>
@@ -78,7 +76,6 @@
                 this.dataStatus = document.getElementById('dataStatus');
                 this.retryButton = document.getElementById('retryButton');
                 this.startGameButton = document.getElementById('startGameButton');
-                this.errorDetails = document.getElementById('errorDetails');
 
                 this.setupEventListeners();
                 this.checkStatus();
@@ -122,7 +119,6 @@
                 this.dataStatus.textContent = '检查中...';
                 this.retryButton.disabled = true;
                 this.startGameButton.disabled = true;
-                this.errorDetails.classList.add('hidden');
 
                 // 添加脉冲动画
                 [this.networkStatus, this.serverStatus, this.dataStatus].forEach(el => {
@@ -160,7 +156,6 @@
                 } catch (error) {
                     this.serverStatus.textContent = '❌ 异常';
                     this.serverStatus.className = 'text-red-300';
-                    this.showError(`服务器连接失败: ${error.message}`);
                     return false;
                 }
             }
@@ -168,48 +163,22 @@
             async checkDataAvailability() {
                 this.dataStatus.classList.remove('pulse');
                 try {
-                    // 尝试多个可能的路径
-                    const testPaths = [
-                        'data/renjiaoban/grade3.json',
-                        './data/renjiaoban/grade3.json',
-                        '/data/renjiaoban/grade3.json'
-                    ];
+                    // 检查一个示例题库文件
+                    const response = await fetch('data/renjiaoban/grade3.json', {
+                        cache: 'no-cache',
+                        signal: AbortSignal.timeout(5000)
+                    });
 
-                    let lastError = null;
-
-                    for (const path of testPaths) {
-                        try {
-                            console.log(`尝试访问路径: ${path}`);
-                            const response = await fetch(path, {
-                                cache: 'no-cache',
-                                signal: AbortSignal.timeout(5000)
-                            });
-
-                            if (response.ok) {
-                                // 尝试解析JSON以确保文件有效
-                                const text = await response.text();
-                                const jsonData = JSON.parse(text);
-
-                                this.dataStatus.textContent = '✅ 可用';
-                                this.dataStatus.className = 'text-green-300';
-                                this.showError(`题库文件访问成功，使用路径: ${path}，包含 ${jsonData.length} 个单词`);
-                                return true;
-                            } else {
-                                lastError = `路径 ${path}: HTTP ${response.status}`;
-                                console.log(lastError);
-                            }
-                        } catch (error) {
-                            lastError = `路径 ${path}: ${error.message}`;
-                            console.log(lastError);
-                        }
+                    if (response.ok) {
+                        this.dataStatus.textContent = '✅ 可用';
+                        this.dataStatus.className = 'text-green-300';
+                        return true;
+                    } else {
+                        throw new Error(`题库文件不可访问: ${response.status}`);
                     }
-
-                    throw new Error(`所有路径都无法访问。最后错误: ${lastError}`);
-
                 } catch (error) {
                     this.dataStatus.textContent = '❌ 不可用';
                     this.dataStatus.className = 'text-red-300';
-                    this.showError(`题库数据检查失败: ${error.message}`);
                     return false;
                 }
             }
@@ -220,7 +189,6 @@
                 this.serverStatus.textContent = '⏸️ 跳过';
                 this.dataStatus.textContent = '⏸️ 跳过';
                 this.retryButton.disabled = false;
-                this.showError('设备处于离线状态，游戏需要网络连接才能正常运行。');
             }
 
             updateFinalStatus() {
@@ -239,11 +207,6 @@
                 }
 
                 this.retryButton.disabled = false;
-            }
-
-            showError(message) {
-                this.errorDetails.textContent = message;
-                this.errorDetails.classList.remove('hidden');
             }
 
             startGame() {
