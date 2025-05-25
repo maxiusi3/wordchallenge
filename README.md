@@ -13,9 +13,9 @@
 
 ## 🚀 在线体验
 
-### 🎮 [开始游戏](https://your-username.github.io/word-challenge-game/)
+### 🎮 [开始游戏](https://maxiusi3.github.io/word-challenge/)
 
-### 🔍 [检查网络状态](https://your-username.github.io/word-challenge-game/online-status.html)
+### 🔍 [检查网络状态](https://maxiusi3.github.io/word-challenge/online-status.html)
 
 ## 📱 支持的设备
 
@@ -31,14 +31,14 @@
 - 15秒时间限制，3次尝试机会
 - 适合词汇认知训练
 
-### 第二关：看英文选中文  
+### 第二关：看英文选中文
 - 显示英文词汇，从4个中文选项中选择正确答案
 - 无时间限制，3次尝试机会
 - 适合理解能力训练
 
 ### 第三关：听音写单词
 - 听英文发音，输入正确的英文单词
-- 15秒时间限制，3次尝试机会  
+- 15秒时间限制，3次尝试机会
 - 适合听力和拼写训练
 
 ## 📊 年级词库
@@ -67,18 +67,18 @@
 
 1. **克隆仓库**
    ```bash
-   git clone https://github.com/your-username/word-challenge-game.git
-   cd word-challenge-game
+   git clone https://github.com/maxiusi3/word-challenge.git
+   cd word-challenge
    ```
 
 2. **启动本地服务器**
    ```bash
    # 使用Python
    python -m http.server 8000
-   
+
    # 或使用Node.js
    npx serve .
-   
+
    # 或使用PHP
    php -S localhost:8000
    ```
@@ -91,7 +91,7 @@
 ## 📁 项目结构
 
 ```
-word-challenge-game/
+word-challenge/
 ├── index.html              # 主游戏页面
 ├── online-status.html      # 网络状态检查
 ├── css/
@@ -123,16 +123,16 @@ word-challenge-game/
 支持多种部署方式：
 - GitHub Pages (推荐)
 - Netlify
-- Vercel  
+- Vercel
 - 静态文件服务器
 
 ## 🐛 问题反馈
 
 如果您在使用过程中遇到问题，请：
 
-1. 首先访问 [网络状态检查页面](https://your-username.github.io/word-challenge-game/online-status.html)
+1. 首先访问 [网络状态检查页面](https://maxiusi3.github.io/word-challenge/online-status.html)
 2. 检查浏览器控制台是否有错误信息
-3. 在 [Issues](https://github.com/your-username/word-challenge-game/issues) 页面提交问题
+3. 在 [Issues](https://github.com/maxiusi3/word-challenge/issues) 页面提交问题
 
 ## 📄 开源协议
 
@@ -148,7 +148,7 @@ word-challenge-game/
 
 ## 🎯 快速开始
 
-1. 点击 [开始游戏](https://your-username.github.io/word-challenge-game/)
+1. 点击 [开始游戏](https://maxiusi3.github.io/word-challenge/)
 2. 输入昵称和选择年级
 3. 开始第一关挑战
 4. 享受学习英语的乐趣！
