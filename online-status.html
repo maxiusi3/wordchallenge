@@ -38,7 +38,7 @@
         <div id="statusIcon" class="text-6xl mb-4">🌐</div>
         <h1 class="text-2xl font-bold mb-4">单词闯关游戏</h1>
         <div id="statusMessage" class="text-lg mb-6">检查网络状态...</div>
-        
+
         <div id="statusDetails" class="space-y-3 text-sm opacity-75">
             <div class="flex justify-between">
                 <span>网络状态:</span>
@@ -53,7 +53,7 @@
                 <span id="dataStatus" class="pulse">检查中...</span>
             </div>
         </div>
-        
+
         <div id="actionButtons" class="mt-8 space-y-3">
             <button id="retryButton" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
                 重新检查
@@ -62,7 +62,7 @@
                 开始游戏
             </button>
         </div>
-        
+
         <div id="errorDetails" class="mt-6 text-xs text-red-200 hidden">
             <!-- 错误详情将在这里显示 -->
         </div>
@@ -79,41 +79,41 @@
                 this.retryButton = document.getElementById('retryButton');
                 this.startGameButton = document.getElementById('startGameButton');
                 this.errorDetails = document.getElementById('errorDetails');
-                
+
                 this.setupEventListeners();
                 this.checkStatus();
             }
-            
+
             setupEventListeners() {
                 this.retryButton.addEventListener('click', () => this.checkStatus());
                 this.startGameButton.addEventListener('click', () => this.startGame());
-                
+
                 // 监听网络状态变化
                 window.addEventListener('online', () => this.checkStatus());
                 window.addEventListener('offline', () => this.updateNetworkStatus(false));
             }
-            
+
             async checkStatus() {
                 this.resetStatus();
-                
+
                 // 1. 检查基本网络连接
                 this.updateNetworkStatus(navigator.onLine);
-                
+
                 if (!navigator.onLine) {
                     this.showOfflineStatus();
                     return;
                 }
-                
+
                 // 2. 检查服务器连接
                 await this.checkServerConnection();
-                
+
                 // 3. 检查题库数据
                 await this.checkDataAvailability();
-                
+
                 // 4. 更新最终状态
                 this.updateFinalStatus();
             }
-            
+
             resetStatus() {
                 this.statusIcon.textContent = '🌐';
                 this.statusMessage.textContent = '检查网络状态...';
@@ -123,13 +123,13 @@
                 this.retryButton.disabled = true;
                 this.startGameButton.disabled = true;
                 this.errorDetails.classList.add('hidden');
-                
+
                 // 添加脉冲动画
                 [this.networkStatus, this.serverStatus, this.dataStatus].forEach(el => {
                     el.classList.add('pulse');
                 });
             }
-            
+
             updateNetworkStatus(isOnline) {
                 this.networkStatus.classList.remove('pulse');
                 if (isOnline) {
@@ -140,17 +140,16 @@
                     this.networkStatus.className = 'text-red-300';
                 }
             }
-            
+
             async checkServerConnection() {
                 this.serverStatus.classList.remove('pulse');
                 try {
                     // 尝试获取主页面来检查服务器连接
-                    const response = await fetch('/', { 
-                        method: 'HEAD',
+                    const response = await fetch('/', {
                         cache: 'no-cache',
                         signal: AbortSignal.timeout(5000)
                     });
-                    
+
                     if (response.ok) {
                         this.serverStatus.textContent = '✅ 正常';
                         this.serverStatus.className = 'text-green-300';
@@ -165,7 +164,7 @@
                     return false;
                 }
             }
-            
+
             async checkDataAvailability() {
                 this.dataStatus.classList.remove('pulse');
                 try {
@@ -182,15 +181,18 @@
                         try {
                             console.log(`尝试访问路径: ${path}`);
                             const response = await fetch(path, {
-                                method: 'HEAD',
                                 cache: 'no-cache',
                                 signal: AbortSignal.timeout(5000)
                             });
 
                             if (response.ok) {
+                                // 尝试解析JSON以确保文件有效
+                                const text = await response.text();
+                                const jsonData = JSON.parse(text);
+
                                 this.dataStatus.textContent = '✅ 可用';
                                 this.dataStatus.className = 'text-green-300';
-                                this.showError(`题库文件访问成功，使用路径: ${path}`);
+                                this.showError(`题库文件访问成功，使用路径: ${path}，包含 ${jsonData.length} 个单词`);
                                 return true;
                             } else {
                                 lastError = `路径 ${path}: HTTP ${response.status}`;
@@ -211,7 +213,7 @@
                     return false;
                 }
             }
-            
+
             showOfflineStatus() {
                 this.statusIcon.textContent = '📱';
                 this.statusMessage.textContent = '离线模式';
@@ -220,12 +222,12 @@
                 this.retryButton.disabled = false;
                 this.showError('设备处于离线状态，游戏需要网络连接才能正常运行。');
             }
-            
+
             updateFinalStatus() {
                 const networkOk = this.networkStatus.textContent.includes('✅');
                 const serverOk = this.serverStatus.textContent.includes('✅');
                 const dataOk = this.dataStatus.textContent.includes('✅');
-                
+
                 if (networkOk && serverOk && dataOk) {
                     this.statusIcon.textContent = '🎮';
                     this.statusIcon.classList.add('bounce-in');
@@ -235,21 +237,21 @@
                     this.statusIcon.textContent = '⚠️';
                     this.statusMessage.textContent = '检测到问题，请检查网络连接';
                 }
-                
+
                 this.retryButton.disabled = false;
             }
-            
+
             showError(message) {
                 this.errorDetails.textContent = message;
                 this.errorDetails.classList.remove('hidden');
             }
-            
+
             startGame() {
                 // 跳转到主游戏页面
                 window.location.href = '/index.html';
             }
         }
-        
+
         // 页面加载完成后开始检查
         document.addEventListener('DOMContentLoaded', () => {
             new OnlineStatusChecker();
