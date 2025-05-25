@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>挑战结果 - 单词闯关</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f3f4f6; /* Light gray background to make card pop */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 1rem;
+            color: #333;
+        }
+
+        .result-card-container {
+            background-color: white;
+            border-radius: 1rem; /* 16px */
+            padding: 2.5rem; /* 40px */
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1), 0 5px 10px rgba(0, 0, 0, 0.05);
+            color: #1f2937; /* Darker text inside card */
+            max-width: 600px; /* Max width for the card, increased by 20% from 500px */
+            width: 100%;
+            text-align: center;
+        }
+
+        #result-title {
+            font-weight: bold;
+            margin-bottom: 1rem; /* 16px */
+            color: #1f2937; /* Consistent title color */
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr; /* Single column for mobile */
+            gap: 1rem; /* 16px */
+            margin-bottom: 2.5rem; /* 40px */
+        }
+
+        @media (min-width: 400px) { /* Adjust breakpoint as needed */
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr); /* Three columns for wider screens */
+            }
+        }
+
+
+        .stat-item-container {
+            background-color: #f3f4f6; /* Tailwind gray-100 */
+            border-radius: 0.5rem; /* 8px */
+            padding: 1rem; /* 16px */
+            text-align: center;
+        }
+
+        .stat-label {
+            display: block;
+            font-size: 0.875rem; /* 14px */
+            color: #6b7280; /* Tailwind gray-500 */
+            margin-bottom: 0.25rem; /* 4px */
+        }
+
+        .stat-value {
+            font-size: 1.875rem; /* 30px */
+            font-weight: bold;
+            color: #111827; /* Tailwind gray-900 */
+        }
+
+        .action-button {
+            background-color: #3b82f6; /* Tailwind blue-500 */
+            color: white;
+            font-weight: bold;
+            font-size: 1.125rem; /* 18px */
+            padding: 0.75rem 2rem; /* 12px 32px */
+            border-radius: 0.5rem; /* 8px */
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+
+        .action-button:hover {
+            background-color: #2563eb; /* Tailwind blue-600 */
+        }
+
+        .action-button:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .action-button:focus {
+            outline: none;
+            ring: 4px;
+            ring-color: #93c5fd; /* Tailwind blue-300 */
+            ring-opacity: 0.5;
+        }
+
+        /* Hide user info and wrong answers as per new design focus */
+        .user-info-section,
+        #wrong-answers-section {
+            display: none !important;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="result-card-container">
+        <!-- Result Title -->
+        <h1 id="result-title" class="text-4xl md:text-5xl">
+            <!-- Placeholder: 恭喜！ / 挑战失败！ -->
+        </h1>
+
+        <!-- User Info - Hidden based on new design focus -->
+        <div class="user-info-section text-center text-xl md:text-2xl mb-8 text-gray-700 hidden">
+            恭喜 <strong id="user-nickname" class="font-bold"><!-- Nickname --></strong>
+            (<span id="user-grade"><!-- Grade --></span>)！
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-item-container">
+                <span class="stat-label">答对题目</span>
+                <span id="correctCount" class="stat-value"><!-- 15 --></span>
+            </div>
+            <div class="stat-item-container">
+                <span class="stat-label">总题目数</span>
+                <span id="totalQuestions" class="stat-value"><!-- 30 --></span>
+            </div>
+            <div class="stat-item-container">
+                <span class="stat-label">总用时</span>
+                <span id="totalTime" class="stat-value"><!-- 02:35 --></span>
+            </div>
+        </div>
+
+        <!-- Wrong Answers - Hidden based on new design focus -->
+        <div id="wrong-answers-section" class="hidden">
+            <h2 class="text-2xl font-bold mb-4 text-gray-800">错题回顾</h2>
+            <div id="wrong-answers-list">
+                <!-- JS will populate this -->
+            </div>
+        </div>
+
+        <!-- Back Button -->
+        <div class="mt-8 text-center">
+            <button id="backToHomeBtn" class="action-button">
+                返回首页
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Element References
+        const resultTitleEl = document.getElementById('result-title');
+        // User info elements are hidden, but kept for potential future use if design changes
+        const userNicknameEl = document.getElementById('user-nickname');
+        const userGradeEl = document.getElementById('user-grade');
+
+        const correctCountEl = document.getElementById('correctCount'); // Updated ID
+        const totalQuestionsEl = document.getElementById('totalQuestions'); // Updated ID
+        const totalTimeEl = document.getElementById('totalTime'); // Updated ID
+
+        // Wrong answers elements are hidden, but kept for potential future use
+        const wrongAnswersSectionEl = document.getElementById('wrong-answers-section');
+        const wrongAnswersListEl = document.getElementById('wrong-answers-list');
+
+        const backToHomeBtnEl = document.getElementById('backToHomeBtn'); // Updated ID
+
+        // Grade ID to Name Mapping (should match info_input.html)
+        const gradeMap = {
+            'g3': '小学三年级', 'g4': '小学四年级', 'g5': '小学五年级', 'g6': '小学六年级',
+            'g7': '初中七年级', 'g8': '初中八年级', 'g9': '初中九年级',
+            'hshf': '高一高频', 'hsa': '高二高三'
+        };
+
+        // Level Number to Name Mapping
+        const levelMap = {
+            1: '看中文写英文',
+            2: '看英文选中文',
+            3: '听写英文'
+        };
+
+        // Function to display results (called by main.js via postMessage)
+        function displayResults(data) {
+            if (!data) {
+                console.error("No result data received.");
+                resultTitleEl.textContent = "无法加载结果";
+                return;
+            }
+
+            console.log("Displaying results:", data); // Debugging
+
+            // Set title based on success/failure
+            if (data.success) {
+                resultTitleEl.textContent = "恭喜！"; // Updated text
+                 // if (typeof playSound === 'function') playSound('challenge_win'); // Sound handled by main.js
+            } else {
+                resultTitleEl.textContent = "挑战失败"; // Updated text (removed "！" to match common UI patterns for failure)
+                 // if (typeof playSound === 'function') playSound('challenge_lose'); // Sound handled by main.js
+            }
+
+            // Populate user info (even if hidden, data might be useful)
+            if (userNicknameEl) userNicknameEl.textContent = data.nickname || '挑战者';
+            if (userGradeEl) userGradeEl.textContent = gradeMap[data.grade] || data.grade || '未知年级';
+
+            // Populate stats
+            if (correctCountEl) correctCountEl.textContent = data.stats.correctAnswers ?? '?';
+            if (totalQuestionsEl) totalQuestionsEl.textContent = data.stats.totalQuestions ?? '?';
+            if (totalTimeEl) totalTimeEl.textContent = formatTime(data.stats.totalTimeSeconds) ?? '?';
+
+            // Populate wrong answers (even if hidden)
+            if (wrongAnswersListEl && wrongAnswersSectionEl) {
+                wrongAnswersListEl.innerHTML = ''; // Clear previous list
+                if (data.wrongAnswers && data.wrongAnswers.length > 0) {
+                    // wrongAnswersSectionEl.classList.remove('hidden'); // Section is hidden by default now
+                    data.wrongAnswers.forEach(item => {
+                        const div = document.createElement('div');
+                        // Removed 'wrong-answer-item' class styling as it's hidden
+                        // div.className = 'wrong-answer-item';
+
+                        let userAnswerHtml = '';
+                        if (item.userAnswer === 'TIMEOUT') {
+                            userAnswerHtml = '<span class="user-answer-timeout">超时</span>';
+                        } else {
+                            userAnswerHtml = `<span class="user-answer-wrong">${escapeHtml(item.userAnswer || '')}</span>`;
+                        }
+
+                        let questionPromptHtml = '';
+                        const levelName = levelMap[item.level] || `关卡 ${item.level}`;
+                        const promptText = escapeHtml(item.questionPrompt || '?');
+
+                        if (item.level === 1 || item.level === 3) {
+                            questionPromptHtml = `<strong>题目 (${levelName}):</strong> ${promptText}`;
+                        } else if (item.level === 2) {
+                            questionPromptHtml = `<strong>题目 (${levelName}):</strong> ${promptText}`;
+                        } else {
+                            questionPromptHtml = `<strong>题目 (${levelName}):</strong> ${promptText}`;
+                        }
+
+                        div.innerHTML = `
+                            <p>${questionPromptHtml}</p>
+                            <p><strong>正确答案:</strong> <span class="correct-answer">${escapeHtml(item.correctAnswer || '?')}</span></p>
+                            <p><strong>你的回答:</strong> ${userAnswerHtml}</p>
+                        `;
+                        wrongAnswersListEl.appendChild(div);
+                    });
+                } else {
+                    // wrongAnswersSectionEl.classList.add('hidden'); // Section is hidden by default now
+                }
+            }
+        }
+
+        // Helper function to format time (seconds to MM:SS)
+        function formatTime(totalSeconds) {
+            if (totalSeconds === null || totalSeconds === undefined || isNaN(totalSeconds)) {
+                return '--:--';
+            }
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = Math.floor(totalSeconds % 60);
+            return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        }
+
+         // Helper function to escape HTML characters
+        function escapeHtml(unsafe) {
+            if (typeof unsafe !== 'string') {
+                return '';
+            }
+            return unsafe
+                 .replace(/&/g, "&amp;")
+                 .replace(/</g, "&lt;")
+                 .replace(/>/g, "&gt;")
+                 .replace(/"/g, "&quot;")
+                 .replace(/'/g, "&#039;");
+        }
+
+
+        // Event listener for back button
+        if (backToHomeBtnEl) {
+            backToHomeBtnEl.addEventListener('click', () => {
+                 if (window.parent && typeof window.parent.playSound === 'function') window.parent.playSound('click'); // Generic click sound
+                // Navigate back to welcome screen via parent
+                if (window.parent && window.parent.postMessage) {
+                    window.parent.postMessage({ action: 'navigate', screen: 'welcome' }, '*');
+                } else {
+                    console.error("Cannot communicate with parent window.");
+                }
+            });
+        }
+
+        // Listen for results data from parent
+        window.addEventListener('message', (event) => {
+            // Basic origin check for security (replace with your actual origin in production)
+            // if (event.origin !== window.location.origin && event.origin !== 'expected_parent_origin') return;
+
+            if (event.data && event.data.action === 'showResults') {
+                displayResults(event.data.payload);
+            }
+        });
+
+        // Example data for testing display (remove or comment out in final version)
+        /*
+         window.addEventListener('load', () => {
+             displayResults({
+                 success: false, // Test failure case
+                 nickname: "测试员",
+                 grade: "g3",
+                 stats: {
+                     correctAnswers: 5,
+                     totalQuestions: 10,
+                     totalTimeSeconds: 75
+                 },
+                 wrongAnswers: [
+                     { level: 1, questionPrompt: "你好", correctAnswer: "hello", userAnswer: "hi" },
+                     { level: 2, questionPrompt: "world", correctAnswer: "世界", userAnswer: "TIMEOUT" },
+                 ]
+             });
+         });
+        */
+
+    </script>
+</body>
+</html>

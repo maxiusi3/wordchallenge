@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level 2 - 看英文选中文</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="../css/style.css">
+    <style>
+        body {
+            /* Different gradient for Level 2 */
+            background: linear-gradient(135deg, #ec4899 0%, #f59e0b 100%); /* Pink to Amber */
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            color: white;
+        }
+        /* Status bar styling (reused) */
+        /* Timer specific styling is now in css/style.css */
+
+        /* Options styling */
+        .option-button {
+            background-color: rgba(255, 255, 255, 0.9); /* Slightly opaque white */
+            color: #374151; /* Dark gray text */
+            border: 2px solid transparent;
+            transition: transform 0.1s, background-color 0.2s, border-color 0.2s, box-shadow 0.2s, opacity 0.2s;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%; /* Fill container width */
+            min-height: 4.5rem; /* Tailwind h-18, ensures decent height */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            line-height: 1.4; /* Adjust line height for potentially wrapped text */
+            word-break: break-word; /* Allow long words to break */
+        }
+        .option-button:hover:not(:disabled) {
+            background-color: white;
+            border-color: #f59e0b; /* Amber border on hover */
+            transform: translateY(-2px); /* Slight lift on hover */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        .option-button:active:not(:disabled) {
+            transform: scale(0.98);
+        }
+        .option-button.selected {
+             /* Style for the selected answer before feedback */
+             border-color: #3b82f6; /* Blue border for selected */
+             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.4);
+        }
+        .option-button.correct {
+            background-color: #10b981; /* Emerald green for correct */
+            color: white;
+            border-color: #059669;
+            transform: scale(1.02); /* Slightly larger */
+            box-shadow: 0 5px 10px rgba(16, 185, 129, 0.3);
+        }
+        .option-button.incorrect {
+            background-color: #ef4444; /* Red for incorrect */
+            color: white;
+            border-color: #dc2626;
+            opacity: 0.8; /* Slightly fade incorrect */
+             box-shadow: 0 5px 10px rgba(239, 68, 68, 0.3);
+        }
+        .option-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            /* Keep shadow for correct/incorrect indication */
+            /* box-shadow: none; */
+        }
+        /* Add symbols for correct/incorrect state */
+        .option-button.correct::after, .option-button.incorrect::after {
+            content: '';
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            margin-left: 10px;
+            vertical-align: middle;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        .option-button.correct::after {
+             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>');
+        }
+         .option-button.incorrect::after {
+             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>');
+        }
+
+
+        /* Feedback styling (reused) */
+        #feedback-area {
+            position: absolute; bottom: 5%; left: 50%; transform: translateX(-50%);
+            padding: 1rem 2rem; border-radius: 0.5rem; font-size: 1.5rem; font-weight: bold;
+            display: flex; align-items: center; gap: 0.5rem; opacity: 0;
+            transition: opacity 0.3s, transform 0.3s ease-out; z-index: 20;
+            transform: translate(-50%, 20px);
+        }
+        #feedback-area.visible { opacity: 1; transform: translate(-50%, 0); }
+        #feedback-area.correct { background-color: #10b981; color: white; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); }
+        #feedback-area.incorrect { background-color: #ef4444; color: white; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); }
+
+    </style>
+</head>
+<body class="flex flex-col h-screen p-4 md:p-6">
+
+    <!-- 1. Top Status Bar -->
+    <div class="status-bar flex justify-between items-center p-3 md:p-4 rounded-lg mb-6 md:mb-8 space-x-2">
+        <div class="flex space-x-3 md:space-x-4 overflow-hidden flex-shrink">
+            <span id="level-indicator" class="status-item">关卡: 2</span>
+            <span id="question-progress" class="status-item">题目: -- / --</span>
+            <span id="score-progress" class="status-item">答对: -- / --</span>
+        </div>
+        <div id="timer-display" class="status-item">--</div>
+    </div>
+
+    <!-- 2. Main Content Area -->
+    <div class="flex-grow flex flex-col items-center justify-center text-center px-4 relative">
+        <!-- English Word -->
+        <div class="mb-10 md:mb-12">
+            <p class="text-gray-200 text-2xl md:text-3xl mb-2">请选择正确的中文意思：</p>
+            <h2 id="english-word" class="text-6xl md:text-8xl font-bold capitalize"></h2> <!-- Content loaded dynamically -->
+        </div>
+
+        <!-- Options Area -->
+        <div id="options-container" class="grid grid-cols-1 gap-4 md:gap-5 w-full max-w-2xl"> <!-- Changed max-w-xl to max-w-2xl -->
+            <!-- JS will populate this with 4 option buttons -->
+            <!-- Example Button Structure: -->
+            <!--
+            <button class="option-button text-2xl md:text-3xl font-semibold py-4 md:py-5 px-6 rounded-lg">
+                选项 A
+            </button>
+            <button class="option-button text-2xl md:text-3xl font-semibold py-4 md:py-5 px-6 rounded-lg">
+                选项 B
+            </button>
+            ...
+            -->
+        </div>
+
+         <!-- 3. Feedback Area (Initially Hidden) -->
+        <div id="feedback-area" class="">
+            <span id="feedback-icon" class="inline-block mr-2"></span>
+            <span id="feedback-message"></span>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        lucide.createIcons();
+
+        // Element references
+        const englishWordEl = document.getElementById('english-word');
+        const optionsContainerEl = document.getElementById('options-container');
+        const timerDisplayEl = document.getElementById('timer-display');
+        const levelIndicatorEl = document.getElementById('level-indicator');
+        const questionProgressEl = document.getElementById('question-progress');
+        const scoreProgressEl = document.getElementById('score-progress');
+        const feedbackAreaEl = document.getElementById('feedback-area');
+        const feedbackIconEl = document.getElementById('feedback-icon');
+        const feedbackMessageEl = document.getElementById('feedback-message');
+
+        let currentOptionButtons = []; // To hold references to the buttons
+
+        // Function to display question and options (called by main.js)
+        function displayQuestionWithOptions(questionData) {
+            // Validate incoming data structure (expects options as array of objects)
+            if (!questionData || !questionData.english || !questionData.options || !Array.isArray(questionData.options) || questionData.options.length === 0 ||
+                typeof questionData.options[0] !== 'object' || !questionData.options[0].hasOwnProperty('display') || !questionData.options[0].hasOwnProperty('value')) {
+                console.error("Invalid question data format for Level 2 (expected options as {display, value} objects):", questionData);
+                englishWordEl.textContent = "加载题目出错";
+                optionsContainerEl.innerHTML = ''; // Clear options
+                return;
+            }
+             // Ensure exactly 4 options are provided
+            if (questionData.options.length !== 4) {
+                 console.warn(`Expected 4 options, but received ${questionData.options.length}. Using received options.`);
+            }
+
+            englishWordEl.textContent = questionData.english;
+            optionsContainerEl.innerHTML = ''; // Clear previous options
+            currentOptionButtons = []; // Reset button references
+
+            questionData.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                // Adjust text size slightly if needed for longer meanings, or rely on width adjustments
+                button.className = 'option-button text-xl md:text-2xl font-semibold py-4 md:py-5 px-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-amber-400'; // Adjusted text size
+                button.textContent = option.display; // Display the formatted meaning (e.g., "n. 苹果")
+                button.dataset.optionIndex = index; // Store index if needed
+                button.dataset.optionValue = option.value; // Store the value for checking (e.g., "苹果")
+                button.disabled = false; // Ensure button is enabled initially
+
+                button.addEventListener('click', handleOptionClick);
+
+                optionsContainerEl.appendChild(button);
+                currentOptionButtons.push(button);
+            });
+        }
+
+        // Handle click on an option button
+        function handleOptionClick(event) {
+            const selectedButton = event.currentTarget;
+
+            // Prevent action if already disabled (e.g., double click or after timeout)
+            if (selectedButton.disabled) return;
+
+            // Disable all buttons immediately after one is clicked
+            disableAllOptions();
+
+            // Add selected style temporarily
+            selectedButton.classList.add('selected');
+
+            // Play sound
+            if (window.parent && typeof window.parent.playSound === 'function') window.parent.playSound('select'); // Use 'select' sound
+
+            // Read the value from the dataset (which should be the Chinese meaning string)
+            const selectedAnswer = selectedButton.dataset.optionValue;
+            console.log("User selected (value):", selectedAnswer);
+
+            // Send selected answer value to parent (main.js) for checking
+            if (window.parent && window.parent.postMessage) {
+                window.parent.postMessage({ action: 'checkAnswerL2', answer: selectedAnswer }, '*');
+            } else {
+                console.error("Cannot communicate with parent window.");
+                // Consider what to do if communication fails - maybe show an error locally?
+            }
+        }
+
+        // Function to disable all option buttons
+        function disableAllOptions() {
+            currentOptionButtons.forEach(button => {
+                button.disabled = true;
+            });
+        }
+
+        // Function to show feedback on options (called by main.js)
+        function showOptionFeedback(correctAnswer, selectedAnswer) {
+             currentOptionButtons.forEach(button => {
+                button.classList.remove('selected'); // Remove temporary selected style
+                const optionValue = button.dataset.optionValue;
+                if (optionValue === correctAnswer) {
+                    button.classList.add('correct');
+                } else if (optionValue === selectedAnswer) {
+                    // Only mark the selected one as incorrect if it wasn't the right one
+                    button.classList.add('incorrect');
+                }
+                // Keep buttons disabled
+            });
+        }
+
+        // Function to show overall feedback message (like Level 1)
+        function showFeedbackMessage(isCorrect, message) {
+            console.log(`[L2 HTML showFeedbackMessage] Received isCorrect: ${isCorrect}, message: "${message}"`); // DEBUG
+            feedbackAreaEl.className = 'visible ' + (isCorrect ? 'correct' : 'incorrect');
+            feedbackIconEl.innerHTML = isCorrect
+                ? '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check"><polyline points="20 6 9 17 4 12"/></svg>'
+                : '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+            feedbackMessageEl.textContent = message;
+
+            // Hide feedback after a delay
+            const feedbackDuration = 1500; // ms
+            setTimeout(() => {
+                feedbackAreaEl.classList.remove('visible');
+            }, feedbackDuration);
+        }
+
+        // --- Functions to update UI (called by main.js) ---
+         function updateLevelDisplay(data) {
+            levelIndicatorEl.textContent = `关卡: ${data.currentLevel ?? 2}`;
+            questionProgressEl.textContent = `题目: ${data.questionNumber ?? 1} / ${data.totalQuestions ?? '?'}`;
+            scoreProgressEl.textContent = `答对: ${data.score ?? 0} / ${data.targetScore ?? '?'}`;
+            // No attempt counter needed for Level 2
+            timerDisplayEl.textContent = data.timerValue ?? 15;
+             if (data.timerValue !== undefined && data.timerValue > 5) {
+                 timerDisplayEl.classList.remove('warning');
+            }
+        }
+
+         function updateTimerDisplay(seconds) {
+            timerDisplayEl.textContent = seconds;
+            // Timer warning visual state is handled by main.js via 'setTimerWarning' message.
+            // Sound for timer warning and timer end is also handled by main.js.
+            if (seconds <= 5 && seconds > 0) {
+                 if (!timerDisplayEl.classList.contains('warning')) {
+                    timerDisplayEl.classList.add('warning');
+                    // if (typeof playSound === 'function') playSound('timer_warning', true); // Sound handled by main.js
+                }
+            } else {
+                timerDisplayEl.classList.remove('warning');
+            }
+             if (seconds === 0) {
+                 disableAllOptions(); // Disable options on timeout
+                 // if (typeof playSound === 'function') playSound('timer_zero'); // Sound handled by main.js
+                 // Optionally show timeout feedback immediately via parent message
+                 // window.parent.postMessage({ action: 'timeoutL2' }, '*');
+             }
+        }
+
+        // Request initial data on load
+        window.addEventListener('load', () => {
+           if (window.parent && window.parent.postMessage) {
+               window.parent.postMessage({ action: 'requestLevelData', level: 2 }, '*');
+           } else {
+                console.error("Cannot communicate with parent window to request level data.");
+           }
+           // Example data that would be sent from main.js:
+           // updateLevelDisplay({ currentLevel: 2, questionNumber: 1, totalQuestions: 10, score: 3, targetScore: 6, timerValue: 15 });
+           // displayQuestionWithOptions({ english: "Computer", options: ["电脑", "电视", "冰箱", "洗衣机"], correct: "电脑" });
+        });
+
+        // Listen for messages from parent (main.js)
+        window.addEventListener('message', (event) => {
+            // Add origin check for security
+            // if (event.origin !== window.location.origin) return;
+
+            if (event.data && event.data.action) {
+                 console.log("Level 2 received message:", event.data); // Debugging
+                switch (event.data.action) {
+                    case 'updateDisplay':
+                        updateLevelDisplay(event.data.payload);
+                        break;
+                    case 'showQuestion':
+                        displayQuestionWithOptions(event.data.payload);
+                        break;
+                    case 'updateTimer':
+                         updateTimerDisplay(event.data.payload.seconds);
+                        break;
+                    case 'showFeedback': // Combined feedback for L2
+                        showOptionFeedback(event.data.payload.correctAnswer, event.data.payload.selectedAnswer);
+                        showFeedbackMessage(event.data.payload.isCorrect, event.data.payload.message);
+                        break;
+                    case 'disableOptions': // Explicit action to disable if needed (e.g., on timeout before selection)
+                        disableAllOptions();
+                        break;
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>

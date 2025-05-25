@@ -1,0 +1,224 @@
+/* 状态栏样式 */
+.status-bar {
+    background-color: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(5px);
+    color: white; /* 确保文本为白色 */
+    flex-shrink: 0; /* 防止收缩 */
+}
+.status-item {
+    background-color: rgba(255, 255, 255, 0.15);
+    padding: 0.7rem 1.4rem; /* 增加内边距以适应更大的字体 */
+    border-radius: 0.5rem;
+    font-weight: bold;
+    font-size: 1.4rem; /* 增加统计数据的字体大小 */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    white-space: nowrap;
+    display: flex;         /* 垂直居中文本 */
+    align-items: center;   /* 垂直居中文本 */
+    height: auto;          /* 确保高度适应内容 */
+}
+
+/* 计时器显示（关卡 1、2、3） */
+#timer-display { /* 将选择器从 .timer-display-common 更改为 #timer-display */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 4rem; /* 显著增加字体大小 */
+    font-weight: bold;
+    color: white !important; /* 确保文本为白色，覆盖潜在的冲突 */
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 1px 3px rgba(0,0,0,0.5); /* 更强的轮廓和阴影 */
+    transition: transform 0.1s, text-shadow 0.3s, color 0.3s; /* 添加颜色过渡 */
+    flex-shrink: 0;
+    position: relative; /* 确保 z-index 有效 */
+    z-index: 1001; /* 保持高 z-index，高于管理员图标 */
+    opacity: 1 !important; /* 强制不透明度 */
+    visibility: visible !important; /* 强制可见性 */
+    padding: 0 0.5rem; /* 添加一些内边距，使其不接触其他状态项 */
+}
+
+#timer-display.warning { /* 更改选择器 */
+    color: #ef4444 !important; /* 警告文本的红色 */
+    font-size: 4.5rem; /* 警告时略大的字体大小 */
+    animation: pulse-warning 0.7s infinite ease-in-out; /* 更快、更明显的动画 */
+}
+/* 更新动画，使其更加紧急的"脉冲"或"闪烁" */
+@keyframes pulse-warning {
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.1); opacity: 0.8; } /* 放大并略微淡出 */
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* 反馈区域（关卡 1、2、3） */
+.feedback-area {
+    position: absolute;
+    bottom: 12%; /* 调整位置 */
+    left: 50%;
+    padding: 1rem 2rem;
+    border-radius: 0.5rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s ease-out;
+    z-index: 20;
+    transform: translate(-50%, 20px); /* 开始时略低 */
+    color: white; /* 默认文本颜色 */
+}
+.feedback-area.visible {
+    opacity: 1;
+    transform: translate(-50%, 0); /* 向上动画 */
+}
+.feedback-area.correct {
+    background-color: #10b981; /* 翠绿色 */
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+}
+/* 使用 ::before 添加 ✅ 图标，作为更可靠的方式 */
+.feedback-area.correct::before {
+    content: '✅'; /* 直接使用 emoji */
+    margin-right: 0.5rem; /* 图标和文字间距 */
+    font-size: 1.1em; /* 调整图标大小 */
+    line-height: 1; /* 确保垂直对齐 */
+    display: inline-block; /* 确保布局正确 */
+}
+/* 保留 SVG 样式以兼容可能存在的 SVG 元素 */
+.feedback-area.correct svg {
+    stroke: white;
+    width: 24px; /* 确保大小一致 */
+    height: 24px;
+    stroke-width: 3;
+}
+.feedback-area.incorrect {
+    background-color: #ef4444; /* 红色 */
+     box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+}
+/* 使用 ::before 添加 ❌ 图标 */
+.feedback-area.incorrect::before {
+    content: '❌'; /* 直接使用 emoji */
+    margin-right: 0.5rem; /* 图标和文字间距 */
+    font-size: 1.1em; /* 调整图标大小 */
+    line-height: 1; /* 确保垂直对齐 */
+    display: inline-block; /* 确保布局正确 */
+}
+.feedback-area svg { /* 反馈内部图标的样式 - 隐藏它们 */
+    display: none !important; /* 隐藏 SVG 图标以防止与 ::before 重复 */
+    width: 24px;
+    height: 24px;
+    stroke-width: 3;
+    stroke: currentColor; /* 继承颜色 */
+}
+.feedback-area img { /* 同样隐藏 img 图标，以确保 ::before 是唯一来源 */
+    display: none !important;
+}
+
+/* 确认按钮（关卡 1、3） */
+.confirm-btn {
+     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.confirm-btn:active:not(:disabled) {
+     transform: scale(0.97);
+     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.confirm-btn:disabled {
+    background-color: #9ca3af !important; /* 使用 important 覆盖基本颜色 */
+    cursor: not-allowed;
+    opacity: 0.7;
+    box-shadow: none;
+}
+
+/* 输入下划线样式（关卡 1、3） */
+.word-input-container {
+    display: inline-block;
+    margin: 0 5px;
+    position: relative;
+}
+.word-input {
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid white;
+    color: white;
+    font-size: 2.5rem;
+    text-align: center;
+    padding: 5px 0;
+    width: 4ch;
+    min-width: 4ch;
+    outline: none;
+    transition: border-color 0.2s, width 0.1s linear, border-bottom-style 0.2s;
+    box-sizing: content-box;
+    vertical-align: bottom;
+    caret-color: #fbbf24; /* 琥珀色光标 */
+    text-transform: lowercase;
+}
+.word-input:focus {
+    border-bottom-color: #fbbf24; /* 用琥珀色突出显示焦点 */
+}
+.word-input.typing {
+     border-bottom-style: dashed;
+     border-bottom-color: #fde047; /* 打字时更浅的黄色 */
+}
+.word-input.entered {
+     border-bottom-color: #86efac; /* 输入后的浅绿色 */
+     border-bottom-style: solid;
+}
+
+/* 播放音频按钮（关卡 3） */
+#play-audio-button {
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #6d28d9; /* 紫色文本 */
+    border: none;
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transition: transform 0.1s, background-color 0.2s, box-shadow 0.2s, opacity 0.2s;
+}
+#play-audio-button:hover:not(:disabled) {
+    background-color: white;
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+}
+#play-audio-button:active:not(:disabled) {
+    transform: scale(0.95);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+#play-audio-button:disabled {
+    background-color: #d1d5db;
+    cursor: not-allowed;
+    opacity: 0.7;
+    box-shadow: none;
+}
+#play-audio-button.playing {
+    animation: pulse-audio 1.5s infinite ease-in-out;
+}
+@keyframes pulse-audio {
+    0% { transform: scale(1); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); }
+    50% { transform: scale(1.03); box-shadow: 0 8px 20px rgba(168, 85, 247, 0.4); }
+    100% { transform: scale(1); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); }
+}
+
+/* Iframe 特定样式 */
+#screenFrame {
+    display: block; /* 帮助消除潜在的默认内联间距 */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none; /* 确保没有边框 */
+    margin: 0;    /* 确保没有边距 */
+    padding: 0;   /* 确保没有内边距 */
+}
+
+/* 通用按钮活动状态 */
+button:not(:disabled) {
+     transition: transform 0.1s, background-color 0.2s, box-shadow 0.2s;
+}
+button:active:not(:disabled) {
+     transform: scale(0.98);
+     box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}

@@ -1,0 +1,627 @@
+[
+    {
+        "word": "personal",
+        "meaning": "n. 人事消息栏；人称代名词\nadj. 个人的；身体的；亲自的",
+        "audio": "audio/words/personal.mp3"
+    },
+    {
+        "word": "tie",
+        "meaning": "n. 领带；平局；鞋带；领结；不分胜负\nvi. 打结；不分胜负；被用带（或绳子等）系住\nvt. 系；约束；打结；与…成平局",
+        "audio": "audio/words/tie.mp3"
+    },
+    {
+        "word": "still",
+        "meaning": "conj. 仍然；但是；尽管如此\nn. 寂静；剧照；蒸馏室\nadj. 静止的，不动的；寂静的，平静的；不起泡的\nadv. 仍然；更；静止地\nvt. 蒸馏；使…静止；使…平静下来\nvi. 静止；平静；蒸馏",
+        "audio": "audio/words/still.mp3"
+    },
+    {
+        "word": "offer",
+        "meaning": "vt. 提供；出价；试图\nn. 提议；出价；意图；录取通知书\nvi. 提议；出现；献祭；求婚",
+        "audio": "audio/words/offer.mp3"
+    },
+    {
+        "word": "addition",
+        "meaning": "n. 添加；[数] 加法；增加物",
+        "audio": "audio/words/addition.mp3"
+    },
+    {
+        "word": "success",
+        "meaning": "n. 成功，成就；胜利；大获成功的人或事物",
+        "audio": "audio/words/success.mp3"
+    },
+    {
+        "word": "produce",
+        "meaning": "n. 农产品，产品\nvt. 生产；引起；创作；生育，繁殖\nvi. 生产，创作",
+        "audio": "audio/words/produce.mp3"
+    },
+    {
+        "word": "expect",
+        "meaning": "vi. 期待；预期\nvt. 期望；指望；认为；预料",
+        "audio": "audio/words/expect.mp3"
+    },
+    {
+        "word": "cause",
+        "meaning": "n. 原因；事业；目标\nvt. 引起；使遭受",
+        "audio": "audio/words/cause.mp3"
+    },
+    {
+        "word": "state",
+        "meaning": "n. 国家；州；情形\nadj. 国家的；州的；正式的\nvt. 规定；声明；陈述",
+        "audio": "audio/words/state.mp3"
+    },
+    {
+        "word": "manage",
+        "meaning": "vt. 管理；经营；控制；设法\nvi. 处理；应付过去",
+        "audio": "audio/words/manage.mp3"
+    },
+    {
+        "word": "directly",
+        "meaning": "conj. 一…就\nadv. 直接地；立即；马上；正好地；坦率地",
+        "audio": "audio/words/directly.mp3"
+    },
+    {
+        "word": "improve",
+        "meaning": "vt. 改善，增进；提高…的价值\nvi. 增加；变得更好",
+        "audio": "audio/words/improve.mp3"
+    },
+    {
+        "word": "wonder",
+        "meaning": "n. 惊奇；奇迹；惊愕\nadj. 奇妙的；非凡的\nvi. 怀疑；想知道；惊讶\nvt. 怀疑；惊奇；对…感到惊讶",
+        "audio": "audio/words/wonder.mp3"
+    },
+    {
+        "word": "present",
+        "meaning": "n. 现在；礼物；瞄准\nadj. 现在的；出席的\nvt. 提出；介绍；呈现；赠送\nvi. 举枪瞄准",
+        "audio": "audio/words/present.mp3"
+    },
+    {
+        "word": "underline",
+        "meaning": "n. 下划线；下期节目预告\nvt. 强调；在…下面划线；预告",
+        "audio": "audio/words/underline.mp3"
+    },
+    {
+        "word": "mislead",
+        "meaning": "vt. 误导；带错",
+        "audio": "audio/words/mislead.mp3"
+    },
+    {
+        "word": "complete",
+        "meaning": "adj. 完整的；完全的；彻底的\nvt. 完成",
+        "audio": "audio/words/complete.mp3"
+    },
+    {
+        "word": "lead",
+        "meaning": "n. 领导；铅；导线；榜样\nvt. 领导；致使；引导；指挥\nvi. 领导；导致；用水砣测深\nadj. 带头的；最重要的",
+        "audio": "audio/words/lead.mp3"
+    },
+    {
+        "word": "sensitive",
+        "meaning": "adj. 敏感的；感觉的；[仪] 灵敏的；感光的；易受伤害的；易受影响的\nn. 敏感的人；有灵异能力的人",
+        "audio": "audio/words/sensitive.mp3"
+    },
+    {
+        "word": "valuable",
+        "meaning": "n. 贵重物品\nadj. 有价值的；贵重的；可估价的",
+        "audio": "audio/words/valuable.mp3"
+    },
+    {
+        "word": "courageous",
+        "meaning": "adj. 有胆量的，勇敢的",
+        "audio": "audio/words/courageous.mp3"
+    },
+    {
+        "word": "tend",
+        "meaning": "vt. 照料，照管\nvi. 趋向，倾向；照料，照顾",
+        "audio": "audio/words/tend.mp3"
+    },
+    {
+        "word": "matter",
+        "meaning": "n. 物质；事件\nvi. 有关系；要紧",
+        "audio": "audio/words/matter.mp3"
+    },
+    {
+        "word": "realise",
+        "meaning": "vt. 实现, 认识到, 体会到, 了解, 认清, 使显得逼真, 变卖财产为现钱",
+        "audio": "audio/words/realise.mp3"
+    },
+    {
+        "word": "acceptable",
+        "meaning": "adj. 可接受的；合意的；可忍受的",
+        "audio": "audio/words/acceptable.mp3"
+    },
+    {
+        "word": "consider",
+        "meaning": "vi. 考虑；认为；细想\nvt. 考虑；认为；考虑到；细想",
+        "audio": "audio/words/consider.mp3"
+    },
+    {
+        "word": "support",
+        "meaning": "n. 支持，维持；支援，供养；支持者，支撑物\nvt. 支持，支撑，支援；扶持，帮助；赡养，供养",
+        "audio": "audio/words/support.mp3"
+    },
+    {
+        "word": "fit",
+        "meaning": "n. 合身；发作；痉挛\nadj. 健康的；合适的；恰当的；准备好的\nvt. 安装；使……适应；使……合身；与……相符\nvi. 符合，配合；适合；合身",
+        "audio": "audio/words/fit.mp3"
+    },
+    {
+        "word": "hang",
+        "meaning": "n. 悬挂；暂停，中止\nvt. 悬挂，垂下；装饰；绞死；使悬而未决\nvi. 悬着，垂下；被绞死；悬而不决",
+        "audio": "audio/words/hang.mp3"
+    },
+    {
+        "word": "protect",
+        "meaning": "vt. 保护，防卫；警戒",
+        "audio": "audio/words/protect.mp3"
+    },
+    {
+        "word": "professional",
+        "meaning": "n. 专业人员；职业运动员\nadj. 专业的；职业的；职业性的",
+        "audio": "audio/words/professional.mp3"
+    },
+    {
+        "word": "widen",
+        "meaning": "vt. 放宽\nvi. 变宽",
+        "audio": "audio/words/widen.mp3"
+    },
+    {
+        "word": "require",
+        "meaning": "vt. 需要；要求；命令",
+        "audio": "audio/words/require.mp3"
+    },
+    {
+        "word": "creative",
+        "meaning": "adj. 创造性的",
+        "audio": "audio/words/creative.mp3"
+    },
+    {
+        "word": "deal",
+        "meaning": "n. 交易；（美）政策；待遇；份量\nvi. 处理；讨论；对待；做生意\nvt. 处理；给予；分配；发牌",
+        "audio": "audio/words/deal.mp3"
+    },
+    {
+        "word": "popularity",
+        "meaning": "n. 普及，流行；名气；受大众欢迎",
+        "audio": "audio/words/popularity.mp3"
+    },
+    {
+        "word": "attend",
+        "meaning": "vi. 出席；致力于；照料；照顾\nvt. 出席；上（大学等）；照料；招待；陪伴",
+        "audio": "audio/words/attend.mp3"
+    },
+    {
+        "word": "prefer",
+        "meaning": "vt. 更喜欢；宁愿；提出；提升\nvi. 喜欢；愿意",
+        "audio": "audio/words/prefer.mp3"
+    },
+    {
+        "word": "wild",
+        "meaning": "n. 荒野\nadj. 野生的；野蛮的；狂热的；荒凉的\nadv. 疯狂地；胡乱地",
+        "audio": "audio/words/wild.mp3"
+    },
+    {
+        "word": "quality",
+        "meaning": "n. 质量，[统计] 品质；特性；才能\nadj. 优质的；高品质的；<英俚>棒极了",
+        "audio": "audio/words/quality.mp3"
+    },
+    {
+        "word": "perform",
+        "meaning": "vt. 执行；完成；演奏\nvi. 执行，机器运转；表演",
+        "audio": "audio/words/perform.mp3"
+    },
+    {
+        "word": "promise",
+        "meaning": "n. 许诺，允诺；希望\nvt. 允诺，许诺；给人以…的指望或希望\nvi. 许诺；有指望，有前途",
+        "audio": "audio/words/promise.mp3"
+    },
+    {
+        "word": "necessarily",
+        "meaning": "adv. 必要地；必定地，必然地",
+        "audio": "audio/words/necessarily.mp3"
+    },
+    {
+        "word": "store",
+        "meaning": "n. 商店；储备，贮藏；仓库\nvt. 贮藏，储存",
+        "audio": "audio/words/store.mp3"
+    },
+    {
+        "word": "general",
+        "meaning": "n. 一般；将军，上将；常规\nadj. 一般的，普通的；综合的；大体的",
+        "audio": "audio/words/general.mp3"
+    },
+    {
+        "word": "condition",
+        "meaning": "n. 条件；情况；环境；身份\nvt. 决定；使适应；使健康；以…为条件",
+        "audio": "audio/words/condition.mp3"
+    },
+    {
+        "word": "vary",
+        "meaning": "vi. 变化；变异；违反\nvt. 改变；使多样化；变奏",
+        "audio": "audio/words/vary.mp3"
+    },
+    {
+        "word": "suffer",
+        "meaning": "vi. 遭受，忍受；受痛苦；经验；受损害\nvt. 遭受；忍受；经历",
+        "audio": "audio/words/suffer.mp3"
+    },
+    {
+        "word": "speech",
+        "meaning": "n. 演讲；讲话；[语] 语音；演说",
+        "audio": "audio/words/speech.mp3"
+    },
+    {
+        "word": "respect",
+        "meaning": "n. 尊敬，尊重；方面；敬意\nvt. 尊敬，尊重；遵守",
+        "audio": "audio/words/respect.mp3"
+    },
+    {
+        "word": "disappoint",
+        "meaning": "vt. 使失望",
+        "audio": "audio/words/disappoint.mp3"
+    },
+    {
+        "word": "simplify",
+        "meaning": "vt. 简化；使单纯；使简易",
+        "audio": "audio/words/simplify.mp3"
+    },
+    {
+        "word": "raise",
+        "meaning": "n. 高地；上升；加薪\nvt. 提高；筹集；养育；升起\nvi. 上升",
+        "audio": "audio/words/raise.mp3"
+    },
+    {
+        "word": "refer",
+        "meaning": "vt. 涉及；委托；归诸于；使…求助于\nvi. 参考；涉及；提到；查阅",
+        "audio": "audio/words/refer.mp3"
+    },
+    {
+        "word": "achievement",
+        "meaning": "n. 成就；完成；达到；成绩",
+        "audio": "audio/words/achievement.mp3"
+    },
+    {
+        "word": "particular",
+        "meaning": "n. 详细说明；个别项目\nadj. 特别的；详细的；独有的；挑剔的",
+        "audio": "audio/words/particular.mp3"
+    },
+    {
+        "word": "prevent",
+        "meaning": "vt. 预防，防止；阻止\nvi. 妨碍，阻止",
+        "audio": "audio/words/prevent.mp3"
+    },
+    {
+        "word": "regular",
+        "meaning": "n. 常客；正式队员；中坚分子\nadj. 定期的；有规律的；合格的；整齐的；普通的\nadv. 定期地；经常地",
+        "audio": "audio/words/regular.mp3"
+    },
+    {
+        "word": "connect",
+        "meaning": "vt. 连接；联合；关连\nvi. 连接，连结；联合",
+        "audio": "audio/words/connect.mp3"
+    },
+    {
+        "word": "subject",
+        "meaning": "n. 主题；科目；[语] 主语；国民\nadj. 服从的；易患…的；受制于…的\nvt. 使…隶属；使屈从于…",
+        "audio": "audio/words/subject.mp3"
+    },
+    {
+        "word": "physical",
+        "meaning": "n. 体格检查\nadj. [物] 物理的；身体的；物质的；根据自然规律的，符合自然法则的",
+        "audio": "audio/words/physical.mp3"
+    },
+    {
+        "word": "check",
+        "meaning": "n. <美>支票；制止，抑制；检验，核对\nvi. 核实，查核；中止；打勾；[象棋]将一军\nvt. 检查，核对；制止，抑制；在…上打勾",
+        "audio": "audio/words/check.mp3"
+    },
+    {
+        "word": "position",
+        "meaning": "n. 位置，方位；职位，工作；姿态；站位\nvt. 安置；把……放在适当位置",
+        "audio": "audio/words/position.mp3"
+    },
+    {
+        "word": "concern",
+        "meaning": "n. 关系；关心；关心的事；忧虑\nvt. 涉及，关系到；使担心",
+        "audio": "audio/words/concern.mp3"
+    },
+    {
+        "word": "force",
+        "meaning": "n. 力量；武力；军队；魄力\nvt. 促使，推动；强迫；强加",
+        "audio": "audio/words/force.mp3"
+    },
+    {
+        "word": "satisfy",
+        "meaning": "vi. 令人满意；令人满足\nvt. 满足；说服，使相信；使满意，使高兴",
+        "audio": "audio/words/satisfy.mp3"
+    },
+    {
+        "word": "organize",
+        "meaning": "vt. 组织；使有系统化；给予生机；组织成立工会等\nvi. 组织起来；成立组织",
+        "audio": "audio/words/organize.mp3"
+    },
+    {
+        "word": "charge",
+        "meaning": "n. 费用；电荷；掌管；控告；命令；负载\nvt. 使充电；使承担；指责；装载；对…索费；向…冲去\nvi. 充电；控告；索价；向前冲；记在账上",
+        "audio": "audio/words/charge.mp3"
+    },
+    {
+        "word": "favor",
+        "meaning": "n. 喜爱；欢心；好感\nvt. 赞成；喜欢；像；赐予；证实",
+        "audio": "audio/words/favor.mp3"
+    },
+    {
+        "word": "damage",
+        "meaning": "vi. 损害；损毁\nvt. 损害，毁坏\nn. 损害；损毁；赔偿金",
+        "audio": "audio/words/damage.mp3"
+    },
+    {
+        "word": "publish",
+        "meaning": "vi. 出版；发行；刊印\nvt. 出版；发表；公布",
+        "audio": "audio/words/publish.mp3"
+    },
+    {
+        "word": "focus",
+        "meaning": "n. 焦点；中心；清晰；焦距\nvt. 使集中；使聚焦\nvi. 集中；聚焦；调节焦距",
+        "audio": "audio/words/focus.mp3"
+    },
+    {
+        "word": "affect",
+        "meaning": "n. 情感；引起感情的因素\nvt. 影响；感染；感动；假装\nvi. 倾向；喜欢",
+        "audio": "audio/words/affect.mp3"
+    },
+    {
+        "word": "feed",
+        "meaning": "n. 饲料；饲养；（动物或婴儿的）一餐\nvt. 喂养；供给；放牧；抚养（家庭等）；靠…为生\nvi. 吃东西；流入",
+        "audio": "audio/words/feed.mp3"
+    },
+    {
+        "word": "weigh",
+        "meaning": "n. 权衡；称重量\nvt. 权衡；考虑；称…重量\nvi. 重量为…；具有重要性；成为…的重荷；起锚",
+        "audio": "audio/words/weigh.mp3"
+    },
+    {
+        "word": "pressure",
+        "meaning": "n. 压力；压迫，[物] 压强\nvt. 迫使；密封；使……增压",
+        "audio": "audio/words/pressure.mp3"
+    },
+    {
+        "word": "credit",
+        "meaning": "n. 信用，信誉；[金融] 贷款；学分；信任；声望\nvt. 相信，信任；把…归给，归功于；赞颂",
+        "audio": "audio/words/credit.mp3"
+    },
+    {
+        "word": "visible",
+        "meaning": "n. 可见物；进出口贸易中的有形项目\nadj. 明显的；看得见的；现有的；可得到的",
+        "audio": "audio/words/visible.mp3"
+    },
+    {
+        "word": "operate",
+        "meaning": "vi. 运转；动手术；起作用\nvt. 操作；经营；引起；对…开刀",
+        "audio": "audio/words/operate.mp3"
+    },
+    {
+        "word": "warn",
+        "meaning": "vt. 警告，提醒；通知\nvi. 发出警告，发出预告",
+        "audio": "audio/words/warn.mp3"
+    },
+    {
+        "word": "relate",
+        "meaning": "vt. 叙述；使…有联系\nvi. 涉及；认同；符合；与…有某种联系",
+        "audio": "audio/words/relate.mp3"
+    },
+    {
+        "word": "strength",
+        "meaning": "n. 力量；力气；兵力；长处",
+        "audio": "audio/words/strength.mp3"
+    },
+    {
+        "word": "stress",
+        "meaning": "n. 压力；强调；紧张；重要性；重读\nvt. 强调；使紧张；加压力于；用重音读",
+        "audio": "audio/words/stress.mp3"
+    },
+    {
+        "word": "attack",
+        "meaning": "n. 攻击；抨击；疾病发作\nvt. 攻击；抨击；动手干\nvi. 攻击；腐蚀",
+        "audio": "audio/words/attack.mp3"
+    },
+    {
+        "word": "determine",
+        "meaning": "v. （使）下决心，（使）做出决定\nvt. 决定，确定；判定，判决；限定\nvi. 确定；决定；判决，终止；[主用于法律]了结，终止，结束",
+        "audio": "audio/words/determine.mp3"
+    },
+    {
+        "word": "volunteer",
+        "meaning": "n. 志愿者；志愿兵\nadj. 志愿的\nvt. 自愿\nvi. 自愿",
+        "audio": "audio/words/volunteer.mp3"
+    },
+    {
+        "word": "lack",
+        "meaning": "vt. 缺乏；不足；没有；需要\nvi. 缺乏；不足；没有\nn. 缺乏；不足",
+        "audio": "audio/words/lack.mp3"
+    },
+    {
+        "word": "equipment",
+        "meaning": "n. 设备，装备；器材",
+        "audio": "audio/words/equipment.mp3"
+    },
+    {
+        "word": "expense",
+        "meaning": "n. 损失，代价；消费；开支\nvt. 向…收取费用\nvi. 被花掉",
+        "audio": "audio/words/expense.mp3"
+    },
+    {
+        "word": "deliver",
+        "meaning": "n. 投球\nvt. 交付；发表；递送；释放；给予（打击）；给…接生\nvi. 实现；传送；履行；投递",
+        "audio": "audio/words/deliver.mp3"
+    },
+    {
+        "word": "compare",
+        "meaning": "vi. 相比，匹敌；比较，区别；比拟（常与to连用）\nvt. 比拟，喻为；[语]构成\nn. 比较",
+        "audio": "audio/words/compare.mp3"
+    },
+    {
+        "word": "spread",
+        "meaning": "n. 传播；伸展\nadj. 伸展的\nvt. 传播，散布；展开；伸展；铺开\nvi. 传播；伸展",
+        "audio": "audio/words/spread.mp3"
+    },
+    {
+        "word": "seek",
+        "meaning": "vt. 寻求；寻找；探索；搜索\nvi. 寻找；探索；搜索",
+        "audio": "audio/words/seek.mp3"
+    },
+    {
+        "word": "distant",
+        "meaning": "adj. 遥远的；冷漠的；远隔的；不友好的，冷淡的",
+        "audio": "audio/words/distant.mp3"
+    },
+    {
+        "word": "original",
+        "meaning": "n. 原件；原作；原物；原型\nadj. 原始的；最初的；独创的；新颖的",
+        "audio": "audio/words/original.mp3"
+    },
+    {
+        "word": "impress",
+        "meaning": "n. 印象，印记；特征，痕迹\nvi. 给人印象\nvt. 盖印；强征；传送；给予某人深刻印象",
+        "audio": "audio/words/impress.mp3"
+    },
+    {
+        "word": "remind",
+        "meaning": "vt. 提醒；使想起",
+        "audio": "audio/words/remind.mp3"
+    },
+    {
+        "word": "communicate",
+        "meaning": "vi. 通讯，传达；相通；交流；感染\nvt. 传达；感染；显露",
+        "audio": "audio/words/communicate.mp3"
+    },
+    {
+        "word": "range",
+        "meaning": "n. 范围；幅度；排；山脉\nvt. 漫游；放牧；使并列；归类于；来回走动\nvi. （在...内）变动；平行，列为一行；延伸；漫游；射程达到",
+        "audio": "audio/words/range.mp3"
+    },
+    {
+        "word": "guidance",
+        "meaning": "n. 指导，引导；领导",
+        "audio": "audio/words/guidance.mp3"
+    },
+    {
+        "word": "avoid",
+        "meaning": "vt. 避免；避开，躲避；消除",
+        "audio": "audio/words/avoid.mp3"
+    },
+    {
+        "word": "opportunity",
+        "meaning": "n. 时机，机会",
+        "audio": "audio/words/opportunity.mp3"
+    },
+    {
+        "word": "emotion",
+        "meaning": "n. 情感；情绪",
+        "audio": "audio/words/emotion.mp3"
+    },
+    {
+        "word": "equal",
+        "meaning": "n. 对手；匹敌；同辈；相等的事物\nadj. 平等的；相等的；胜任的\nvt. 等于；比得上",
+        "audio": "audio/words/equal.mp3"
+    },
+    {
+        "word": "contain",
+        "meaning": "vi. 含有；自制\nvt. 包含；控制；容纳；牵制（敌军）",
+        "audio": "audio/words/contain.mp3"
+    },
+    {
+        "word": "hardly",
+        "meaning": "adv. 几乎不，简直不；刚刚",
+        "audio": "audio/words/hardly.mp3"
+    },
+    {
+        "word": "announce",
+        "meaning": "vt. 宣布；述说；预示；播报\nvi. 宣布参加竞选；当播音员",
+        "audio": "audio/words/announce.mp3"
+    },
+    {
+        "word": "reward",
+        "meaning": "n. [劳经] 报酬；报答；酬谢\nvt. [劳经] 奖励；奖赏",
+        "audio": "audio/words/reward.mp3"
+    },
+    {
+        "word": "desire",
+        "meaning": "n. 欲望；要求，心愿；性欲\nvt. 想要；要求；希望得到…\nvi. 渴望",
+        "audio": "audio/words/desire.mp3"
+    },
+    {
+        "word": "promote",
+        "meaning": "vi. 成为王后或其他大于卒的子\nvt. 促进；提升；推销；发扬",
+        "audio": "audio/words/promote.mp3"
+    },
+    {
+        "word": "gather",
+        "meaning": "n. 聚集；衣褶；收获量\nvt. 收集；收割；使…聚集；使…皱起\nvi. 聚集；化脓；皱起",
+        "audio": "audio/words/gather.mp3"
+    },
+    {
+        "word": "similarity",
+        "meaning": "n. 类似；相似点",
+        "audio": "audio/words/similarity.mp3"
+    },
+    {
+        "word": "advance",
+        "meaning": "n. 发展；前进；增长；预付款\nadj. 预先的；先行的\nvt. 提出；预付；使……前进；将……提前\nvi. 前进；进展；上涨",
+        "audio": "audio/words/advance.mp3"
+    },
+    {
+        "word": "percent",
+        "meaning": "n. 百分比，百分率；部分；百分数\nadj. 百分之…的\nadv. 以百分之…地",
+        "audio": "audio/words/percent.mp3"
+    },
+    {
+        "word": "character",
+        "meaning": "n. 性格，品质；特性；角色；[计] 字符\nvt. 印，刻；使具有特征",
+        "audio": "audio/words/character.mp3"
+    },
+    {
+        "word": "frighten",
+        "meaning": "vt. 使惊吓；吓唬…\nvi. 害怕，惊恐",
+        "audio": "audio/words/frighten.mp3"
+    },
+    {
+        "word": "accessible",
+        "meaning": "adj. 易接近的；可进入的；可理解的",
+        "audio": "audio/words/accessible.mp3"
+    },
+    {
+        "word": "potential",
+        "meaning": "n. 潜能；可能性；[电] 电势\nadj. 潜在的；可能的；势的",
+        "audio": "audio/words/potential.mp3"
+    },
+    {
+        "word": "review",
+        "meaning": "n. 回顾；复习；评论；检讨；检阅\nvt. 回顾；检查；复审\nvi. 回顾；复习功课；写评论",
+        "audio": "audio/words/review.mp3"
+    },
+    {
+        "word": "replace",
+        "meaning": "vt. 取代，代替；替换，更换；归还，偿还；把…放回原处",
+        "audio": "audio/words/replace.mp3"
+    },
+    {
+        "word": "greedy",
+        "meaning": "adj. 贪婪的；贪吃的；渴望的",
+        "audio": "audio/words/greedy.mp3"
+    },
+    {
+        "word": "shock",
+        "meaning": "n. 休克；震惊；震动；打击；禾束堆\nadj. 浓密的；蓬乱的\nvt. 使休克；使震惊；使震动；使受电击；把…堆成禾束堆\nvi. 感到震惊；受到震动；堆成禾束堆",
+        "audio": "audio/words/shock.mp3"
+    },
+    {
+        "word": "judge",
+        "meaning": "vt. 判断；审判\nn. 法官；裁判员\nvi. 审判；判决",
+        "audio": "audio/words/judge.mp3"
+    },
+    {
+        "word": "praise",
+        "meaning": "n. 赞扬；称赞；荣耀；崇拜\nvt. 赞美，歌颂；表扬\nvi. 赞美；赞扬",
+        "audio": "audio/words/praise.mp3"
+    }
+]

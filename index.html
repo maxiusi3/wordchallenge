@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>单词闯关 - 原型</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+<!-- 移除PWA相关配置，改为纯在线游戏 -->
+    <!-- 引入 Lucide Icons -->
+</head>
+<body>
+    <!-- 管理员入口图标已被移动到 screens/welcome.html -->
+    <iframe id="screenFrame" frameborder="0"></iframe>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="js/network-manager.js"></script>
+    <script src="js/audio.js"></script>
+    <script>
+      lucide.createIcons();
+
+
+      // const adminIconContainer = document.getElementById('adminEntryIconContainer'); // 已移除
+
+      // if (adminIconContainer) { // 已移除
+      //     adminIconContainer.addEventListener('click', () => { // 已移除
+      //         navigateTo('admin_login'); // 已移除
+      //     }); // 已移除
+      // } // 已移除
+
+      // It's assumed that screenFrame is declared in the outer scope, e.g.:
+      // const screenFrame = document.getElementById('screenFrame');
+
+      function navigateTo(screen) {
+          const targetSrc = `screens/${screen}.html`;
+          // Ensure we have the most up-to-date references to DOM elements
+          const currentScreenFrame = document.getElementById('screenFrame');
+          // const currentAdminIconContainer = document.getElementById('adminEntryIconContainer'); // 已移除
+
+          // 管理员图标的显示/隐藏逻辑已移除，因为它现在由 welcome.html 内部管理
+          // if (currentAdminIconContainer) { // 已移除
+          //     currentAdminIconContainer.classList.remove('hidden'); // 已移除
+          //     if (screen !== 'welcome') { // 已移除
+          //         currentAdminIconContainer.classList.add('hidden'); // 已移除
+          //     } // 已移除
+          // } // 已移除
+
+          // Navigate if not already on the target screen or if src is not set
+          if (currentScreenFrame && (!currentScreenFrame.src || !currentScreenFrame.src.endsWith(targetSrc))) {
+              currentScreenFrame.src = targetSrc;
+          }
+      }
+
+      window.addEventListener('message', (event) => {
+          // 确保 screenFrame 已经加载并且 event.source 是其 contentWindow
+          const screenFrame = document.getElementById('screenFrame');
+          if (screenFrame && event.source === screenFrame.contentWindow &&
+              typeof event.data === 'object' && event.data !== null) {
+
+              // 统一处理导航请求，无论是 type: 'navigate' 还是 action: 'navigate'
+              if ((event.data.type === 'navigate' || event.data.action === 'navigate') &&
+                  typeof event.data.screen === 'string') {
+                  navigateTo(event.data.screen);
+              }
+          }
+      });
+
+      document.addEventListener('DOMContentLoaded', () => {
+          navigateTo('welcome');
+      });
+
+    </script>
+    <script src="js/main.js"></script>
+    <!-- 移除Service Worker相关代码，改为纯在线游戏 -->
+</body>
+</html>
