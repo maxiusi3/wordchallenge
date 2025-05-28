@@ -289,11 +289,19 @@ async function loadQuestionsForGrade(gradeId, session) { // Added session parame
         throw new Error("Provided game session was lost during question loading.");
     }
 
-    // --- FR No Repeat Logic ---
-    const totalNeededL1 = adminConfig.level1.totalQuestions || 10;
-    const totalNeededL2 = adminConfig.level2.totalQuestions || 10;
-    const totalNeededL3 = adminConfig.level3.totalQuestions || 10;
+    // --- FR No Repeat Logic with Random Pool Size ---
+    const baseQuestionsL1 = adminConfig.level1.totalQuestions || 10;
+    const baseQuestionsL2 = adminConfig.level2.totalQuestions || 10;
+    const baseQuestionsL3 = adminConfig.level3.totalQuestions || 10;
+
+    // 为每个关卡随机生成题目数量（在基础数量的50%-150%之间）
+    const randomFactor = () => 0.5 + Math.random(); // 0.5 到 1.5 之间的随机数
+    const totalNeededL1 = Math.max(5, Math.floor(baseQuestionsL1 * randomFactor())); // 最少5题
+    const totalNeededL2 = Math.max(5, Math.floor(baseQuestionsL2 * randomFactor())); // 最少5题
+    const totalNeededL3 = Math.max(5, Math.floor(baseQuestionsL3 * randomFactor())); // 最少5题
     const totalUniqueQuestionsNeeded = totalNeededL1 + totalNeededL2 + totalNeededL3;
+
+    console.log(`随机题目数量 - L1: ${totalNeededL1}, L2: ${totalNeededL2}, L3: ${totalNeededL3} (基础: ${baseQuestionsL1}/${baseQuestionsL2}/${baseQuestionsL3})`);
 
     // 1. Create a unique pool based on 'word' or 'english'
     const uniqueQuestionsMap = new Map();
@@ -334,9 +342,9 @@ async function loadQuestionsForGrade(gradeId, session) { // Added session parame
             uniqueQuestionPool = []; // Defensive coding
         }
 
+        // 检查题库是否足够，如果不够则调整数量
         if (uniqueQuestionPool.length < totalUniqueQuestionsNeeded) {
-            console.warn(`Warning: Not enough unique questions (${uniqueQuestionPool.length}) in Grade ${gradeId} to fulfill the total required for all levels (${totalUniqueQuestionsNeeded}). Questions might be reused or levels might be shorter.`);
-            // For now, we'll proceed but levels might not reach their target count.
+            console.warn(`Warning: Not enough unique questions (${uniqueQuestionPool.length}) in Grade ${gradeId} to fulfill the total required for all levels (${totalUniqueQuestionsNeeded}). Adjusting question counts.`);
         }
 
         // 3. Shuffle the unique pool (ensure it's an array)
@@ -401,22 +409,55 @@ async function loadQuestionsForGrade(gradeId, session) { // Added session parame
     // --- End Debug Logging for uniqueQuestionPool ---
     console.log('[DEBUG] loadQuestionsForGrade: Successfully EXITED try...catch block for uniqueQuestionPool processing.');
 
-    // 4. Distribute unique questions to levels sequentially
-    let currentIndex = 0;
-
+    // 4. 为每个关卡随机分配题目（而不是顺序分配）
     if (!session || !session.questions) { // Use passed session
         console.error("loadQuestionsForGrade: session or session.questions is null before distributing questions to levels. Aborting.");
         throw new Error("Game session state (passed as parameter) corrupted before question distribution.");
     }
 
-    session.questions.level1 = session.uniqueQuestionPool.slice(currentIndex, currentIndex + totalNeededL1);
-    currentIndex += session.questions.level1.length; // Use actual length in case pool was smaller
+    // 计算最终需要的题目数量（考虑题库不足的情况）
+    const totalAvailable = session.uniqueQuestionPool.length;
+    const finalTotalNeeded = totalNeededL1 + totalNeededL2 + totalNeededL3;
 
-    session.questions.level2 = session.uniqueQuestionPool.slice(currentIndex, currentIndex + totalNeededL2);
-    currentIndex += session.questions.level2.length;
+    let finalL1Count = totalNeededL1;
+    let finalL2Count = totalNeededL2;
+    let finalL3Count = totalNeededL3;
 
-    session.questions.level3 = session.uniqueQuestionPool.slice(currentIndex, currentIndex + totalNeededL3);
-    currentIndex += session.questions.level3.length;
+    if (totalAvailable < finalTotalNeeded) {
+        // 按比例缩减
+        const scaleFactor = totalAvailable / finalTotalNeeded;
+        finalL1Count = Math.max(3, Math.floor(totalNeededL1 * scaleFactor));
+        finalL2Count = Math.max(3, Math.floor(totalNeededL2 * scaleFactor));
+        finalL3Count = Math.max(3, Math.floor(totalNeededL3 * scaleFactor));
+        console.log(`调整后题目数量 - L1: ${finalL1Count}, L2: ${finalL2Count}, L3: ${finalL3Count}`);
+    }
+
+    // 创建题库的副本用于随机抽取
+    let availableQuestions = [...session.uniqueQuestionPool];
+
+    // 随机抽取Level 1题目
+    session.questions.level1 = [];
+    const actualL1Count = Math.min(finalL1Count, availableQuestions.length);
+    for (let i = 0; i < actualL1Count; i++) {
+        const randomIndex = Math.floor(Math.random() * availableQuestions.length);
+        session.questions.level1.push(availableQuestions.splice(randomIndex, 1)[0]);
+    }
+
+    // 随机抽取Level 2题目
+    session.questions.level2 = [];
+    const actualL2Count = Math.min(finalL2Count, availableQuestions.length);
+    for (let i = 0; i < actualL2Count; i++) {
+        const randomIndex = Math.floor(Math.random() * availableQuestions.length);
+        session.questions.level2.push(availableQuestions.splice(randomIndex, 1)[0]);
+    }
+
+    // 随机抽取Level 3题目
+    session.questions.level3 = [];
+    const actualL3Count = Math.min(finalL3Count, availableQuestions.length);
+    for (let i = 0; i < actualL3Count; i++) {
+        const randomIndex = Math.floor(Math.random() * availableQuestions.length);
+        session.questions.level3.push(availableQuestions.splice(randomIndex, 1)[0]);
+    }
 
     if (!session || !session.questions ||
         !session.questions.level1 || !session.questions.level2 || !session.questions.level3) { // Use passed session
