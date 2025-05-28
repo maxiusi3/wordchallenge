@@ -98,7 +98,7 @@ function formatTime(totalSeconds) {
 // --- Game Initialization and State Management ---
 
 function initializeGame(initialUserInfo) {
-    console.log("Initializing new game session...");
+    console.log(`%c🎯 [RANDOM SYSTEM] Initializing new game session for ${initialUserInfo.gradeName} (${initialUserInfo.grade})...`, 'color: #E74C3C; font-size: 16px; font-weight: bold;');
     // Ensure any previous timer potentially associated with an old session is stopped.
     // Note: stopTimer itself will need to be updated to use gameSession.
     // We pass null explicitly as gameSession might not be fully ready or might be from a previous game.
@@ -165,7 +165,8 @@ async function loadQuestionsForGrade(gradeId, session) { // Added session parame
         console.error("loadQuestionsForGrade called without a valid session object.");
         throw new Error("Game session not provided to loadQuestionsForGrade.");
     }
-    console.log(`Loading questions for grade: ${gradeId} into provided session.`);
+    console.log(`🎯 [RANDOM SYSTEM] Loading questions for grade: ${gradeId} into provided session.`);
+    console.log(`🎯 [RANDOM SYSTEM] Starting random question allocation process...`);
     session.questions = { level1: [], level2: [], level3: [] }; // Reset questions on the provided session
 
     let gradeQuestions = [];
@@ -305,9 +306,9 @@ async function loadQuestionsForGrade(gradeId, session) { // Added session parame
     const totalUniqueQuestionsNeeded = totalNeededL1 + totalNeededL2 + totalNeededL3;
 
     const gameTimestamp = Date.now();
-    console.log(`🎲 随机题目数量 - L1: ${totalNeededL1}, L2: ${totalNeededL2}, L3: ${totalNeededL3} (基础: ${baseQuestionsL1}/${baseQuestionsL2}/${baseQuestionsL3})`);
-    console.log(`🎯 总计需要 ${totalUniqueQuestionsNeeded} 道题目 (随机生成)`);
-    console.log(`🕰️ 游戏时间戳: ${gameTimestamp} - 随机因子: L1=${randomFactorL1.toFixed(2)}, L2=${randomFactorL2.toFixed(2)}, L3=${randomFactorL3.toFixed(2)}`);
+    console.log(`%c🎲 随机题目数量 - L1: ${totalNeededL1}, L2: ${totalNeededL2}, L3: ${totalNeededL3} (基础: ${baseQuestionsL1}/${baseQuestionsL2}/${baseQuestionsL3})`, 'color: #FF6B35; font-size: 14px; font-weight: bold;');
+    console.log(`%c🎯 总计需要 ${totalUniqueQuestionsNeeded} 道题目 (随机生成)`, 'color: #4ECDC4; font-size: 14px; font-weight: bold;');
+    console.log(`%c🕰️ 游戏时间戳: ${gameTimestamp} - 随机因子: L1=${randomFactorL1.toFixed(2)}, L2=${randomFactorL2.toFixed(2)}, L3=${randomFactorL3.toFixed(2)}`, 'color: #45B7D1; font-size: 14px; font-weight: bold;');
 
     // 1. Create a unique pool based on 'word' or 'english'
     const uniqueQuestionsMap = new Map();
@@ -470,9 +471,9 @@ async function loadQuestionsForGrade(gradeId, session) { // Added session parame
          console.error("loadQuestionsForGrade: session or its question levels became null before final log for assigned questions. Aborting log.");
     } else {
         const totalGameQuestions = session.questions.level1.length + session.questions.level2.length + session.questions.level3.length;
-        console.log(`✅ 最终分配的题目数量: L1=${session.questions.level1.length}, L2=${session.questions.level2.length}, L3=${session.questions.level3.length}`);
-        console.log(`🎮 游戏总题目数: ${totalGameQuestions} (时间戳: ${gameTimestamp})`);
-        console.log(`🎆 每次游戏都是不同的随机组合！`);
+        console.log(`%c✅ 最终分配的题目数量: L1=${session.questions.level1.length}, L2=${session.questions.level2.length}, L3=${session.questions.level3.length}`, 'color: #28A745; font-size: 14px; font-weight: bold;');
+        console.log(`%c🎮 游戏总题目数: ${totalGameQuestions} (时间戳: ${gameTimestamp})`, 'color: #6F42C1; font-size: 14px; font-weight: bold;');
+        console.log(`%c🎆 每次游戏都是不同的随机组合！`, 'color: #FD7E14; font-size: 14px; font-weight: bold;');
     }
 
     // Final check for Level 1 emptiness (critical)
@@ -1171,7 +1172,7 @@ function recordWrongAnswer(userAnswer) {
 // --- Message Handling from Iframes ---
 
 // Temporary storage for user info before game starts
-let tempUserInfo = { nickname: null, grade: null };
+let tempUserInfo = { nickname: null, grade: null, gradeName: null };
 
 window.addEventListener('message', (event) => {
     // Basic security check (use specific origin in production)
@@ -1230,10 +1231,11 @@ window.addEventListener('message', (event) => {
                             }
 
                             // Initialize game session using tempUserInfo
+                            console.log(`%c🚀 [RANDOM SYSTEM] About to initialize game with user info:`, 'color: #9C27B0; font-size: 14px; font-weight: bold;', tempUserInfo);
                             initializeGame(tempUserInfo); // Creates gameSession and starts question loading
 
                             // Wait for questions to load (promise is stored in gameSession)
-                            console.log("Waiting for questions to load before navigating...");
+                            console.log(`%c⏳ [RANDOM SYSTEM] Waiting for questions to load before navigating...`, 'color: #FF5722; font-size: 14px; font-weight: bold;');
                             if (gameSession && gameSession.questionLoadPromise) {
                                 await gameSession.questionLoadPromise;
                                 console.log("Questions loaded successfully. Proceeding with navigation.");
