@@ -296,12 +296,18 @@ async function loadQuestionsForGrade(gradeId, session) { // Added session parame
 
     // 为每个关卡随机生成题目数量（在基础数量的50%-150%之间）
     const randomFactor = () => 0.5 + Math.random(); // 0.5 到 1.5 之间的随机数
-    const totalNeededL1 = Math.max(5, Math.floor(baseQuestionsL1 * randomFactor())); // 最少5题
-    const totalNeededL2 = Math.max(5, Math.floor(baseQuestionsL2 * randomFactor())); // 最少5题
-    const totalNeededL3 = Math.max(5, Math.floor(baseQuestionsL3 * randomFactor())); // 最少5题
+    const randomFactorL1 = randomFactor();
+    const randomFactorL2 = randomFactor();
+    const randomFactorL3 = randomFactor();
+    const totalNeededL1 = Math.max(5, Math.floor(baseQuestionsL1 * randomFactorL1)); // 最少5题
+    const totalNeededL2 = Math.max(5, Math.floor(baseQuestionsL2 * randomFactorL2)); // 最少5题
+    const totalNeededL3 = Math.max(5, Math.floor(baseQuestionsL3 * randomFactorL3)); // 最少5题
     const totalUniqueQuestionsNeeded = totalNeededL1 + totalNeededL2 + totalNeededL3;
 
-    console.log(`随机题目数量 - L1: ${totalNeededL1}, L2: ${totalNeededL2}, L3: ${totalNeededL3} (基础: ${baseQuestionsL1}/${baseQuestionsL2}/${baseQuestionsL3})`);
+    const gameTimestamp = Date.now();
+    console.log(`🎲 随机题目数量 - L1: ${totalNeededL1}, L2: ${totalNeededL2}, L3: ${totalNeededL3} (基础: ${baseQuestionsL1}/${baseQuestionsL2}/${baseQuestionsL3})`);
+    console.log(`🎯 总计需要 ${totalUniqueQuestionsNeeded} 道题目 (随机生成)`);
+    console.log(`🕰️ 游戏时间戳: ${gameTimestamp} - 随机因子: L1=${randomFactorL1.toFixed(2)}, L2=${randomFactorL2.toFixed(2)}, L3=${randomFactorL3.toFixed(2)}`);
 
     // 1. Create a unique pool based on 'word' or 'english'
     const uniqueQuestionsMap = new Map();
@@ -463,7 +469,10 @@ async function loadQuestionsForGrade(gradeId, session) { // Added session parame
         !session.questions.level1 || !session.questions.level2 || !session.questions.level3) { // Use passed session
          console.error("loadQuestionsForGrade: session or its question levels became null before final log for assigned questions. Aborting log.");
     } else {
-        console.log(`Assigned unique questions: L1=${session.questions.level1.length}, L2=${session.questions.level2.length}, L3=${session.questions.level3.length}`);
+        const totalGameQuestions = session.questions.level1.length + session.questions.level2.length + session.questions.level3.length;
+        console.log(`✅ 最终分配的题目数量: L1=${session.questions.level1.length}, L2=${session.questions.level2.length}, L3=${session.questions.level3.length}`);
+        console.log(`🎮 游戏总题目数: ${totalGameQuestions} (时间戳: ${gameTimestamp})`);
+        console.log(`🎆 每次游戏都是不同的随机组合！`);
     }
 
     // Final check for Level 1 emptiness (critical)
