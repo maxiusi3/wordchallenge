@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>单词闯关 - 原型</title>
+    <title>单词闯关 v2.0.3 - 随机题目版本</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="css/style.css">
 <!-- 移除PWA相关配置，改为纯在线游戏 -->
@@ -71,10 +71,27 @@
 
     </script>
     <script>
+        // 版本信息和缓存破坏
+        const VERSION = '2.0.3-random';
+        const BUILD_TIME = Date.now();
+
+        // 在控制台显示版本信息
+        console.log(`%c单词闯关游戏 v${VERSION}`, 'color: #4CAF50; font-size: 16px; font-weight: bold;');
+        console.log(`%c构建时间: ${new Date(BUILD_TIME).toLocaleString()}`, 'color: #2196F3;');
+        console.log(`%c随机题目系统已启用`, 'color: #FF9800; font-weight: bold;');
+
         // 动态加载JS文件，强制破坏缓存
         const script = document.createElement('script');
-        script.src = `js/main.js?v=20241220-002&t=${Date.now()}`;
+        script.src = `js/main.js?v=${VERSION}&t=${BUILD_TIME}`;
         document.head.appendChild(script);
+
+        // 在页面上显示版本信息（仅在开发阶段）
+        window.addEventListener('load', function() {
+            const versionDiv = document.createElement('div');
+            versionDiv.style.cssText = 'position: fixed; top: 5px; right: 5px; background: rgba(0,0,0,0.7); color: white; padding: 2px 6px; font-size: 10px; border-radius: 3px; z-index: 9999;';
+            versionDiv.textContent = `v${VERSION}`;
+            document.body.appendChild(versionDiv);
+        });
     </script>
     <!-- 移除Service Worker相关代码，改为纯在线游戏 -->
 </body>
