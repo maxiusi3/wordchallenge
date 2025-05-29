@@ -1,1262 +1,914 @@
 [
-    {
-        "word": "classroom",
-        "meaning": "n. 教室",
-        "uk_pron": "[ˈklɑːsruːm]",
-        "us_pron": "[ˈklæsruːm; ˈklæsrʊm]",
-        "audio": "audio/words/classroom.mp3"
-    },
-    {
-        "word": "window",
-        "meaning": "n. 窗；窗口；窗户",
-        "uk_pron": "[ˈwɪndəʊ]",
-        "us_pron": "[ˈwɪndoʊ]",
-        "audio": "audio/words/window.mp3"
-    },
-    {
-        "word": "blackboard",
-        "meaning": "n. 黑板",
-        "uk_pron": "[ˈblækbɔːd]",
-        "us_pron": "[ˈblækbɔːrd]",
-        "audio": "audio/words/blackboard.mp3"
-    },
-    {
-        "word": "light",
-        "meaning": "n. 光；光线；灯；打火机；领悟；浅色；天窗\nadj. 轻的；浅色的；明亮的；轻松的；容易的；清淡的\nvi. 点着；变亮；着火\nvt. 照亮；点燃；着火\nadv. 轻地；清楚地；轻便地",
-        "uk_pron": "[laɪt]",
-        "us_pron": "[laɪt]",
-        "audio": "audio/words/light.mp3"
-    },
-    {
-        "word": "picture",
-        "meaning": "n. 照片，图画；影片；景色；化身\nvt. 画；想像；描写",
-        "uk_pron": "[ˈpɪktʃə(r)]",
-        "us_pron": "[ˈpɪktʃər]",
-        "audio": "audio/words/picture.mp3"
-    },
-    {
-        "word": "door",
-        "meaning": "n. 门；家，户；门口；通道",
-        "uk_pron": "[dɔː(r)]",
-        "us_pron": "[dɔːr]",
-        "audio": "audio/words/door.mp3"
-    },
-    {
-        "word": "teacher's desk",
-        "meaning": "讲台；讲桌；讲台桌",
-        "audio": "audio/words/teacher's desk.mp3"
-    },
-    {
-        "word": "computer",
-        "meaning": "n. 计算机；电脑；电子计算机",
-        "uk_pron": "[kəmˈpjuːtə(r)]",
-        "us_pron": "[kəmˈpjuːtər]",
-        "audio": "audio/words/computer.mp3"
-    },
-    {
-        "word": "fan",
-        "meaning": "n. 迷；风扇；爱好者\nvt. 煽动；刺激；吹拂\nvi. 成扇形散开；飘动",
-        "uk_pron": "[fæn]",
-        "us_pron": "[fæn]",
-        "audio": "audio/words/fan.mp3"
-    },
-    {
-        "word": "wall",
-        "meaning": "n. 墙壁，围墙；似墙之物\nadj. 墙壁的\nvt. 用墙围住，围以墙",
-        "uk_pron": "[wɔːl]",
-        "us_pron": "[wɔːl]",
-        "audio": "audio/words/wall.mp3"
-    },
-    {
-        "word": "floor",
-        "meaning": "n. 地板，地面；楼层；基底；议员席\nvt. 铺地板；打倒，击倒；（被困难）难倒",
-        "uk_pron": "[flɔː(r)]",
-        "us_pron": "[flɔːr]",
-        "audio": "audio/words/floor.mp3"
-    },
-    {
-        "word": "really",
-        "meaning": "adv. 实际上，事实上；真正地，真实地；真的吗？（表语气）",
-        "uk_pron": "[ˈriːəli]",
-        "us_pron": "[ˈriːəli]",
-        "audio": "audio/words/really.mp3"
-    },
-    {
-        "word": "near",
-        "meaning": "adj. 近的；亲近的；近似的\nadv. 近；接近\nprep. 靠近；近似于",
-        "uk_pron": "[nɪə(r)]",
-        "us_pron": "[nɪr]",
-        "audio": "audio/words/near.mp3"
-    },
-    {
-        "word": "TV",
-        "meaning": "abbr. 电视（television）",
-        "uk_pron": "[ˌtiː ˈviː]",
-        "us_pron": "[ˌtiː ˈviː]",
-        "audio": "audio/words/tv.mp3"
-    },
-    {
-        "word": "clean",
-        "meaning": "n. 打扫\nadj. 清洁的，干净的；清白的\nvt. 使干净\nvi. 打扫，清扫\nadv. 完全地",
-        "uk_pron": "[kliːn]",
-        "us_pron": "[kliːn]",
-        "audio": "audio/words/clean.mp3"
-    },
-    {
-        "word": "help",
-        "meaning": "n. 帮助；补救办法；帮忙者；有益的东西\nvt. 帮助；促进；治疗；补救\nvi. 帮助；有用；招待",
-        "uk_pron": "[help]",
-        "us_pron": "[help]",
-        "audio": "audio/words/help.mp3"
-    },
-    {
-        "word": "schoolbag",
-        "meaning": "n. 书包",
-        "uk_pron": "[ˈskuːlbæɡ]",
-        "us_pron": "[ˈskuːlˌbæɡ]",
-        "audio": "audio/words/schoolbag.mp3"
-    },
-    {
-        "word": "maths book",
-        "meaning": "数学书",
-        "audio": "audio/words/maths book.mp3"
-    },
-    {
-        "word": "English book",
-        "meaning": "英语书；英文书；数学书",
-        "audio": "audio/words/english book.mp3"
-    },
-    {
-        "word": "Chinese book",
-        "meaning": "语文书；中文书；英语书",
-        "audio": "audio/words/chinese book.mp3"
-    },
-    {
-        "word": "storybook",
-        "meaning": "n. 故事书；小说",
-        "uk_pron": "[ˈstɔːribʊk]",
-        "us_pron": "[ˈstɔːribʊk]",
-        "audio": "audio/words/storybook.mp3"
-    },
-    {
-        "word": "candy",
-        "meaning": "n. 糖果（等于sweets）；冰糖（等于sugar candy，rock candy）；毒品\nadj. 新潮的（服饰）；甜言蜜语的\nvt. 用糖煮；使结晶为砂糖；美化\nvi. 糖煮；成为结晶",
-        "uk_pron": "[ˈkændi]",
-        "us_pron": "[ˈkændi]",
-        "audio": "audio/words/candy.mp3"
-    },
-    {
-        "word": "notebook",
-        "meaning": "n. 笔记本，笔记簿；手册",
-        "uk_pron": "[ˈnəʊtbʊk]",
-        "us_pron": "[ˈnoʊtbʊk]",
-        "audio": "audio/words/notebook.mp3"
-    },
-    {
-        "word": "toy",
-        "meaning": "n. 玩具；小装饰品；不值钱的东西\nadj. 作为玩具的；玩物似的\nvi. 玩弄；调情；随随便便地对待",
-        "uk_pron": "[tɔɪ]",
-        "us_pron": "[tɔɪ]",
-        "audio": "audio/words/toy.mp3"
-    },
-    {
-        "word": "key",
-        "meaning": "n. （打字机等的）键；关键；钥匙\nvt. 键入；锁上；调节…的音调；提供线索\nvi. 使用钥匙\nadj. 关键的",
-        "uk_pron": "[kiː]",
-        "us_pron": "[kiː]",
-        "audio": "audio/words/key.mp3"
-    },
-    {
-        "word": "wow",
-        "meaning": "n. 极大的成功；一鸣惊人之举；魔兽世界(World of Warcraft)；失真\nint. （表示极大的惊奇或钦佩）哇，呀",
-        "uk_pron": "[waʊ]",
-        "us_pron": "[waʊ]",
-        "audio": "audio/words/wow.mp3"
-    },
-    {
-        "word": "lost",
-        "meaning": "adj. 失去的；丧失的；迷惑的\nv. 遗失（lose的过去分词）；失败",
-        "uk_pron": "[lɒst]",
-        "us_pron": "[lɔːst]",
-        "audio": "audio/words/lost.mp3"
-    },
-    {
-        "word": "so much",
-        "meaning": "na. 和…一样多；就只那么多；多少",
-        "uk_pron": "[səʊ mʌtʃ]",
-        "us_pron": "[soʊ mʌtʃ]",
-        "audio": "audio/words/so much.mp3"
-    },
-    {
-        "word": "cute",
-        "meaning": "adj. 可爱的；漂亮的；聪明的，伶俐的",
-        "uk_pron": "[kjuːt]",
-        "us_pron": "[kjuːt]",
-        "audio": "audio/words/cute.mp3"
-    },
-    {
-        "word": "strong",
-        "meaning": "adj. 坚强的；强壮的；牢固的；擅长的\nadv. 强劲地；猛烈地",
-        "uk_pron": "[strɒŋ]",
-        "us_pron": "[strɔːŋ]",
-        "audio": "audio/words/strong.mp3"
-    },
-    {
-        "word": "friendly",
-        "meaning": "adj. 友好的；亲切的；支持的；融洽的，和睦的\nadv. 友善地；温和地",
-        "uk_pron": "[ˈfrendli]",
-        "us_pron": "[ˈfrendli]",
-        "audio": "audio/words/friendly.mp3"
-    },
-    {
-        "word": "quiet",
-        "meaning": "n. 安静；和平\nadj. 安静的；安定的；不动的；温顺的\nvt. 使平息；安慰\nvi. 平静下来",
-        "uk_pron": "[ˈkwaɪət]",
-        "us_pron": "[ˈkwaɪət]",
-        "audio": "audio/words/quiet.mp3"
-    },
-    {
-        "word": "hair",
-        "meaning": "n. 头发；毛发；些微\nadj. 毛发的；护理毛发的；用毛发制成的\nvt. 除去…的毛发\nvi. 生长毛发；形成毛状纤维",
-        "uk_pron": "[heə(r)]",
-        "us_pron": "[her]",
-        "audio": "audio/words/hair.mp3"
-    },
-    {
-        "word": "shoe",
-        "meaning": "n. 鞋；蹄铁；外胎\nvt. 给……穿上鞋；穿……鞋",
-        "uk_pron": "[ʃuː]",
-        "us_pron": "[ʃuː]",
-        "audio": "audio/words/shoe.mp3"
-    },
-    {
-        "word": "glasses",
-        "meaning": "n. [轻] 眼镜；玻璃（glass的复数形式）；双筒望远镜\nv. 把…装入玻璃容器内；给…装上玻璃（glass的第三人称单数形式）",
-        "uk_pron": "[ˈɡlɑːsɪz]",
-        "us_pron": "[ˈɡlæsɪz]",
-        "audio": "audio/words/glasses.mp3"
-    },
-    {
-        "word": "his",
-        "meaning": "pron. 他的",
-        "uk_pron": "[hɪz]",
-        "us_pron": "[hɪz; ɪz]",
-        "audio": "audio/words/his.mp3"
-    },
-    {
-        "word": "or",
-        "meaning": "conj. 或，或者；还是",
-        "uk_pron": "[ɔː(r)]",
-        "us_pron": "[ɔːr]",
-        "audio": "audio/words/or.mp3"
-    },
-    {
-        "word": "right",
-        "meaning": "n. 正确；右边；正义\nadj. 正确的；直接的；右方的\nvt. 纠正\nadv. 正确地；恰当地；彻底地\nvi. 复正；恢复平稳",
-        "uk_pron": "[raɪt]",
-        "us_pron": "[raɪt]",
-        "audio": "audio/words/right.mp3"
-    },
-    {
-        "word": "hat",
-        "meaning": "n. 帽子\nvt. 给……戴上帽子\nvi. 供应帽子；制造帽子",
-        "uk_pron": "[hæt]",
-        "us_pron": "[hæt]",
-        "audio": "audio/words/hat.mp3"
-    },
-    {
-        "word": "her",
-        "meaning": "pron. 她（she的宾格）；她的（she的所有格）；她（指某个国家；一艘船）",
-        "uk_pron": "[hə(r)]",
-        "us_pron": "[hər; ɜːr; ər; hɜːr]",
-        "audio": "audio/words/her.mp3"
-    },
-    {
-        "word": "bedroom",
-        "meaning": "n. 卧室\nadj. 两性关系的；城郊住宅区的",
-        "uk_pron": "[ˈbedruːm]",
-        "us_pron": "[ˈbedruːm; ˈbedrʊm]",
-        "audio": "audio/words/bedroom.mp3"
-    },
-    {
-        "word": "living room",
-        "meaning": "n. 客厅；起居室",
-        "uk_pron": "['lɪvɪŋ ru:m]",
-        "us_pron": "[ˈlɪvɪŋ ruːm]",
-        "audio": "audio/words/living room.mp3"
-    },
-    {
-        "word": "study",
-        "meaning": "n. 学习，研究；课题；书房；学问\nvt. 学习；考虑；攻读；细察\nvi. 研究；用功",
-        "uk_pron": "[ˈstʌdi]",
-        "us_pron": "[ˈstʌdi]",
-        "audio": "audio/words/study.mp3"
-    },
-    {
-        "word": "kitchen",
-        "meaning": "n. 厨房；炊具；炊事人员",
-        "uk_pron": "[ˈkɪtʃɪn]",
-        "us_pron": "[ˈkɪtʃɪn]",
-        "audio": "audio/words/kitchen.mp3"
-    },
-    {
-        "word": "bathroom",
-        "meaning": "n. 浴室；厕所；盥洗室",
-        "uk_pron": "[ˈbɑːθruːm; ˈbɑːθrʊm]",
-        "us_pron": "[ˈbæθruːm]",
-        "audio": "audio/words/bathroom.mp3"
-    },
-    {
-        "word": "bed",
-        "meaning": "n. 床；基础；河底， 海底\nvt. 使睡觉；安置，嵌入；栽种\nvi. 上床；分层",
-        "uk_pron": "[bed]",
-        "us_pron": "[bed]",
-        "audio": "audio/words/bed.mp3"
-    },
-    {
-        "word": "phone",
-        "meaning": "n. 电话；耳机，听筒\nvt. 打电话\nvi. 打电话",
-        "uk_pron": "[fəʊn]",
-        "us_pron": "[foʊn]",
-        "audio": "audio/words/phone.mp3"
-    },
-    {
-        "word": "table",
-        "meaning": "n. 桌子；表格；平地层\nvt. 制表；搁置；嵌合\nadj. 桌子的",
-        "uk_pron": "[ˈteɪb(ə)l]",
-        "us_pron": "[ˈteɪbl]",
-        "audio": "audio/words/table.mp3"
-    },
-    {
-        "word": "sofa",
-        "meaning": "n. 沙发；长椅",
-        "uk_pron": "[ˈsəʊfə]",
-        "us_pron": "[ˈsoʊfə]",
-        "audio": "audio/words/sofa.mp3"
-    },
-    {
-        "word": "fridge",
-        "meaning": "n. 电冰箱",
-        "uk_pron": "[frɪdʒ]",
-        "us_pron": "[frɪdʒ]",
-        "audio": "audio/words/fridge.mp3"
-    },
-    {
-        "word": "find",
-        "meaning": "n. 发现\nvi. 裁决\nvt. 查找，找到；发现；认为；感到；获得",
-        "uk_pron": "[faɪnd]",
-        "us_pron": "[faɪnd]",
-        "audio": "audio/words/find.mp3"
-    },
-    {
-        "word": "them",
-        "meaning": "pron. 他们；它们；她们",
-        "uk_pron": "[ðəm; ðem]",
-        "us_pron": "[ðəm; ðem]",
-        "audio": "audio/words/them.mp3"
-    },
-    {
-        "word": "beef",
-        "meaning": "n. 牛肉；肌肉；食用牛；牢骚\nvt. 养；加强\nvi. 抱怨，告发；发牢骚",
-        "uk_pron": "[biːf]",
-        "us_pron": "[biːf]",
-        "audio": "audio/words/beef.mp3"
-    },
-    {
-        "word": "chicken",
-        "meaning": "n. 鸡肉；小鸡；胆小鬼，懦夫\nadj. 鸡肉的；胆怯的；幼小的",
-        "uk_pron": "[ˈtʃɪkɪn]",
-        "us_pron": "[ˈtʃɪkɪn]",
-        "audio": "audio/words/chicken.mp3"
-    },
-    {
-        "word": "noodles",
-        "meaning": "n. 面条，挂面（noodle的复数形式)",
-        "uk_pron": "[ˈnuːd(ə)lz]",
-        "us_pron": "[ˈnuːd(ə)lz]",
-        "audio": "audio/words/noodles.mp3"
-    },
-    {
-        "word": "soup",
-        "meaning": "n. 汤，羹；马力\nvt. 加速；增加马力",
-        "uk_pron": "[suːp]",
-        "us_pron": "[suːp]",
-        "audio": "audio/words/soup.mp3"
-    },
-    {
-        "word": "vegetable",
-        "meaning": "n. 蔬菜；植物；植物人\nadj. 蔬菜的；植物的",
-        "uk_pron": "[ˈvedʒtəb(ə)l]",
-        "us_pron": "[ˈvedʒtəbl]",
-        "audio": "audio/words/vegetable.mp3"
-    },
-    {
-        "word": "chopsticks",
-        "meaning": "n. 筷子",
-        "uk_pron": "[ˈtʃɒpstɪks]",
-        "us_pron": "[ˈtʃɑːpstɪks]",
-        "audio": "audio/words/chopsticks.mp3"
-    },
-    {
-        "word": "bowl",
-        "meaning": "n. 碗；木球；大酒杯\nvt. 投球；旋转；平稳快速移动\nvi. 玩保龄球；滑动；平稳快速移动",
-        "uk_pron": "[bəʊl]",
-        "us_pron": "[boʊl]",
-        "audio": "audio/words/bowl.mp3"
-    },
-    {
-        "word": "fork",
-        "meaning": "n. 叉；餐叉；耙\nvt. 叉起；使成叉状\nvi. 分叉；分歧",
-        "uk_pron": "[fɔːk]",
-        "us_pron": "[fɔːrk]",
-        "audio": "audio/words/fork.mp3"
-    },
-    {
-        "word": "knife",
-        "meaning": "n. 刀；匕首\nvt. 用刀切；（口）伤害\nvi. 劈开；划过",
-        "uk_pron": "[naɪf]",
-        "us_pron": "[naɪf]",
-        "audio": "audio/words/knife.mp3"
-    },
-    {
-        "word": "spoon",
-        "meaning": "n. 匙，勺子；一杓的量\nvt. 用匙舀；使成匙状\nvi. 轻轻向上击",
-        "uk_pron": "[spuːn]",
-        "us_pron": "[spuːn]",
-        "audio": "audio/words/spoon.mp3"
-    },
-    {
-        "word": "dinner",
-        "meaning": "n. 晚餐，晚宴；宴会；正餐",
-        "uk_pron": "[ˈdɪnə(r)]",
-        "us_pron": "[ˈdɪnər]",
-        "audio": "audio/words/dinner.mp3"
-    },
-    {
-        "word": "ready",
-        "meaning": "n. 现款；预备好的状态\nadj. 准备好；现成的；迅速的；情愿的；快要…的\nvt. 使准备好\nadv. 迅速地；预先",
-        "uk_pron": "[ˈredi]",
-        "us_pron": "[ˈredi]",
-        "audio": "audio/words/ready.mp3"
-    },
-    {
-        "word": "help yourself",
-        "meaning": "别客气；请自便；随便吃",
-        "audio": "audio/words/help yourself.mp3"
-    },
-    {
-        "word": "pass",
-        "meaning": "n. 及格；经过；护照；途径；传球\nvt. 通过；经过；传递\nvi. 经过；传递；变化；终止",
-        "uk_pron": "[pɑːs]",
-        "us_pron": "[pæs]",
-        "audio": "audio/words/pass.mp3"
-    },
-    {
-        "word": "try",
-        "meaning": "n. 尝试；努力；试验\nvt. 试图，努力；试验；审判；考验\nvi. 尝试；努力；试验",
-        "uk_pron": "[traɪ]",
-        "us_pron": "[traɪ]",
-        "audio": "audio/words/try.mp3"
-    },
-    {
-        "word": "parents",
-        "meaning": "n. 父母；双亲（parent的复数）\nv. 教养；引起（parent的三单形式）",
-        "uk_pron": "['peərənts]",
-        "us_pron": "['perənts]",
-        "audio": "audio/words/parents.mp3"
-    },
-    {
-        "word": "cousin",
-        "meaning": "n. 堂兄弟姊妹；表兄弟姊妹",
-        "uk_pron": "[ˈkʌzn]",
-        "us_pron": "[ˈkʌzn]",
-        "audio": "audio/words/cousin.mp3"
-    },
-    {
-        "word": "uncle",
-        "meaning": "n. 叔叔；伯父；伯伯；舅父；姨丈；姑父",
-        "uk_pron": "[ˈʌŋk(ə)l]",
-        "us_pron": "[ˈʌŋkl]",
-        "audio": "audio/words/uncle.mp3"
-    },
-    {
-        "word": "aunt",
-        "meaning": "n. 阿姨；姑妈；伯母；舅妈",
-        "uk_pron": "[ɑːnt]",
-        "us_pron": "[ænt]",
-        "audio": "audio/words/aunt.mp3"
-    },
-    {
-        "word": "baby brother",
-        "meaning": "小弟弟；我的弟弟啊；切入正题",
-        "audio": "audio/words/baby brother.mp3"
-    },
-    {
-        "word": "doctor",
-        "meaning": "vt. 修理；篡改，伪造；为…治病；授以博士学位\nn. 医生；博士\nvi. 就医；行医",
-        "uk_pron": "[ˈdɒktə(r)]",
-        "us_pron": "[ˈdɑːktər]",
-        "audio": "audio/words/doctor.mp3"
-    },
-    {
-        "word": "cook",
-        "meaning": "n. 厨师，厨子\nvt. 烹调，煮\nvi. 烹调，做菜",
-        "uk_pron": "[kʊk]",
-        "us_pron": "[kʊk]",
-        "audio": "audio/words/cook.mp3"
-    },
-    {
-        "word": "driver",
-        "meaning": "n. 驾驶员；驱动程序；起子；传动器",
-        "uk_pron": "[ˈdraɪvə(r)]",
-        "us_pron": "[ˈdraɪvər]",
-        "audio": "audio/words/driver.mp3"
-    },
-    {
-        "word": "farmer",
-        "meaning": "n. 农夫，农民",
-        "uk_pron": "[ˈfɑːmə(r)]",
-        "us_pron": "[ˈfɑːrmər]",
-        "audio": "audio/words/farmer.mp3"
-    },
-    {
-        "word": "nurse",
-        "meaning": "vt. 看护，护理；照顾；培养；给…喂奶\nvi. 照料，护理；喂奶；当保姆\nn. 护士；奶妈，保姆",
-        "uk_pron": "[nɜːs]",
-        "us_pron": "[nɜːrs]",
-        "audio": "audio/words/nurse.mp3"
-    },
-    {
-        "word": "people",
-        "meaning": "n. 人；人类；民族；公民\nvt. 居住于；使住满人",
-        "uk_pron": "[ˈpiːp(ə)l]",
-        "us_pron": "[ˈpiːpl]",
-        "audio": "audio/words/people.mp3"
-    },
-    {
-        "word": "but",
-        "meaning": "conj. 但是；而是；然而\nadv. 仅仅，只\nprep. 除…以外",
-        "uk_pron": "[bət]",
-        "us_pron": "[bət; bʌt]",
-        "audio": "audio/words/but.mp3"
-    },
-    {
-        "word": "little",
-        "meaning": "adj. 小的；很少的；短暂的；小巧可爱的\nadv. 完全不\nn. 少许；没有多少；短时间",
-        "uk_pron": "[ˈlɪt(ə)l]",
-        "us_pron": "[ˈlɪtl]",
-        "audio": "audio/words/little.mp3"
-    },
-    {
-        "word": "puppy",
-        "meaning": "n. 小狗，幼犬",
-        "uk_pron": "[ˈpʌpi]",
-        "us_pron": "[ˈpʌpi]",
-        "audio": "audio/words/puppy.mp3"
-    },
-    {
-        "word": "football player",
-        "meaning": "足球运动员；球员；足球队员",
-        "audio": "audio/words/football player.mp3"
-    },
-    {
-        "word": "job",
-        "meaning": "n. 工作；职业\nvt. 承包；代客买卖\nvi. 做零工",
-        "uk_pron": "[dʒɒb]",
-        "us_pron": "[dʒɑːb]",
-        "audio": "audio/words/job.mp3"
-    },
-    {
-        "word": "basketball",
-        "meaning": "n. 篮球；篮球运动",
-        "uk_pron": "[ˈbɑːskɪtbɔːl]",
-        "us_pron": "[ˈbæskɪtbɔːl]",
-        "audio": "audio/words/basketball.mp3"
-    },
-    {
-        "word": "first floor",
-        "meaning": "n. 地面以上的一层；底层",
-        "uk_pron": "[fɜ:st flɔ:(r)]",
-        "us_pron": "[fɝ​st flɔr]",
-        "audio": "audio/words/first floor.mp3"
-    },
-    {
-        "word": "second floor",
-        "meaning": "na. 〈美〉二楼；〈英〉三楼",
-        "audio": "audio/words/second floor.mp3"
-    },
-    {
-        "word": "teacher's office",
-        "meaning": "教师办公室",
-        "audio": "audio/words/teacher's office.mp3"
-    },
-    {
-        "word": "library",
-        "meaning": "n. 图书馆，藏书室；文库",
-        "uk_pron": "[ˈlaɪbrəri; ˈlaɪbri]",
-        "us_pron": "[ˈlaɪbreri]",
-        "audio": "audio/words/library.mp3"
-    },
-    {
-        "word": "playground",
-        "meaning": "n. 运动场，操场；游乐场",
-        "uk_pron": "[ˈpleɪɡraʊnd]",
-        "us_pron": "[ˈpleɪɡraʊnd]",
-        "audio": "audio/words/playground.mp3"
-    },
-    {
-        "word": "computer room",
-        "meaning": "un. 计算机机房；计算机室",
-        "audio": "audio/words/computer room.mp3"
-    },
-    {
-        "word": "art room",
-        "meaning": "绘画教室；美术室；美术教室",
-        "audio": "audio/words/art room.mp3"
-    },
-    {
-        "word": "music room",
-        "meaning": "音乐教室；音乐室；音乐厅",
-        "audio": "audio/words/music room.mp3"
-    },
-    {
-        "word": "next to",
-        "meaning": "prep. 紧邻；在…近旁；仅次于；紧接",
-        "audio": "audio/words/next to.mp3"
-    },
-    {
-        "word": "homework",
-        "meaning": "n. 家庭作业，课外作业",
-        "uk_pron": "[ˈhəʊmwɜːk]",
-        "us_pron": "[ˈhoʊmwɜːrk]",
-        "audio": "audio/words/homework.mp3"
-    },
-    {
-        "word": "class",
-        "meaning": "n. 阶级；班级；种类；班；等级\nadj. 极好的；很好的，优秀的，出色的\nvt. 分类；把…分等级；把…归入某等级，把…看作（或分类、归类）；把…编入某一班级\nvi. 属于…类（或等级），被列为某类（或某级）",
-        "uk_pron": "[klɑːs]",
-        "us_pron": "[klæs]",
-        "audio": "audio/words/class.mp3"
-    },
-    {
-        "word": "forty",
-        "meaning": "n. 四十\nadj. 四十的；四十个的",
-        "uk_pron": "[ˈfɔːti]",
-        "us_pron": "[ˈfɔːrti]",
-        "audio": "audio/words/forty.mp3"
-    },
-    {
-        "word": "way",
-        "meaning": "n. 方法；道路；方向；行业；习惯\nadj. 途中的\nadv. 大大地；远远地",
-        "uk_pron": "[weɪ]",
-        "us_pron": "[weɪ]",
-        "audio": "audio/words/way.mp3"
-    },
-    {
-        "word": "breakfast",
-        "meaning": "n. 早餐；早饭\nvt. 为…供应早餐\nvi. 吃早餐",
-        "uk_pron": "[ˈbrekfəst]",
-        "us_pron": "[ˈbrekfəst]",
-        "audio": "audio/words/breakfast.mp3"
-    },
-    {
-        "word": "English class",
-        "meaning": "英语课；英文课；英语课程",
-        "audio": "audio/words/english class.mp3"
-    },
-    {
-        "word": "lunch",
-        "meaning": "n. 午餐\nvt. 吃午餐；供给午餐\nvi. 吃午餐；供给午餐",
-        "uk_pron": "[lʌntʃ]",
-        "us_pron": "[lʌntʃ]",
-        "audio": "audio/words/lunch.mp3"
-    },
-    {
-        "word": "music class",
-        "meaning": "音乐课",
-        "audio": "audio/words/music class.mp3"
-    },
-    {
-        "word": "PE class",
-        "meaning": "体育课",
-        "audio": "audio/words/pe class.mp3"
-    },
-    {
-        "word": "dinner",
-        "meaning": "n. 晚餐，晚宴；宴会；正餐",
-        "uk_pron": "[ˈdɪnə(r)]",
-        "us_pron": "[ˈdɪnər]",
-        "audio": "audio/words/dinner.mp3"
-    },
-    {
-        "word": "get up",
-        "meaning": "na. 起床；起身；站起来；叫…起床",
-        "uk_pron": "[ɡet ʌp]",
-        "us_pron": "[ɡet ʌp]",
-        "audio": "audio/words/get up.mp3"
-    },
-    {
-        "word": "go to school",
-        "meaning": "na. 到校上课；上学去；开始求学",
-        "audio": "audio/words/go to school.mp3"
-    },
-    {
-        "word": "go home",
-        "meaning": "na. 回家；〈口〉死；(忠告等)刻骨铭心；击中",
-        "audio": "audio/words/go home.mp3"
-    },
-    {
-        "word": "go to bed",
-        "meaning": "na. 睡；同床；【印】付印",
-        "audio": "audio/words/go to bed.mp3"
-    },
-    {
-        "word": "over",
-        "meaning": "adv. 结束；越过；从头到尾\nprep. 越过；在…之上；遍于…之上\nadj. 结束的；上面的\nvt. 越过",
-        "uk_pron": "[ˈəʊvə(r)]",
-        "us_pron": "[ˈoʊvər]",
-        "audio": "audio/words/over.mp3"
-    },
-    {
-        "word": "now",
-        "meaning": "adv. 现在；如今；立刻\nadj. 现在的\nn. 现在；目前\nconj. 由于；既然",
-        "uk_pron": "[naʊ]",
-        "us_pron": "[naʊ]",
-        "audio": "audio/words/now.mp3"
-    },
-    {
-        "word": "o'clock",
-        "meaning": "abbr. …点钟（等于of the clock）",
-        "audio": "audio/words/o'clock.mp3"
-    },
-    {
-        "word": "kid",
-        "meaning": "n. 小孩；小山羊\nvt. 欺骗；取笑；戏弄\nvi. 欺骗；取笑；戏弄\nadj. 小山羊皮制的；较年幼的",
-        "uk_pron": "[kɪd]",
-        "us_pron": "[kɪd]",
-        "audio": "audio/words/kid.mp3"
-    },
-    {
-        "word": "thirty",
-        "meaning": "num. 三十\nn. 三十年代\nadj. 三十个的",
-        "uk_pron": "[ˈθɜːti]",
-        "us_pron": "[ˈθɜːrti]",
-        "audio": "audio/words/thirty.mp3"
-    },
-    {
-        "word": "hurry up",
-        "meaning": "na. 催促；赶快",
-        "uk_pron": "['hʌrɪ ʌp]",
-        "us_pron": "['hɜːrɪ ʌp]",
-        "audio": "audio/words/hurry up.mp3"
-    },
-    {
-        "word": "come on",
-        "meaning": "na. (演员)出台；进行(很好)；(暴风雨等)起；(病,苦痛等)加深",
-        "audio": "audio/words/come on.mp3"
-    },
-    {
-        "word": "just a minute",
-        "meaning": "na. “wait/just a minute”的变体",
-        "audio": "audio/words/just a minute.mp3"
-    },
-    {
-        "word": "cold",
-        "meaning": "n. 寒冷；感冒\nadj. 寒冷的；冷淡的，不热情的；失去知觉的\nadv. 完全地",
-        "uk_pron": "[kəʊld]",
-        "us_pron": "[kəʊld]",
-        "audio": "audio/words/cold.mp3"
-    },
-    {
-        "word": "cool",
-        "meaning": "n. 凉爽；凉爽的空气\nadj. 凉爽的；冷静的；出色的\nvt. 使…冷却；使…平静下来\nvi. 变凉；平息\nadv. 冷静地",
-        "uk_pron": "[kuːl]",
-        "us_pron": "[kuːl]",
-        "audio": "audio/words/cool.mp3"
-    },
-    {
-        "word": "warm",
-        "meaning": "n. 取暖；加热\nadj. 温暖的；热情的\nvt. 使…兴奋；使…温暖；使…感兴趣\nvi. 同情；激动；变温暖",
-        "uk_pron": "[wɔːm]",
-        "us_pron": "[wɔːrm]",
-        "audio": "audio/words/warm.mp3"
-    },
-    {
-        "word": "hot",
-        "meaning": "adj. 热的；辣的；热情的；激动的；紧迫的\nvt. 增加；给…加温\nadv. 热；紧迫地\nvi. 变热",
-        "uk_pron": "[hɒt]",
-        "us_pron": "[hɑːt]",
-        "audio": "audio/words/hot.mp3"
-    },
-    {
-        "word": "sunny",
-        "meaning": "adj. 阳光充足的，和煦的；快活的；性情开朗的",
-        "uk_pron": "[ˈsʌni]",
-        "us_pron": "[ˈsʌni]",
-        "audio": "audio/words/sunny.mp3"
-    },
-    {
-        "word": "windy",
-        "meaning": "adj. 多风的，有风的；腹胀的；吹牛的",
-        "uk_pron": "[ˈwɪndi]",
-        "us_pron": "[ˈwɪndi]",
-        "audio": "audio/words/windy.mp3"
-    },
-    {
-        "word": "cloudy",
-        "meaning": "adj. 多云的；阴天的；愁容满面的",
-        "uk_pron": "[ˈklaʊdi]",
-        "us_pron": "[ˈklaʊdi]",
-        "audio": "audio/words/cloudy.mp3"
-    },
-    {
-        "word": "snowy",
-        "meaning": "adj. 下雪的，多雪的；被雪覆盖的；洁白无瑕的",
-        "uk_pron": "[ˈsnəʊi]",
-        "us_pron": "[ˈsnoʊi]",
-        "audio": "audio/words/snowy.mp3"
-    },
-    {
-        "word": "rainy",
-        "meaning": "adj. 下雨的；多雨的",
-        "uk_pron": "[ˈreɪni]",
-        "us_pron": "[ˈreɪni]",
-        "audio": "audio/words/rainy.mp3"
-    },
-    {
-        "word": "outside",
-        "meaning": "adj. 外面的，外部的；外来的\nn. 外部；外观\nadv. 在外面，向外面；在室外\nprep. 在…范围之外",
-        "uk_pron": "[ˌaʊtˈsaɪd]",
-        "us_pron": "[ˌaʊtˈsaɪd]",
-        "audio": "audio/words/outside.mp3"
-    },
-    {
-        "word": "be careful",
-        "meaning": "小心；当心；注意",
-        "audio": "audio/words/be careful.mp3"
-    },
-    {
-        "word": "weather",
-        "meaning": "n. 天气；气象；气候；处境\nvt. 经受住；使风化；侵蚀；使受风吹雨打\nadj. 露天的；迎风的\nvi. 风化；受侵蚀；经受风雨",
-        "uk_pron": "[ˈweðə(r)]",
-        "us_pron": "[ˈweðər]",
-        "audio": "audio/words/weather.mp3"
-    },
-    {
-        "word": "New York",
-        "meaning": "n. 【城】纽约州",
-        "audio": "audio/words/new york.mp3"
-    },
-    {
-        "word": "how about",
-        "meaning": "怎么样；如何；怎麽样",
-        "audio": "audio/words/how about.mp3"
-    },
-    {
-        "word": "degree",
-        "meaning": "n. 程度，等级；度；学位；阶层",
-        "uk_pron": "[dɪˈɡriː]",
-        "us_pron": "[dɪˈɡriː]",
-        "audio": "audio/words/degree.mp3"
-    },
-    {
-        "word": "world",
-        "meaning": "n. 世界；领域；世俗；全人类；物质生活",
-        "uk_pron": "[wɜːld]",
-        "us_pron": "[wɜːrld]",
-        "audio": "audio/words/world.mp3"
-    },
-    {
-        "word": "London",
-        "meaning": "n. 伦敦",
-        "uk_pron": "[ˈlʌndən]",
-        "us_pron": "[ˈlʌndən]",
-        "audio": "audio/words/london.mp3"
-    },
-    {
-        "word": "Moscow",
-        "meaning": "n. 莫斯科（俄罗斯首都）",
-        "uk_pron": "[ˈmɒskəʊ]",
-        "us_pron": "[ˈmɑːskaʊ]",
-        "audio": "audio/words/moscow.mp3"
-    },
-    {
-        "word": "Singapore",
-        "meaning": "n. 新加坡",
-        "uk_pron": "[ˌsɪŋəˈpɔː(r)]",
-        "us_pron": "[ˈsɪŋəpɔːr]",
-        "audio": "audio/words/singapore.mp3"
-    },
-    {
-        "word": "Sydney",
-        "meaning": "n. 悉尼（澳大利亚港市）",
-        "uk_pron": "[ˈsɪdni]",
-        "us_pron": "[ˈsɪdni]",
-        "audio": "audio/words/sydney.mp3"
-    },
-    {
-        "word": "fly",
-        "meaning": "n. 飞行；苍蝇；两翼昆虫\nadj. 敏捷的\nvi. 飞；驾驶飞机；飘扬\nvt. 飞行；飞越；使飘扬",
-        "uk_pron": "[flaɪ]",
-        "us_pron": "[flaɪ]",
-        "audio": "audio/words/fly.mp3"
-    },
-    {
-        "word": "love",
-        "meaning": "n. 恋爱；亲爱的；酷爱；喜爱的事物；爱情，爱意；疼爱；热爱；爱人，所爱之物\nv. 爱，热爱；爱戴；赞美，称赞；喜爱；喜好；喜欢；爱慕",
-        "uk_pron": "[lʌv]",
-        "us_pron": "[lʌv]",
-        "audio": "audio/words/love.mp3"
-    },
-    {
-        "word": "tomato",
-        "meaning": "n. 番茄，西红柿",
-        "uk_pron": "[təˈmɑːtəʊ]",
-        "us_pron": "[təˈmeɪtoʊ]",
-        "audio": "audio/words/tomato.mp3"
-    },
-    {
-        "word": "potato",
-        "meaning": "n. [作物] 土豆，[作物] 马铃薯",
-        "uk_pron": "[pəˈteɪtəʊ]",
-        "us_pron": "[pəˈteɪtoʊ]",
-        "audio": "audio/words/potato.mp3"
-    },
-    {
-        "word": "green beans",
-        "meaning": "n. 【食】青豆",
-        "audio": "audio/words/green beans.mp3"
-    },
-    {
-        "word": "carrot",
-        "meaning": "n. 胡萝卜\n诱饵",
-        "uk_pron": "[ˈkærət]",
-        "us_pron": "[ˈkærət]",
-        "audio": "audio/words/carrot.mp3"
-    },
-    {
-        "word": "horse",
-        "meaning": "n. 马；骑兵；脚架；海洛因\nvt. 使骑马；系马于；捉弄\nvi. 骑马；作弄人",
-        "uk_pron": "[hɔːs]",
-        "us_pron": "[hɔːrs]",
-        "audio": "audio/words/horse.mp3"
-    },
-    {
-        "word": "cow",
-        "meaning": "n. 奶牛，母牛；母兽\nvt. 威胁，恐吓",
-        "uk_pron": "[kaʊ]",
-        "us_pron": "[kaʊ]",
-        "audio": "audio/words/cow.mp3"
-    },
-    {
-        "word": "sheep",
-        "meaning": "n. 羊，绵羊；胆小鬼",
-        "uk_pron": "[ʃiːp]",
-        "us_pron": "[ʃiːp]",
-        "audio": "audio/words/sheep.mp3"
-    },
-    {
-        "word": "hen",
-        "meaning": "n. 母鸡；女人；雌禽",
-        "uk_pron": "[hen]",
-        "us_pron": "[hen]",
-        "audio": "audio/words/hen.mp3"
-    },
-    {
-        "word": "these",
-        "meaning": "adj. 这些的\npron. 这些",
-        "uk_pron": "[ðiːz]",
-        "us_pron": "[ðiːz]",
-        "audio": "audio/words/these.mp3"
-    },
-    {
-        "word": "yum",
-        "meaning": "int. 极好的；妙的；美味的",
-        "uk_pron": "[jʌm]",
-        "us_pron": "[jʌm]",
-        "audio": "audio/words/yum.mp3"
-    },
-    {
-        "word": "animal",
-        "meaning": "n. 动物\n动物的",
-        "uk_pron": "[ˈænɪm(ə)l]",
-        "us_pron": "[ˈænɪm(ə)l]",
-        "audio": "audio/words/animal.mp3"
-    },
-    {
-        "word": "those",
-        "meaning": "adj. 那些的\npron. 那些（that的复数）",
-        "uk_pron": "[ðəʊz]",
-        "us_pron": "[ðoʊz]",
-        "audio": "audio/words/those.mp3"
-    },
-    {
-        "word": "garden",
-        "meaning": "n. 花园；菜园\nvt. 栽培花木\nvi. 从事园艺；在园中种植",
-        "uk_pron": "[ˈɡɑːdn]",
-        "us_pron": "[ˈɡɑːrdn]",
-        "audio": "audio/words/garden.mp3"
-    },
-    {
-        "word": "farm",
-        "meaning": "n. 农场；农家；畜牧场\nvt. 养殖；耕种；佃出（土地）\nvi. 种田，务农；经营农场",
-        "uk_pron": "[fɑːm]",
-        "us_pron": "[fɑːrm]",
-        "audio": "audio/words/farm.mp3"
-    },
-    {
-        "word": "goat",
-        "meaning": "n. 山羊；替罪羊（美俚）；色鬼（美俚）",
-        "uk_pron": "[ɡəʊt]",
-        "us_pron": "[goʊt]",
-        "audio": "audio/words/goat.mp3"
-    },
-    {
-        "word": "eat",
-        "meaning": "vt. 吃，喝；腐蚀；烦扰\nvi. 进食；腐蚀，侵蚀",
-        "uk_pron": "[iːt]",
-        "us_pron": "[iːt]",
-        "audio": "audio/words/eat.mp3"
-    },
-    {
-        "word": "clothes",
-        "meaning": "n. 衣服",
-        "uk_pron": "[kləʊðz]",
-        "us_pron": "[kloʊðz; kloʊz]",
-        "audio": "audio/words/clothes.mp3"
-    },
-    {
-        "word": "pants",
-        "meaning": "n. 裤子",
-        "uk_pron": "[pænts]",
-        "us_pron": "[pænts]",
-        "audio": "audio/words/pants.mp3"
-    },
-    {
-        "word": "hat",
-        "meaning": "n. 帽子\nvt. 给……戴上帽子\nvi. 供应帽子；制造帽子",
-        "uk_pron": "[hæt]",
-        "us_pron": "[hæt]",
-        "audio": "audio/words/hat.mp3"
-    },
-    {
-        "word": "dress",
-        "meaning": "n. 连衣裙；女装\nvt. 给…穿衣\nvi. 穿衣",
-        "uk_pron": "[dres]",
-        "us_pron": "[dres]",
-        "audio": "audio/words/dress.mp3"
-    },
-    {
-        "word": "skirt",
-        "meaning": "n. 裙子\nvt. 绕过，回避；位于…边缘\nvi. 沿边走，绕开；环绕",
-        "uk_pron": "[skɜːt]",
-        "us_pron": "[skɜːrt]",
-        "audio": "audio/words/skirt.mp3"
-    },
-    {
-        "word": "coat",
-        "meaning": "n. 外套\nvt. 覆盖…的表面",
-        "uk_pron": "[kəʊt]",
-        "us_pron": "[koʊt]",
-        "audio": "audio/words/coat.mp3"
-    },
-    {
-        "word": "sweater",
-        "meaning": "n. 毛线衣，运动衫；大量出汗的人，发汗剂",
-        "uk_pron": "[ˈswetə(r)]",
-        "us_pron": "[ˈswetər]",
-        "audio": "audio/words/sweater.mp3"
-    },
-    {
-        "word": "sock",
-        "meaning": "vt. 重击；给……穿袜\nn. 短袜；一击\nadv. 正着地；不偏不倚地\nadj. 非常成功的",
-        "uk_pron": "[sɒk]",
-        "us_pron": "[sɑːk]",
-        "audio": "audio/words/sock.mp3"
-    },
-    {
-        "word": "shorts",
-        "meaning": "n. 短裤",
-        "uk_pron": "[ʃɔːts]",
-        "us_pron": "[ʃɔːrts]",
-        "audio": "audio/words/shorts.mp3"
-    },
-    {
-        "word": "jacket",
-        "meaning": "n. 羽绒滑雪衫；西装短外套；短上衣，夹克；土豆皮；书籍的护封；文件套，公文夹\nvt. 给…穿夹克；给…装护套；给…包上护封；〈口〉打",
-        "uk_pron": "[ˈdʒækɪt]",
-        "us_pron": "[ˈdʒækɪt]",
-        "audio": "audio/words/jacket.mp3"
-    },
-    {
-        "word": "shirt",
-        "meaning": "n. 衬衫；汗衫，内衣",
-        "uk_pron": "[ʃɜːt]",
-        "us_pron": "[ʃɜːrt]",
-        "audio": "audio/words/shirt.mp3"
-    },
-    {
-        "word": "yours",
-        "meaning": "pron. 你（们）的东西；你的责任[义务]；你的家属；来信，尊函\nadj. 你（们）的（东西）；信末署名前用语",
-        "uk_pron": "[jɔːz]",
-        "us_pron": "[jərz; jɔːrz; jʊrz]",
-        "audio": "audio/words/yours.mp3"
-    },
-    {
-        "word": "whose",
-        "meaning": "pron. 谁的（疑问代词）",
-        "uk_pron": "[huːz]",
-        "us_pron": "[huːz]",
-        "audio": "audio/words/whose.mp3"
-    },
-    {
-        "word": "mine",
-        "meaning": "n. 矿，矿藏；矿山，矿井；地雷，水雷\nvt. 开采，采掘；在…布雷\nvi. 开矿，采矿；埋设地雷\npron. 我的",
-        "uk_pron": "[maɪn]",
-        "us_pron": "[maɪn]",
-        "audio": "audio/words/mine.mp3"
-    },
-    {
-        "word": "pack",
-        "meaning": "n. 包装；一群；背包；包裹；一副\nvt. 包装；压紧；捆扎；挑选；塞满\nvi. 挤；包装货物；被包装；群集",
-        "uk_pron": "[pæk]",
-        "us_pron": "[pæk]",
-        "audio": "audio/words/pack.mp3"
-    },
-    {
-        "word": "wait",
-        "meaning": "n. 等待；等候\nvi. 等待；耽搁；伺候用餐\nvt. 等候；推迟；延缓",
-        "uk_pron": "[weɪt]",
-        "us_pron": "[weɪt]",
-        "audio": "audio/words/wait.mp3"
-    },
-    {
-        "word": "glove",
-        "meaning": "n. 手套\nvt. 给…戴手套",
-        "uk_pron": "[ɡlʌv]",
-        "us_pron": "[ɡlʌv]",
-        "audio": "audio/words/glove.mp3"
-    },
-    {
-        "word": "scarf",
-        "meaning": "n. 围巾；嵌接，嵌接处；头巾领巾\nvt. 披嵌接；用围巾围",
-        "uk_pron": "[skɑːf]",
-        "us_pron": "[skɑːrf]",
-        "audio": "audio/words/scarf.mp3"
-    },
-    {
-        "word": "umbrella",
-        "meaning": "n. 雨伞；保护伞；庇护；伞形结构",
-        "uk_pron": "[ʌmˈbrelə]",
-        "us_pron": "[ʌmˈbrelə]",
-        "audio": "audio/words/umbrella.mp3"
-    },
-    {
-        "word": "sunglasses",
-        "meaning": "n. 太阳镜；凸透镜（sunglass的复数）",
-        "uk_pron": "[ˈsʌnɡlɑːsɪz]",
-        "us_pron": "[ˈsʌnɡlæsɪz]",
-        "audio": "audio/words/sunglasses.mp3"
-    },
-    {
-        "word": "pretty",
-        "meaning": "n. 有吸引力的事物（尤指饰品）；漂亮的人\nadj. 漂亮的；可爱的；优美的\nadv. 相当地；颇",
-        "uk_pron": "[ˈprɪti]",
-        "us_pron": "[ˈprɪti]",
-        "audio": "audio/words/pretty.mp3"
-    },
-    {
-        "word": "expensive",
-        "meaning": "adj. 昂贵的；花钱的",
-        "uk_pron": "[ɪkˈspensɪv]",
-        "us_pron": "[ɪkˈspensɪv]",
-        "audio": "audio/words/expensive.mp3"
-    },
-    {
-        "word": "cheap",
-        "meaning": "adj. 便宜的；小气的；不值钱的\nadv. 便宜地",
-        "uk_pron": "[tʃiːp]",
-        "us_pron": "[tʃiːp]",
-        "audio": "audio/words/cheap.mp3"
-    },
-    {
-        "word": "nice",
-        "meaning": "adj. 精密的；美好的；细微的；和蔼的",
-        "uk_pron": "[naɪs]",
-        "us_pron": "[naɪs]",
-        "audio": "audio/words/nice.mp3"
-    },
-    {
-        "word": "try on",
-        "meaning": "na. 试穿；〈非正式〉搞恶作剧(以试探能否被容忍)；〈非正式〉耍花招",
-        "audio": "audio/words/try on.mp3"
-    },
-    {
-        "word": "size",
-        "meaning": "n. 大小；尺寸\nadj. 一定尺寸的\nvt. 依大小排列\nvi. 可比拟",
-        "uk_pron": "[saɪz]",
-        "us_pron": "[saɪz]",
-        "audio": "audio/words/size.mp3"
-    },
-    {
-        "word": "of course",
-        "meaning": "na. 当然",
-        "audio": "audio/words/of course.mp3"
-    },
-    {
-        "word": "too",
-        "meaning": "adv. 太；也；很；还；非常；过度",
-        "uk_pron": "[tuː]",
-        "us_pron": "[tuː]",
-        "audio": "audio/words/too.mp3"
-    },
-    {
-        "word": "just",
-        "meaning": "adv. 只是，仅仅；刚才，刚刚；正好，恰好；实在；刚要\nadj. 公正的，合理的；正直的，正义的；正确的；公平的；应得的",
-        "uk_pron": "[dʒʌst]",
-        "us_pron": "[dʒʌst]",
-        "audio": "audio/words/just.mp3"
-    },
-    {
-        "word": "how much",
-        "meaning": "conj. 多少",
-        "uk_pron": "[haʊ mʌtʃ]",
-        "us_pron": "[haʊ mʌtʃ]",
-        "audio": "audio/words/how much.mp3"
-    },
-    {
-        "word": "eighty",
-        "meaning": "num. 八十\nn. 八十；八十岁；八十年代\nadj. 八十的，八十个的；八十岁的",
-        "uk_pron": "[ˈeɪti]",
-        "us_pron": "[ˈeɪti]",
-        "audio": "audio/words/eighty.mp3"
-    },
-    {
-        "word": "dollar",
-        "meaning": "n. 美元",
-        "uk_pron": "[ˈdɒlə(r)]",
-        "us_pron": "[ˈdɑːlər]",
-        "audio": "audio/words/dollar.mp3"
-    },
-    {
-        "word": "sale",
-        "meaning": "n. 销售；出售；拍卖；销售额；廉价出售",
-        "uk_pron": "[seɪl]",
-        "us_pron": "[seɪl]",
-        "audio": "audio/words/sale.mp3"
-    },
-    {
-        "word": "more",
-        "meaning": "adv. 更多；此外；更大程度地\nadj. 更多的；附加的\npron. 更多的数量\nn. 更多",
-        "uk_pron": "[mɔː(r)]",
-        "us_pron": "[mɔːr]",
-        "audio": "audio/words/more.mp3"
-    },
-    {
-        "word": "us",
-        "meaning": "pron. 我们",
-        "uk_pron": "[əs; ʌs]",
-        "us_pron": "[əs; ʌs]",
-        "audio": "audio/words/us.mp3"
-    }
+  {
+    "word": "classroom",
+    "meaning": "n. 教室",
+    "us_pron": "[ˈklæsruːm; ˈklæsrʊm]"
+  },
+  {
+    "word": "window",
+    "meaning": "n. 窗；窗口；窗户",
+    "us_pron": "[ˈwɪndoʊ]"
+  },
+  {
+    "word": "blackboard",
+    "meaning": "n. 黑板",
+    "us_pron": "[ˈblækbɔːrd]"
+  },
+  {
+    "word": "light",
+    "meaning": "n. 光；光线；灯；打火机；领悟；浅色；天窗\nadj. 轻的；浅色的；明亮的；轻松的；容易的；清淡的\nvi. 点着；变亮；着火\nvt. 照亮；点燃；着火\nadv. 轻地；清楚地；轻便地",
+    "us_pron": "[laɪt]"
+  },
+  {
+    "word": "picture",
+    "meaning": "n. 照片，图画；影片；景色；化身\nvt. 画；想像；描写",
+    "us_pron": "[ˈpɪktʃər]"
+  },
+  {
+    "word": "door",
+    "meaning": "n. 门；家，户；门口；通道",
+    "us_pron": "[dɔːr]"
+  },
+  {
+    "word": "teacher's desk",
+    "meaning": "讲台；讲桌；讲台桌"
+  },
+  {
+    "word": "computer",
+    "meaning": "n. 计算机；电脑；电子计算机",
+    "us_pron": "[kəmˈpjuːtər]"
+  },
+  {
+    "word": "fan",
+    "meaning": "n. 迷；风扇；爱好者\nvt. 煽动；刺激；吹拂\nvi. 成扇形散开；飘动",
+    "us_pron": "[fæn]"
+  },
+  {
+    "word": "wall",
+    "meaning": "n. 墙壁，围墙；似墙之物\nadj. 墙壁的\nvt. 用墙围住，围以墙",
+    "us_pron": "[wɔːl]"
+  },
+  {
+    "word": "floor",
+    "meaning": "n. 地板，地面；楼层；基底；议员席\nvt. 铺地板；打倒，击倒；（被困难）难倒",
+    "us_pron": "[flɔːr]"
+  },
+  {
+    "word": "really",
+    "meaning": "adv. 实际上，事实上；真正地，真实地；真的吗？（表语气）",
+    "us_pron": "[ˈriːəli]"
+  },
+  {
+    "word": "near",
+    "meaning": "adj. 近的；亲近的；近似的\nadv. 近；接近\nprep. 靠近；近似于",
+    "us_pron": "[nɪr]"
+  },
+  {
+    "word": "TV",
+    "meaning": "abbr. 电视（television）",
+    "us_pron": "[ˌtiː ˈviː]"
+  },
+  {
+    "word": "clean",
+    "meaning": "n. 打扫\nadj. 清洁的，干净的；清白的\nvt. 使干净\nvi. 打扫，清扫\nadv. 完全地",
+    "us_pron": "[kliːn]"
+  },
+  {
+    "word": "help",
+    "meaning": "n. 帮助；补救办法；帮忙者；有益的东西\nvt. 帮助；促进；治疗；补救\nvi. 帮助；有用；招待",
+    "us_pron": "[help]"
+  },
+  {
+    "word": "schoolbag",
+    "meaning": "n. 书包",
+    "us_pron": "[ˈskuːlˌbæɡ]"
+  },
+  {
+    "word": "maths book",
+    "meaning": "无"
+  },
+  {
+    "word": "English book",
+    "meaning": "英语书；英文书；数学书"
+  },
+  {
+    "word": "Chinese book",
+    "meaning": "语文书；中文书；英语书"
+  },
+  {
+    "word": "storybook",
+    "meaning": "n. 故事书；小说",
+    "us_pron": "[ˈstɔːribʊk]"
+  },
+  {
+    "word": "candy",
+    "meaning": "n. 糖果（等于sweets）；冰糖（等于sugar candy，rock candy）；毒品\nadj. 新潮的（服饰）；甜言蜜语的\nvt. 用糖煮；使结晶为砂糖；美化\nvi. 糖煮；成为结晶",
+    "us_pron": "[ˈkændi]"
+  },
+  {
+    "word": "notebook",
+    "meaning": "n. 笔记本，笔记簿；手册",
+    "us_pron": "[ˈnoʊtbʊk]"
+  },
+  {
+    "word": "toy",
+    "meaning": "n. 玩具；小装饰品；不值钱的东西\nadj. 作为玩具的；玩物似的\nvi. 玩弄；调情；随随便便地对待",
+    "us_pron": "[tɔɪ]"
+  },
+  {
+    "word": "key",
+    "meaning": "n. （打字机等的）键；关键；钥匙\nvt. 键入；锁上；调节…的音调；提供线索\nvi. 使用钥匙\nadj. 关键的",
+    "us_pron": "[kiː]"
+  },
+  {
+    "word": "wow",
+    "meaning": "n. 极大的成功；一鸣惊人之举；魔兽世界(World of Warcraft)；失真\nint. （表示极大的惊奇或钦佩）哇，呀",
+    "us_pron": "[waʊ]"
+  },
+  {
+    "word": "lost",
+    "meaning": "adj. 失去的；丧失的；迷惑的\nv. 遗失（lose的过去分词）；失败",
+    "us_pron": "[lɔːst]"
+  },
+  {
+    "word": "so much",
+    "meaning": "na. 和…一样多；就只那么多；多少",
+    "us_pron": "[soʊ mʌtʃ]"
+  },
+  {
+    "word": "cute",
+    "meaning": "adj. 可爱的；漂亮的；聪明的，伶俐的",
+    "us_pron": "[kjuːt]"
+  },
+  {
+    "word": "strong",
+    "meaning": "adj. 坚强的；强壮的；牢固的；擅长的\nadv. 强劲地；猛烈地",
+    "us_pron": "[strɔːŋ]"
+  },
+  {
+    "word": "friendly",
+    "meaning": "adj. 友好的；亲切的；支持的；融洽的，和睦的\nadv. 友善地；温和地",
+    "us_pron": "[ˈfrendli]"
+  },
+  {
+    "word": "quiet",
+    "meaning": "n. 安静；和平\nadj. 安静的；安定的；不动的；温顺的\nvt. 使平息；安慰\nvi. 平静下来",
+    "us_pron": "[ˈkwaɪət]"
+  },
+  {
+    "word": "hair",
+    "meaning": "n. 头发；毛发；些微\nadj. 毛发的；护理毛发的；用毛发制成的\nvt. 除去…的毛发\nvi. 生长毛发；形成毛状纤维",
+    "us_pron": "[her]"
+  },
+  {
+    "word": "shoe",
+    "meaning": "n. 鞋；蹄铁；外胎\nvt. 给……穿上鞋；穿……鞋",
+    "us_pron": "[ʃuː]"
+  },
+  {
+    "word": "glasses",
+    "meaning": "n. [轻] 眼镜；玻璃（glass的复数形式）；双筒望远镜\nv. 把…装入玻璃容器内；给…装上玻璃（glass的第三人称单数形式）",
+    "us_pron": "[ˈɡlæsɪz]"
+  },
+  {
+    "word": "his",
+    "meaning": "pron. 他的",
+    "us_pron": "[hɪz; ɪz]"
+  },
+  {
+    "word": "or",
+    "meaning": "conj. 或，或者；还是",
+    "us_pron": "[ɔːr]"
+  },
+  {
+    "word": "right",
+    "meaning": "n. 正确；右边；正义\nadj. 正确的；直接的；右方的\nvt. 纠正\nadv. 正确地；恰当地；彻底地\nvi. 复正；恢复平稳",
+    "us_pron": "[raɪt]"
+  },
+  {
+    "word": "hat",
+    "meaning": "n. 帽子\nvt. 给……戴上帽子\nvi. 供应帽子；制造帽子",
+    "us_pron": "[hæt]"
+  },
+  {
+    "word": "her",
+    "meaning": "pron. 她（she的宾格）；她的（she的所有格）；她（指某个国家；一艘船）",
+    "us_pron": "[hər; ɜːr; ər; hɜːr]"
+  },
+  {
+    "word": "bedroom",
+    "meaning": "n. 卧室\nadj. 两性关系的；城郊住宅区的",
+    "us_pron": "[ˈbedruːm; ˈbedrʊm]"
+  },
+  {
+    "word": "living room",
+    "meaning": "n. 客厅；起居室",
+    "us_pron": "[ˈlɪvɪŋ ruːm]"
+  },
+  {
+    "word": "study",
+    "meaning": "n. 学习，研究；课题；书房；学问\nvt. 学习；考虑；攻读；细察\nvi. 研究；用功",
+    "us_pron": "[ˈstʌdi]"
+  },
+  {
+    "word": "kitchen",
+    "meaning": "n. 厨房；炊具；炊事人员",
+    "us_pron": "[ˈkɪtʃɪn]"
+  },
+  {
+    "word": "bathroom",
+    "meaning": "n. 浴室；厕所；盥洗室",
+    "us_pron": "[ˈbæθruːm]"
+  },
+  {
+    "word": "bed",
+    "meaning": "n. 床；基础；河底， 海底\nvt. 使睡觉；安置，嵌入；栽种\nvi. 上床；分层",
+    "us_pron": "[bed]"
+  },
+  {
+    "word": "phone",
+    "meaning": "n. 电话；耳机，听筒\nvt. 打电话\nvi. 打电话",
+    "us_pron": "[foʊn]"
+  },
+  {
+    "word": "table",
+    "meaning": "n. 桌子；表格；平地层\nvt. 制表；搁置；嵌合\nadj. 桌子的",
+    "us_pron": "[ˈteɪbl]"
+  },
+  {
+    "word": "sofa",
+    "meaning": "n. 沙发；长椅",
+    "us_pron": "[ˈsoʊfə]"
+  },
+  {
+    "word": "fridge",
+    "meaning": "n. 电冰箱",
+    "us_pron": "[frɪdʒ]"
+  },
+  {
+    "word": "find",
+    "meaning": "n. 发现\nvi. 裁决\nvt. 查找，找到；发现；认为；感到；获得",
+    "us_pron": "[faɪnd]"
+  },
+  {
+    "word": "them",
+    "meaning": "pron. 他们；它们；她们",
+    "us_pron": "[ðəm; ðem]"
+  },
+  {
+    "word": "beef",
+    "meaning": "n. 牛肉；肌肉；食用牛；牢骚\nvt. 养；加强\nvi. 抱怨，告发；发牢骚",
+    "us_pron": "[biːf]"
+  },
+  {
+    "word": "chicken",
+    "meaning": "n. 鸡肉；小鸡；胆小鬼，懦夫\nadj. 鸡肉的；胆怯的；幼小的",
+    "us_pron": "[ˈtʃɪkɪn]"
+  },
+  {
+    "word": "noodles",
+    "meaning": "n. 面条，挂面（noodle的复数形式)",
+    "us_pron": "[ˈnuːd(ə)lz]"
+  },
+  {
+    "word": "soup",
+    "meaning": "n. 汤，羹；马力\nvt. 加速；增加马力",
+    "us_pron": "[suːp]"
+  },
+  {
+    "word": "vegetable",
+    "meaning": "n. 蔬菜；植物；植物人\nadj. 蔬菜的；植物的",
+    "us_pron": "[ˈvedʒtəbl]"
+  },
+  {
+    "word": "chopsticks",
+    "meaning": "n. 筷子",
+    "us_pron": "[ˈtʃɑːpstɪks]"
+  },
+  {
+    "word": "bowl",
+    "meaning": "n. 碗；木球；大酒杯\nvt. 投球；旋转；平稳快速移动\nvi. 玩保龄球；滑动；平稳快速移动",
+    "us_pron": "[boʊl]"
+  },
+  {
+    "word": "fork",
+    "meaning": "n. 叉；餐叉；耙\nvt. 叉起；使成叉状\nvi. 分叉；分歧",
+    "us_pron": "[fɔːrk]"
+  },
+  {
+    "word": "knife",
+    "meaning": "n. 刀；匕首\nvt. 用刀切；（口）伤害\nvi. 劈开；划过",
+    "us_pron": "[naɪf]"
+  },
+  {
+    "word": "spoon",
+    "meaning": "n. 匙，勺子；一杓的量\nvt. 用匙舀；使成匙状\nvi. 轻轻向上击",
+    "us_pron": "[spuːn]"
+  },
+  {
+    "word": "dinner",
+    "meaning": "n. 晚餐，晚宴；宴会；正餐",
+    "us_pron": "[ˈdɪnər]"
+  },
+  {
+    "word": "ready",
+    "meaning": "n. 现款；预备好的状态\nadj. 准备好；现成的；迅速的；情愿的；快要…的\nvt. 使准备好\nadv. 迅速地；预先",
+    "us_pron": "[ˈredi]"
+  },
+  {
+    "word": "help yourself",
+    "meaning": "别客气；请自便；随便吃"
+  },
+  {
+    "word": "pass",
+    "meaning": "n. 及格；经过；护照；途径；传球\nvt. 通过；经过；传递\nvi. 经过；传递；变化；终止",
+    "us_pron": "[pæs]"
+  },
+  {
+    "word": "try",
+    "meaning": "n. 尝试；努力；试验\nvt. 试图，努力；试验；审判；考验\nvi. 尝试；努力；试验",
+    "us_pron": "[traɪ]"
+  },
+  {
+    "word": "parents",
+    "meaning": "n. 父母；双亲（parent的复数）\nv. 教养；引起（parent的三单形式）",
+    "us_pron": "['perənts]"
+  },
+  {
+    "word": "cousin",
+    "meaning": "n. 堂兄弟姊妹；表兄弟姊妹",
+    "us_pron": "[ˈkʌzn]"
+  },
+  {
+    "word": "uncle",
+    "meaning": "n. 叔叔；伯父；伯伯；舅父；姨丈；姑父",
+    "us_pron": "[ˈʌŋkl]"
+  },
+  {
+    "word": "aunt",
+    "meaning": "n. 阿姨；姑妈；伯母；舅妈",
+    "us_pron": "[ænt]"
+  },
+  {
+    "word": "baby brother",
+    "meaning": "小弟弟；我的弟弟啊；切入正题"
+  },
+  {
+    "word": "doctor",
+    "meaning": "vt. 修理；篡改，伪造；为…治病；授以博士学位\nn. 医生；博士\nvi. 就医；行医",
+    "us_pron": "[ˈdɑːktər]"
+  },
+  {
+    "word": "cook",
+    "meaning": "n. 厨师，厨子\nvt. 烹调，煮\nvi. 烹调，做菜",
+    "us_pron": "[kʊk]"
+  },
+  {
+    "word": "driver",
+    "meaning": "n. 驾驶员；驱动程序；起子；传动器",
+    "us_pron": "[ˈdraɪvər]"
+  },
+  {
+    "word": "farmer",
+    "meaning": "n. 农夫，农民",
+    "us_pron": "[ˈfɑːrmər]"
+  },
+  {
+    "word": "nurse",
+    "meaning": "vt. 看护，护理；照顾；培养；给…喂奶\nvi. 照料，护理；喂奶；当保姆\nn. 护士；奶妈，保姆",
+    "us_pron": "[nɜːrs]"
+  },
+  {
+    "word": "people",
+    "meaning": "n. 人；人类；民族；公民\nvt. 居住于；使住满人",
+    "us_pron": "[ˈpiːpl]"
+  },
+  {
+    "word": "but",
+    "meaning": "conj. 但是；而是；然而\nadv. 仅仅，只\nprep. 除…以外",
+    "us_pron": "[bət; bʌt]"
+  },
+  {
+    "word": "little",
+    "meaning": "adj. 小的；很少的；短暂的；小巧可爱的\nadv. 完全不\nn. 少许；没有多少；短时间",
+    "us_pron": "[ˈlɪtl]"
+  },
+  {
+    "word": "puppy",
+    "meaning": "n. 小狗，幼犬",
+    "us_pron": "[ˈpʌpi]"
+  },
+  {
+    "word": "football player",
+    "meaning": "足球运动员；球员；足球队员"
+  },
+  {
+    "word": "job",
+    "meaning": "n. 工作；职业\nvt. 承包；代客买卖\nvi. 做零工",
+    "us_pron": "[dʒɑːb]"
+  },
+  {
+    "word": "basketball",
+    "meaning": "n. 篮球；篮球运动",
+    "us_pron": "[ˈbæskɪtbɔːl]"
+  },
+  {
+    "word": "first floor",
+    "meaning": "n. 地面以上的一层；底层",
+    "us_pron": "[fɝ​st flɔr]"
+  },
+  {
+    "word": "second floor",
+    "meaning": "na. 〈美〉二楼；〈英〉三楼"
+  },
+  {
+    "word": "teacher's office",
+    "meaning": "无"
+  },
+  {
+    "word": "library",
+    "meaning": "n. 图书馆，藏书室；文库",
+    "us_pron": "[ˈlaɪbreri]"
+  },
+  {
+    "word": "playground",
+    "meaning": "n. 运动场，操场；游乐场",
+    "us_pron": "[ˈpleɪɡraʊnd]"
+  },
+  {
+    "word": "computer room",
+    "meaning": "un. 计算机机房；计算机室"
+  },
+  {
+    "word": "art room",
+    "meaning": "绘画教室；美术室；美术教室"
+  },
+  {
+    "word": "music room",
+    "meaning": "音乐教室；音乐室；音乐厅"
+  },
+  {
+    "word": "next to",
+    "meaning": "prep. 紧邻；在…近旁；仅次于；紧接"
+  },
+  {
+    "word": "homework",
+    "meaning": "n. 家庭作业，课外作业",
+    "us_pron": "[ˈhoʊmwɜːrk]"
+  },
+  {
+    "word": "class",
+    "meaning": "n. 阶级；班级；种类；班；等级\nadj. 极好的；很好的，优秀的，出色的\nvt. 分类；把…分等级；把…归入某等级，把…看作（或分类、归类）；把…编入某一班级\nvi. 属于…类（或等级），被列为某类（或某级）",
+    "us_pron": "[klæs]"
+  },
+  {
+    "word": "forty",
+    "meaning": "n. 四十\nadj. 四十的；四十个的",
+    "us_pron": "[ˈfɔːrti]"
+  },
+  {
+    "word": "way",
+    "meaning": "n. 方法；道路；方向；行业；习惯\nadj. 途中的\nadv. 大大地；远远地",
+    "us_pron": "[weɪ]"
+  },
+  {
+    "word": "breakfast",
+    "meaning": "n. 早餐；早饭\nvt. 为…供应早餐\nvi. 吃早餐",
+    "us_pron": "[ˈbrekfəst]"
+  },
+  {
+    "word": "English class",
+    "meaning": "英语课；英文课；英语课程"
+  },
+  {
+    "word": "lunch",
+    "meaning": "n. 午餐\nvt. 吃午餐；供给午餐\nvi. 吃午餐；供给午餐",
+    "us_pron": "[lʌntʃ]"
+  },
+  {
+    "word": "music class",
+    "meaning": "无"
+  },
+  {
+    "word": "PE class",
+    "meaning": "无"
+  },
+  {
+    "word": "dinner",
+    "meaning": "n. 晚餐，晚宴；宴会；正餐",
+    "us_pron": "[ˈdɪnər]"
+  },
+  {
+    "word": "get up",
+    "meaning": "na. 起床；起身；站起来；叫…起床",
+    "us_pron": "[ɡet ʌp]"
+  },
+  {
+    "word": "go to school",
+    "meaning": "na. 到校上课；上学去；开始求学"
+  },
+  {
+    "word": "go home",
+    "meaning": "na. 回家；〈口〉死；(忠告等)刻骨铭心；击中"
+  },
+  {
+    "word": "go to bed",
+    "meaning": "na. 睡；同床；【印】付印"
+  },
+  {
+    "word": "over",
+    "meaning": "adv. 结束；越过；从头到尾\nprep. 越过；在…之上；遍于…之上\nadj. 结束的；上面的\nvt. 越过",
+    "us_pron": "[ˈoʊvər]"
+  },
+  {
+    "word": "now",
+    "meaning": "adv. 现在；如今；立刻\nadj. 现在的\nn. 现在；目前\nconj. 由于；既然",
+    "us_pron": "[naʊ]"
+  },
+  {
+    "word": "o'clock",
+    "meaning": "abbr. …点钟（等于of the clock）"
+  },
+  {
+    "word": "kid",
+    "meaning": "n. 小孩；小山羊\nvt. 欺骗；取笑；戏弄\nvi. 欺骗；取笑；戏弄\nadj. 小山羊皮制的；较年幼的",
+    "us_pron": "[kɪd]"
+  },
+  {
+    "word": "thirty",
+    "meaning": "num. 三十\nn. 三十年代\nadj. 三十个的",
+    "us_pron": "[ˈθɜːrti]"
+  },
+  {
+    "word": "hurry up",
+    "meaning": "na. 催促；赶快",
+    "us_pron": "['hɜːrɪ ʌp]"
+  },
+  {
+    "word": "come on",
+    "meaning": "na. (演员)出台；进行(很好)；(暴风雨等)起；(病,苦痛等)加深"
+  },
+  {
+    "word": "just a minute",
+    "meaning": "na. “wait/just a minute”的变体"
+  },
+  {
+    "word": "cold",
+    "meaning": "n. 寒冷；感冒\nadj. 寒冷的；冷淡的，不热情的；失去知觉的\nadv. 完全地",
+    "us_pron": "[kəʊld]"
+  },
+  {
+    "word": "cool",
+    "meaning": "n. 凉爽；凉爽的空气\nadj. 凉爽的；冷静的；出色的\nvt. 使…冷却；使…平静下来\nvi. 变凉；平息\nadv. 冷静地",
+    "us_pron": "[kuːl]"
+  },
+  {
+    "word": "warm",
+    "meaning": "n. 取暖；加热\nadj. 温暖的；热情的\nvt. 使…兴奋；使…温暖；使…感兴趣\nvi. 同情；激动；变温暖",
+    "us_pron": "[wɔːrm]"
+  },
+  {
+    "word": "hot",
+    "meaning": "adj. 热的；辣的；热情的；激动的；紧迫的\nvt. 增加；给…加温\nadv. 热；紧迫地\nvi. 变热",
+    "us_pron": "[hɑːt]"
+  },
+  {
+    "word": "sunny",
+    "meaning": "adj. 阳光充足的，和煦的；快活的；性情开朗的",
+    "us_pron": "[ˈsʌni]"
+  },
+  {
+    "word": "windy",
+    "meaning": "adj. 多风的，有风的；腹胀的；吹牛的",
+    "us_pron": "[ˈwɪndi]"
+  },
+  {
+    "word": "cloudy",
+    "meaning": "adj. 多云的；阴天的；愁容满面的",
+    "us_pron": "[ˈklaʊdi]"
+  },
+  {
+    "word": "snowy",
+    "meaning": "adj. 下雪的，多雪的；被雪覆盖的；洁白无瑕的",
+    "us_pron": "[ˈsnoʊi]"
+  },
+  {
+    "word": "rainy",
+    "meaning": "adj. 下雨的；多雨的",
+    "us_pron": "[ˈreɪni]"
+  },
+  {
+    "word": "outside",
+    "meaning": "adj. 外面的，外部的；外来的\nn. 外部；外观\nadv. 在外面，向外面；在室外\nprep. 在…范围之外",
+    "us_pron": "[ˌaʊtˈsaɪd]"
+  },
+  {
+    "word": "be careful",
+    "meaning": "小心；当心；注意"
+  },
+  {
+    "word": "weather",
+    "meaning": "n. 天气；气象；气候；处境\nvt. 经受住；使风化；侵蚀；使受风吹雨打\nadj. 露天的；迎风的\nvi. 风化；受侵蚀；经受风雨",
+    "us_pron": "[ˈweðər]"
+  },
+  {
+    "word": "New York",
+    "meaning": "n. 【城】纽约州"
+  },
+  {
+    "word": "how about",
+    "meaning": "怎么样；如何；怎麽样"
+  },
+  {
+    "word": "degree",
+    "meaning": "n. 程度，等级；度；学位；阶层",
+    "us_pron": "[dɪˈɡriː]"
+  },
+  {
+    "word": "world",
+    "meaning": "n. 世界；领域；世俗；全人类；物质生活",
+    "us_pron": "[wɜːrld]"
+  },
+  {
+    "word": "London",
+    "meaning": "n. 伦敦",
+    "us_pron": "[ˈlʌndən]"
+  },
+  {
+    "word": "Moscow",
+    "meaning": "n. 莫斯科（俄罗斯首都）",
+    "us_pron": "[ˈmɑːskaʊ]"
+  },
+  {
+    "word": "Singapore",
+    "meaning": "n. 新加坡",
+    "us_pron": "[ˈsɪŋəpɔːr]"
+  },
+  {
+    "word": "Sydney",
+    "meaning": "n. 悉尼（澳大利亚港市）",
+    "us_pron": "[ˈsɪdni]"
+  },
+  {
+    "word": "fly",
+    "meaning": "n. 飞行；苍蝇；两翼昆虫\nadj. 敏捷的\nvi. 飞；驾驶飞机；飘扬\nvt. 飞行；飞越；使飘扬",
+    "us_pron": "[flaɪ]"
+  },
+  {
+    "word": "love",
+    "meaning": "n. 恋爱；亲爱的；酷爱；喜爱的事物；爱情，爱意；疼爱；热爱；爱人，所爱之物\nv. 爱，热爱；爱戴；赞美，称赞；喜爱；喜好；喜欢；爱慕",
+    "us_pron": "[lʌv]"
+  },
+  {
+    "word": "tomato",
+    "meaning": "n. 番茄，西红柿",
+    "us_pron": "[təˈmeɪtoʊ]"
+  },
+  {
+    "word": "potato",
+    "meaning": "n. [作物] 土豆，[作物] 马铃薯",
+    "us_pron": "[pəˈteɪtoʊ]"
+  },
+  {
+    "word": "green beans",
+    "meaning": "n. 【食】青豆"
+  },
+  {
+    "word": "carrot",
+    "meaning": "n. 胡萝卜\n诱饵",
+    "us_pron": "[ˈkærət]"
+  },
+  {
+    "word": "horse",
+    "meaning": "n. 马；骑兵；脚架；海洛因\nvt. 使骑马；系马于；捉弄\nvi. 骑马；作弄人",
+    "us_pron": "[hɔːrs]"
+  },
+  {
+    "word": "cow",
+    "meaning": "n. 奶牛，母牛；母兽\nvt. 威胁，恐吓",
+    "us_pron": "[kaʊ]"
+  },
+  {
+    "word": "sheep",
+    "meaning": "n. 羊，绵羊；胆小鬼",
+    "us_pron": "[ʃiːp]"
+  },
+  {
+    "word": "hen",
+    "meaning": "n. 母鸡；女人；雌禽",
+    "us_pron": "[hen]"
+  },
+  {
+    "word": "these",
+    "meaning": "adj. 这些的\npron. 这些",
+    "us_pron": "[ðiːz]"
+  },
+  {
+    "word": "yum",
+    "meaning": "int. 极好的；妙的；美味的",
+    "us_pron": "[jʌm]"
+  },
+  {
+    "word": "animal",
+    "meaning": "n. 动物\n动物的",
+    "us_pron": "[ˈænɪm(ə)l]"
+  },
+  {
+    "word": "those",
+    "meaning": "adj. 那些的\npron. 那些（that的复数）",
+    "us_pron": "[ðoʊz]"
+  },
+  {
+    "word": "garden",
+    "meaning": "n. 花园；菜园\nvt. 栽培花木\nvi. 从事园艺；在园中种植",
+    "us_pron": "[ˈɡɑːrdn]"
+  },
+  {
+    "word": "farm",
+    "meaning": "n. 农场；农家；畜牧场\nvt. 养殖；耕种；佃出（土地）\nvi. 种田，务农；经营农场",
+    "us_pron": "[fɑːrm]"
+  },
+  {
+    "word": "goat",
+    "meaning": "n. 山羊；替罪羊（美俚）；色鬼（美俚）",
+    "us_pron": "[goʊt]"
+  },
+  {
+    "word": "eat",
+    "meaning": "vt. 吃，喝；腐蚀；烦扰\nvi. 进食；腐蚀，侵蚀",
+    "us_pron": "[iːt]"
+  },
+  {
+    "word": "clothes",
+    "meaning": "n. 衣服",
+    "us_pron": "[kloʊðz; kloʊz]"
+  },
+  {
+    "word": "pants",
+    "meaning": "n. 裤子",
+    "us_pron": "[pænts]"
+  },
+  {
+    "word": "hat",
+    "meaning": "n. 帽子\nvt. 给……戴上帽子\nvi. 供应帽子；制造帽子",
+    "us_pron": "[hæt]"
+  },
+  {
+    "word": "dress",
+    "meaning": "n. 连衣裙；女装\nvt. 给…穿衣\nvi. 穿衣",
+    "us_pron": "[dres]"
+  },
+  {
+    "word": "skirt",
+    "meaning": "n. 裙子\nvt. 绕过，回避；位于…边缘\nvi. 沿边走，绕开；环绕",
+    "us_pron": "[skɜːrt]"
+  },
+  {
+    "word": "coat",
+    "meaning": "n. 外套\nvt. 覆盖…的表面",
+    "us_pron": "[koʊt]"
+  },
+  {
+    "word": "sweater",
+    "meaning": "n. 毛线衣，运动衫；大量出汗的人，发汗剂",
+    "us_pron": "[ˈswetər]"
+  },
+  {
+    "word": "sock",
+    "meaning": "vt. 重击；给……穿袜\nn. 短袜；一击\nadv. 正着地；不偏不倚地\nadj. 非常成功的",
+    "us_pron": "[sɑːk]"
+  },
+  {
+    "word": "shorts",
+    "meaning": "n. 短裤",
+    "us_pron": "[ʃɔːrts]"
+  },
+  {
+    "word": "jacket",
+    "meaning": "n. 羽绒滑雪衫；西装短外套；短上衣，夹克；土豆皮；书籍的护封；文件套，公文夹\nvt. 给…穿夹克；给…装护套；给…包上护封；〈口〉打",
+    "us_pron": "[ˈdʒækɪt]"
+  },
+  {
+    "word": "shirt",
+    "meaning": "n. 衬衫；汗衫，内衣",
+    "us_pron": "[ʃɜːrt]"
+  },
+  {
+    "word": "yours",
+    "meaning": "pron. 你（们）的东西；你的责任[义务]；你的家属；来信，尊函\nadj. 你（们）的（东西）；信末署名前用语",
+    "us_pron": "[jərz; jɔːrz; jʊrz]"
+  },
+  {
+    "word": "whose",
+    "meaning": "pron. 谁的（疑问代词）",
+    "us_pron": "[huːz]"
+  },
+  {
+    "word": "mine",
+    "meaning": "n. 矿，矿藏；矿山，矿井；地雷，水雷\nvt. 开采，采掘；在…布雷\nvi. 开矿，采矿；埋设地雷\npron. 我的",
+    "us_pron": "[maɪn]"
+  },
+  {
+    "word": "pack",
+    "meaning": "n. 包装；一群；背包；包裹；一副\nvt. 包装；压紧；捆扎；挑选；塞满\nvi. 挤；包装货物；被包装；群集",
+    "us_pron": "[pæk]"
+  },
+  {
+    "word": "wait",
+    "meaning": "n. 等待；等候\nvi. 等待；耽搁；伺候用餐\nvt. 等候；推迟；延缓",
+    "us_pron": "[weɪt]"
+  },
+  {
+    "word": "glove",
+    "meaning": "n. 手套\nvt. 给…戴手套",
+    "us_pron": "[ɡlʌv]"
+  },
+  {
+    "word": "scarf",
+    "meaning": "n. 围巾；嵌接，嵌接处；头巾领巾\nvt. 披嵌接；用围巾围",
+    "us_pron": "[skɑːrf]"
+  },
+  {
+    "word": "umbrella",
+    "meaning": "n. 雨伞；保护伞；庇护；伞形结构",
+    "us_pron": "[ʌmˈbrelə]"
+  },
+  {
+    "word": "sunglasses",
+    "meaning": "n. 太阳镜；凸透镜（sunglass的复数）",
+    "us_pron": "[ˈsʌnɡlæsɪz]"
+  },
+  {
+    "word": "pretty",
+    "meaning": "n. 有吸引力的事物（尤指饰品）；漂亮的人\nadj. 漂亮的；可爱的；优美的\nadv. 相当地；颇",
+    "us_pron": "[ˈprɪti]"
+  },
+  {
+    "word": "expensive",
+    "meaning": "adj. 昂贵的；花钱的",
+    "us_pron": "[ɪkˈspensɪv]"
+  },
+  {
+    "word": "cheap",
+    "meaning": "adj. 便宜的；小气的；不值钱的\nadv. 便宜地",
+    "us_pron": "[tʃiːp]"
+  },
+  {
+    "word": "nice",
+    "meaning": "adj. 精密的；美好的；细微的；和蔼的",
+    "us_pron": "[naɪs]"
+  },
+  {
+    "word": "try on",
+    "meaning": "na. 试穿；〈非正式〉搞恶作剧(以试探能否被容忍)；〈非正式〉耍花招"
+  },
+  {
+    "word": "size",
+    "meaning": "n. 大小；尺寸\nadj. 一定尺寸的\nvt. 依大小排列\nvi. 可比拟",
+    "us_pron": "[saɪz]"
+  },
+  {
+    "word": "of course",
+    "meaning": "na. 当然"
+  },
+  {
+    "word": "too",
+    "meaning": "adv. 太；也；很；还；非常；过度",
+    "us_pron": "[tuː]"
+  },
+  {
+    "word": "just",
+    "meaning": "adv. 只是，仅仅；刚才，刚刚；正好，恰好；实在；刚要\nadj. 公正的，合理的；正直的，正义的；正确的；公平的；应得的",
+    "us_pron": "[dʒʌst]"
+  },
+  {
+    "word": "how much",
+    "meaning": "conj. 多少",
+    "us_pron": "[haʊ mʌtʃ]"
+  },
+  {
+    "word": "eighty",
+    "meaning": "num. 八十\nn. 八十；八十岁；八十年代\nadj. 八十的，八十个的；八十岁的",
+    "us_pron": "[ˈeɪti]"
+  },
+  {
+    "word": "dollar",
+    "meaning": "n. 美元",
+    "us_pron": "[ˈdɑːlər]"
+  },
+  {
+    "word": "sale",
+    "meaning": "n. 销售；出售；拍卖；销售额；廉价出售",
+    "us_pron": "[seɪl]"
+  },
+  {
+    "word": "more",
+    "meaning": "adv. 更多；此外；更大程度地\nadj. 更多的；附加的\npron. 更多的数量\nn. 更多",
+    "us_pron": "[mɔːr]"
+  },
+  {
+    "word": "us",
+    "meaning": "pron. 我们",
+    "us_pron": "[əs; ʌs]"
+  }
 ]
