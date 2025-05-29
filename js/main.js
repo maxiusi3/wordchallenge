@@ -290,25 +290,16 @@ async function loadQuestionsForGrade(gradeId, session) { // Added session parame
         throw new Error("Provided game session was lost during question loading.");
     }
 
-    // --- FR No Repeat Logic with Random Pool Size ---
-    const baseQuestionsL1 = adminConfig.level1.totalQuestions || 10;
-    const baseQuestionsL2 = adminConfig.level2.totalQuestions || 10;
-    const baseQuestionsL3 = adminConfig.level3.totalQuestions || 10;
-
-    // 为每个关卡随机生成题目数量（在基础数量的50%-150%之间）
-    const randomFactor = () => 0.5 + Math.random(); // 0.5 到 1.5 之间的随机数
-    const randomFactorL1 = randomFactor();
-    const randomFactorL2 = randomFactor();
-    const randomFactorL3 = randomFactor();
-    const totalNeededL1 = Math.max(5, Math.floor(baseQuestionsL1 * randomFactorL1)); // 最少5题
-    const totalNeededL2 = Math.max(5, Math.floor(baseQuestionsL2 * randomFactorL2)); // 最少5题
-    const totalNeededL3 = Math.max(5, Math.floor(baseQuestionsL3 * randomFactorL3)); // 最少5题
+    // --- FR No Repeat Logic with Fixed Question Count but Random Selection ---
+    const totalNeededL1 = adminConfig.level1.totalQuestions || 10;
+    const totalNeededL2 = adminConfig.level2.totalQuestions || 10;
+    const totalNeededL3 = adminConfig.level3.totalQuestions || 10;
     const totalUniqueQuestionsNeeded = totalNeededL1 + totalNeededL2 + totalNeededL3;
 
     const gameTimestamp = Date.now();
-    console.log(`%c🎲 随机题目数量 - L1: ${totalNeededL1}, L2: ${totalNeededL2}, L3: ${totalNeededL3} (基础: ${baseQuestionsL1}/${baseQuestionsL2}/${baseQuestionsL3})`, 'color: #FF6B35; font-size: 14px; font-weight: bold;');
-    console.log(`%c🎯 总计需要 ${totalUniqueQuestionsNeeded} 道题目 (随机生成)`, 'color: #4ECDC4; font-size: 14px; font-weight: bold;');
-    console.log(`%c🕰️ 游戏时间戳: ${gameTimestamp} - 随机因子: L1=${randomFactorL1.toFixed(2)}, L2=${randomFactorL2.toFixed(2)}, L3=${randomFactorL3.toFixed(2)}`, 'color: #45B7D1; font-size: 14px; font-weight: bold;');
+    console.log(`%c🎲 固定题目数量但随机选择 - L1: ${totalNeededL1}, L2: ${totalNeededL2}, L3: ${totalNeededL3}`, 'color: #FF6B35; font-size: 14px; font-weight: bold;');
+    console.log(`%c🎯 总计需要 ${totalUniqueQuestionsNeeded} 道题目 (随机选择)`, 'color: #4ECDC4; font-size: 14px; font-weight: bold;');
+    console.log(`%c🕰️ 游戏时间戳: ${gameTimestamp} - 每次游戏随机选择不同题目`, 'color: #45B7D1; font-size: 14px; font-weight: bold;');
 
     // 1. Create a unique pool based on 'word' or 'english'
     const uniqueQuestionsMap = new Map();
@@ -436,7 +427,7 @@ async function loadQuestionsForGrade(gradeId, session) { // Added session parame
         finalL1Count = Math.max(3, Math.floor(totalNeededL1 * scaleFactor));
         finalL2Count = Math.max(3, Math.floor(totalNeededL2 * scaleFactor));
         finalL3Count = Math.max(3, Math.floor(totalNeededL3 * scaleFactor));
-        console.log(`调整后题目数量 - L1: ${finalL1Count}, L2: ${finalL2Count}, L3: ${finalL3Count}`);
+        console.log(`%c⚠️ 题库不足，调整后题目数量 - L1: ${finalL1Count}, L2: ${finalL2Count}, L3: ${finalL3Count}`, 'color: #FFA500; font-weight: bold;');
     }
 
     // 创建题库的副本用于随机抽取
@@ -1726,7 +1717,7 @@ async function handleAnswerL1(submittedAnswer) {
 
         setTimeout(() => {
             gameSession.questionNumber++;
-            if (gameSession.questionNumber < adminConfig.level1.totalQuestions) {
+            if (gameSession.questionNumber < gameSession.questions.level1.length) {
                 console.log("[MainJS] handleAnswerL1: Proceeding to next question in L1.");
                 getNextQuestion();
             } else {
@@ -1755,7 +1746,7 @@ async function handleAnswerL1(submittedAnswer) {
             stopTimer(gameSession);
             setTimeout(() => {
                 gameSession.questionNumber++;
-                if (gameSession.questionNumber < adminConfig.level1.totalQuestions) {
+                if (gameSession.questionNumber < gameSession.questions.level1.length) {
                     console.log("[MainJS] handleAnswerL1: Moving to next question after exhausting attempts.");
                     getNextQuestion();
                 } else {
@@ -1797,7 +1788,7 @@ async function handleAnswerL3(submittedAnswer) {
 
         setTimeout(() => {
             gameSession.questionNumber++;
-            if (gameSession.questionNumber < adminConfig.level3.totalQuestions) {
+            if (gameSession.questionNumber < gameSession.questions.level3.length) {
                 console.log("[MainJS] handleAnswerL3: Proceeding to next question in L3.");
                 getNextQuestion();
             } else {
@@ -1826,7 +1817,7 @@ async function handleAnswerL3(submittedAnswer) {
             stopTimer(gameSession);
             setTimeout(() => {
                 gameSession.questionNumber++;
-                if (gameSession.questionNumber < adminConfig.level3.totalQuestions) {
+                if (gameSession.questionNumber < gameSession.questions.level3.length) {
                     console.log("[MainJS] handleAnswerL3: Moving to next question after exhausting attempts.");
                     getNextQuestion();
                 } else {
