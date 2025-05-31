@@ -35,14 +35,22 @@
 <body class="flex flex-col items-center justify-center h-screen text-white p-8">
 
     <div class="text-center">
-        <h1 class="text-6xl md:text-8xl font-bold mb-6 animate-bounce">
+        <h1 class="text-6xl md:text-8xl font-bold mb-8 animate-bounce">
             单词闯关
         </h1>
 
-        <button id="startButton"
-                class="start-button bg-white text-indigo-600 font-bold text-3xl md:text-4xl py-6 px-16 rounded-lg shadow-xl hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-indigo-300">
-            开始挑战!
-        </button>
+        <!-- 游戏模式选择 -->
+        <div class="space-y-4 mb-6">
+            <button id="singlePlayerButton"
+                    class="start-button bg-white text-indigo-600 font-bold text-2xl md:text-3xl py-5 px-12 rounded-lg shadow-xl hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-indigo-300 w-80 transition duration-150 ease-in-out">
+                🎯 单人挑战
+            </button>
+
+            <button id="multiPlayerButton"
+                    class="start-button bg-blue-500 text-white font-bold text-2xl md:text-3xl py-5 px-12 rounded-lg shadow-xl hover:bg-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-300 w-80 transition duration-150 ease-in-out">
+                ⚔️ 双人对战
+            </button>
+        </div>
 
         <!-- 网络状态提示 -->
         <div id="networkStatus" class="mt-4 text-sm opacity-75">
@@ -70,7 +78,8 @@
         });
         */
 
-        const startButton = document.getElementById('startButton');
+        const singlePlayerButton = document.getElementById('singlePlayerButton');
+        const multiPlayerButton = document.getElementById('multiPlayerButton');
         const networkIndicator = document.getElementById('networkIndicator');
         const networkText = document.getElementById('networkText');
 
@@ -80,13 +89,17 @@
             if (isOnline) {
                 networkIndicator.textContent = '✅';
                 networkText.textContent = '网络连接正常';
-                startButton.disabled = false;
-                startButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                singlePlayerButton.disabled = false;
+                multiPlayerButton.disabled = false;
+                singlePlayerButton.classList.remove('opacity-50', 'cursor-not-allowed');
+                multiPlayerButton.classList.remove('opacity-50', 'cursor-not-allowed');
             } else {
                 networkIndicator.textContent = '❌';
                 networkText.textContent = '网络连接不可用';
-                startButton.disabled = true;
-                startButton.classList.add('opacity-50', 'cursor-not-allowed');
+                singlePlayerButton.disabled = true;
+                multiPlayerButton.disabled = true;
+                singlePlayerButton.classList.add('opacity-50', 'cursor-not-allowed');
+                multiPlayerButton.classList.add('opacity-50', 'cursor-not-allowed');
             }
         }
 
@@ -97,12 +110,14 @@
         window.addEventListener('online', updateNetworkStatus);
         window.addEventListener('offline', updateNetworkStatus);
 
-        startButton.addEventListener('click', async () => { // Make the handler async
+        // 通用的音频初始化和点击处理函数
+        async function handleButtonClick() {
             // 检查网络状态
             if (!navigator.onLine) {
                 alert('网络连接不可用，请检查网络连接后重试。');
-                return;
+                return false;
             }
+
             try {
                 // 尝试初始化 AudioContext (必须在用户交互后)
                 if (window.parent && typeof window.parent.initAudioContext === 'function') {
@@ -115,7 +130,7 @@
                     console.warn('initAudioContext or preloadSounds function not found in parent.');
                 }
             } catch (error) {
-                console.error("Audio initialization/preload failed on start button click:", error);
+                console.error("Audio initialization/preload failed on button click:", error);
             }
 
             // 播放点击音效 (如果 audio.js 已实现且音效已加载)
@@ -123,13 +138,32 @@
                 window.parent.playSound('click');
             }
 
-            // 通知父页面导航到 info_input 屏幕
+            return true;
+        }
+
+        // 单人挑战按钮事件
+        singlePlayerButton.addEventListener('click', async () => {
+            const canProceed = await handleButtonClick();
+            if (!canProceed) return;
+
+            // 通知父页面导航到 info_input 屏幕 (保持原有单人模式流程)
             if (window.parent && window.parent.postMessage) {
                 window.parent.postMessage({ action: 'navigate', screen: 'info_input' }, '*');
             } else {
                 console.error("无法与父窗口通信以进行导航。");
-                // 备用方案：直接尝试修改父窗口 iframe src (如果同源)
-                // try { window.parent.document.getElementById('screenFrame').src = 'screens/info_input.html'; } catch(e) {}
+            }
+        });
+
+        // 双人对战按钮事件
+        multiPlayerButton.addEventListener('click', async () => {
+            const canProceed = await handleButtonClick();
+            if (!canProceed) return;
+
+            // 通知父页面导航到双人对战信息输入页面
+            if (window.parent && window.parent.postMessage) {
+                window.parent.postMessage({ action: 'navigate', screen: 'battle_info_input' }, '*');
+            } else {
+                console.error("无法与父窗口通信以进行导航。");
             }
         });
 

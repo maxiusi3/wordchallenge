@@ -19,7 +19,7 @@
 
         /* Input underline styling (reused from L1) */
         .word-input-container { display: inline-block; margin: 0 5px; position: relative; }
-        .word-input { background: transparent; border: none; border-bottom: 3px solid white; color: white; font-size: 2.5rem; text-align: center; padding: 5px 0; width: 150px; min-width: 150px; outline: none; transition: border-color 0.2s, width 0.1s linear, border-bottom-style 0.2s; box-sizing: content-box; vertical-align: bottom; caret-color: #fbbf24; text-transform: lowercase; }
+        .word-input { background: transparent; border: none; border-bottom: 3px solid white; color: white; font-size: 2.5rem; text-align: center; padding: 5px 0; width: auto; min-width: 60px; outline: none; transition: border-color 0.2s, width 0.2s ease, border-bottom-style 0.2s; box-sizing: content-box; vertical-align: bottom; caret-color: #fbbf24; text-transform: lowercase; }
         .word-input:focus { border-bottom-color: #fbbf24; }
         .word-input.typing { border-bottom-style: dashed; border-bottom-color: #fde047; }
         .word-input.entered { border-bottom-color: #86efac; border-bottom-style: solid; }
@@ -148,6 +148,20 @@
 
       // --- Functions (Many reused from Level 1) ---
 
+      // 动态调整输入框宽度的函数
+      function adjustInputWidth(input) {
+          const value = input.value;
+          const expectedWord = input.dataset.expectedWord || '';
+
+          // 计算所需宽度：基于输入内容长度和期望单词长度的最大值
+          const contentLength = Math.max(value.length, expectedWord.length, 3);
+
+          // 使用字符宽度计算，每个字符大约1.5ch（考虑字体和间距）
+          const newWidth = Math.max(60, contentLength * 30 + 20); // 30px per character + padding for larger font
+
+          input.style.width = newWidth + 'px';
+      }
+
       // Function to setup input fields based on the structure of the English answer
       function setupInputFields(englishAnswer) {
           inputAreaEl.innerHTML = '';
@@ -162,6 +176,7 @@
               input.className = 'word-input';
               input.maxLength = word.length + 5;
               input.dataset.wordIndex = index;
+              input.dataset.expectedWord = word.toLowerCase(); // 保存期望的单词
               input.setAttribute('autocomplete', 'off');
               input.setAttribute('autocorrect', 'off');
               input.setAttribute('autocapitalize', 'off');
@@ -169,24 +184,9 @@
 
               input.addEventListener('input', () => {
                   input.value = input.value.toLowerCase(); // Force lowercase input first
-                  const text = input.value;
 
-                  // Helper to measure text width
-                  const getTextWidth = (text, font) => {
-                      const canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement("canvas"));
-                      const context = canvas.getContext("2d");
-                      context.font = font;
-                      const metrics = context.measureText(text);
-                      return metrics.width;
-                  };
-
-                  const currentFontSize = window.getComputedStyle(input).fontSize;
-                  const currentFontFamily = window.getComputedStyle(input).fontFamily;
-                  const textMetricsWidth = getTextWidth(text, `${currentFontSize} ${currentFontFamily}`);
-
-                  // Add a small padding, e.g., 10px or 1ch equivalent
-                  const PADDING_WIDTH = 10; // pixels
-                  input.style.width = `${Math.max(parseFloat(window.getComputedStyle(input).minWidth) || 50, textMetricsWidth + PADDING_WIDTH)}px`;
+                  // 动态调整输入框宽度
+                  adjustInputWidth(input);
 
                   input.classList.add('typing');
                   input.classList.remove('entered');
@@ -211,7 +211,9 @@
                input.addEventListener('focus', () => { input.classList.add('typing'); input.classList.remove('entered'); });
                input.addEventListener('blur', () => { input.classList.remove('typing'); if(input.value.trim() !== '') input.classList.add('entered'); });
 
-              // input.style.width = `${Math.max(3, word.length)}ch`; // This line is now handled by CSS default
+              // 设置初始宽度
+              adjustInputWidth(input);
+
               container.appendChild(input);
               inputAreaEl.appendChild(container);
               currentInputs.push(input);

@@ -16,6 +16,9 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="js/network-manager.js"></script>
     <script src="js/audio.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/websocket-client.js"></script>
+    <script src="js/battle-manager.js"></script>
     <script>
       lucide.createIcons();
 
@@ -51,6 +54,11 @@
           }
       }
 
+      // 全局变量存储双人对战相关数据
+      window.battleUserInfo = null;
+      window.opponentInfo = null;
+      window.battleGameData = null;
+
       window.addEventListener('message', (event) => {
           // 确保 screenFrame 已经加载并且 event.source 是其 contentWindow
           const screenFrame = document.getElementById('screenFrame');
@@ -61,6 +69,29 @@
               if ((event.data.type === 'navigate' || event.data.action === 'navigate') &&
                   typeof event.data.screen === 'string') {
                   navigateTo(event.data.screen);
+              }
+
+              // 处理单人模式用户信息设置 (保持原有功能)
+              if (event.data.action === 'setUserInfo') {
+                  // 这里可以处理单人模式的用户信息
+                  console.log('单人模式用户信息:', event.data);
+              }
+
+              // 处理双人对战用户信息设置
+              if (event.data.action === 'setBattleUserInfo') {
+                  window.battleUserInfo = {
+                      nickname: event.data.nickname,
+                      grade: event.data.grade,
+                      gradeName: event.data.gradeName
+                  };
+                  console.log('双人对战用户信息:', window.battleUserInfo);
+              }
+
+              // 处理双人对战游戏开始
+              if (event.data.action === 'startBattleGame') {
+                  if (window.battleManager && window.battleUserInfo && window.opponentInfo) {
+                      window.battleManager.initializeBattle(window.battleUserInfo, window.opponentInfo);
+                  }
               }
           }
       });

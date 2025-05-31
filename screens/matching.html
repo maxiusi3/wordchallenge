@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>正在匹配 - 单词闯关</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #4f46e5 0%, #ec4899 100%);
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+        }
+
+        .spinner {
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center h-screen text-white p-8">
+
+    <div class="w-full max-w-2xl bg-white/30 backdrop-blur-lg rounded-xl p-8 md:p-12 shadow-xl text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-8">正在匹配</h1>
+
+        <!-- 旋转动画图标 -->
+        <div class="mb-8">
+            <div class="spinner inline-block w-16 h-16 border-4 border-white border-t-transparent rounded-full"></div>
+        </div>
+
+        <!-- 匹配状态文字 -->
+        <div class="mb-6">
+            <p id="matchingStatus" class="text-2xl font-medium pulse">寻找同年级对手中...</p>
+        </div>
+
+        <!-- 等待时间 -->
+        <div class="mb-8">
+            <p class="text-xl">等待时间: <span id="waitTime" class="font-bold text-yellow-300">0</span>秒</p>
+        </div>
+
+        <!-- 取消匹配按钮 -->
+        <button id="cancelButton"
+                class="w-full bg-red-500 hover:bg-red-600 text-white font-bold text-2xl py-4 px-8 rounded-lg shadow-xl focus:outline-none focus:ring-4 focus:ring-red-300 transition duration-150 ease-in-out mb-8">
+            取消匹配
+        </button>
+
+        <!-- 匹配信息 -->
+        <div class="bg-white/20 rounded-lg p-6">
+            <h3 class="text-xl font-bold mb-4">匹配信息</h3>
+            <div class="text-left space-y-2">
+                <p>昵称: <span id="playerNickname" class="font-medium">-</span></p>
+                <p>年级: <span id="playerGrade" class="font-medium">-</span></p>
+                <p>模式: <span class="font-medium">快速匹配</span></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const matchingStatus = document.getElementById('matchingStatus');
+        const waitTimeElement = document.getElementById('waitTime');
+        const cancelButton = document.getElementById('cancelButton');
+        const playerNickname = document.getElementById('playerNickname');
+        const playerGrade = document.getElementById('playerGrade');
+
+        let waitTime = 0;
+        let matchingTimer = null;
+        let isMatching = true;
+
+        // 匹配状态文字数组
+        const statusMessages = [
+            '寻找同年级对手中...',
+            '正在匹配合适的玩家...',
+            '扩大匹配范围中...',
+            '继续寻找对手...'
+        ];
+
+        // 初始化用户信息显示
+        function initializeUserInfo() {
+            // 从父页面获取用户信息
+            if (window.parent && window.parent.battleUserInfo) {
+                const userInfo = window.parent.battleUserInfo;
+                playerNickname.textContent = userInfo.nickname || '-';
+                playerGrade.textContent = userInfo.gradeName || '-';
+
+                // 连接WebSocket并注册用户
+                initializeWebSocket(userInfo);
+            }
+        }
+
+        // 初始化WebSocket连接
+        async function initializeWebSocket(userInfo) {
+            try {
+                // 连接WebSocket服务器
+                if (window.parent && window.parent.wsClient) {
+                    const wsClient = window.parent.wsClient;
+
+                    // 如果未连接，先连接
+                    if (!wsClient.isConnected) {
+                        await wsClient.connect();
+                    }
+
+                    // 注册用户
+                    wsClient.register(userInfo);
+
+                    // 加入匹配队列
+                    wsClient.joinMatching(userInfo.grade);
+
+                    console.log('已加入匹配队列:', userInfo.grade);
+                } else {
+                    console.error('WebSocket客户端不可用');
+                    // 降级到模拟匹配
+                    console.log('使用模拟匹配模式');
+                }
+            } catch (error) {
+                console.error('WebSocket连接失败，使用模拟匹配:', error);
+                // 降级到模拟匹配
+            }
+        }
+
+        // 开始匹配计时器
+        function startMatchingTimer() {
+            matchingTimer = setInterval(() => {
+                if (!isMatching) return;
+
+                waitTime++;
+                waitTimeElement.textContent = waitTime;
+
+                // 根据等待时间更新状态文字
+                if (waitTime === 30) {
+                    matchingStatus.textContent = statusMessages[2]; // 扩大匹配范围
+                } else if (waitTime === 60) {
+                    matchingStatus.textContent = statusMessages[3]; // 继续寻找
+                } else if (waitTime % 10 === 0 && waitTime < 30) {
+                    // 每10秒切换一次状态文字
+                    const index = Math.floor(waitTime / 10) % 2;
+                    matchingStatus.textContent = statusMessages[index];
+                }
+
+                // 模拟匹配成功 (测试用，实际应该由WebSocket控制)
+                if (waitTime >= 15 && Math.random() < 0.1) { // 15秒后有10%概率匹配成功
+                    simulateMatchFound();
+                }
+            }, 1000);
+        }
+
+        // 模拟匹配成功 (测试用)
+        function simulateMatchFound() {
+            if (!isMatching) return;
+
+            isMatching = false;
+            clearInterval(matchingTimer);
+
+            // 播放匹配成功音效
+            if (window.parent && typeof window.parent.playSound === 'function') {
+                window.parent.playSound('success');
+            }
+
+            // 模拟对手信息
+            const opponents = [
+                { nickname: '英语小达人', grade: '五年级', winRate: 85 },
+                { nickname: '单词王者', grade: '五年级', winRate: 78 },
+                { nickname: '学霸小明', grade: '四年级', winRate: 92 },
+                { nickname: '词汇大师', grade: '六年级', winRate: 73 }
+            ];
+            const opponent = opponents[Math.floor(Math.random() * opponents.length)];
+
+            // 存储对手信息到父页面
+            if (window.parent) {
+                window.parent.opponentInfo = opponent;
+            }
+
+            // 导航到对战准备页面
+            if (window.parent && window.parent.postMessage) {
+                window.parent.postMessage({ action: 'navigate', screen: 'battle_ready' }, '*');
+            }
+        }
+
+        // 取消匹配
+        cancelButton.addEventListener('click', () => {
+            // 播放点击音效
+            if (window.parent && typeof window.parent.playSound === 'function') {
+                window.parent.playSound('click');
+            }
+
+            isMatching = false;
+            clearInterval(matchingTimer);
+
+            // 离开WebSocket匹配队列
+            if (window.parent && window.parent.wsClient) {
+                window.parent.wsClient.leaveMatching();
+            }
+
+            // 返回欢迎页面
+            if (window.parent && window.parent.postMessage) {
+                window.parent.postMessage({ action: 'navigate', screen: 'welcome' }, '*');
+            }
+        });
+
+        // 页面加载时初始化
+        window.addEventListener('load', () => {
+            initializeUserInfo();
+            startMatchingTimer();
+        });
+
+        // 监听来自父页面的消息 (用于真实的匹配结果)
+        window.addEventListener('message', (event) => {
+            if (event.data.action === 'matchFound') {
+                if (!isMatching) return;
+
+                isMatching = false;
+                clearInterval(matchingTimer);
+
+                // 存储对手信息
+                if (window.parent && event.data.opponent) {
+                    window.parent.opponentInfo = event.data.opponent;
+                }
+
+                // 播放匹配成功音效
+                if (window.parent && typeof window.parent.playSound === 'function') {
+                    window.parent.playSound('success');
+                }
+
+                // 导航到对战准备页面
+                if (window.parent && window.parent.postMessage) {
+                    window.parent.postMessage({ action: 'navigate', screen: 'battle_ready' }, '*');
+                }
+            }
+        });
+
+        // 页面卸载时清理定时器
+        window.addEventListener('beforeunload', () => {
+            if (matchingTimer) {
+                clearInterval(matchingTimer);
+            }
+        });
+    </script>
+</body>
+</html>
