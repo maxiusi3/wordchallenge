@@ -223,58 +223,30 @@ async function loadQuestionsForGrade(gradeId, session) { // Added session parame
     }
     const fallbackPath = 'data/renjiaoban/grade3.json';
 
-    // --- 使用网络管理器的在线数据加载逻辑 ---
+    // --- 在线数据加载逻辑 ---
     try {
-        console.log(`在线加载题库数据: ${gradeId}`);
-
-        // 检查网络状态
-        if (window.networkManager && !window.networkManager.checkConnection()) {
-            throw new Error('网络连接不可用，请检查网络连接后重试');
-        }
-
-        // 显示加载指示器
-        if (window.networkManager) {
-            window.networkManager.showLoading(`正在加载${gradeId}题库...`);
-        }
+        console.log(`加载题库数据: ${gradeId}`);
 
         let response;
 
-        // 使用网络管理器的重试机制
-        if (window.networkManager) {
-            try {
-                response = await window.networkManager.fetchWithRetry(primaryPath);
-            } catch (primaryError) {
-                console.warn(`主路径加载失败，尝试备用路径: ${fallbackPath}`);
-                response = await window.networkManager.fetchWithRetry(fallbackPath);
-            }
-        } else {
-            // 如果没有网络管理器，使用简单的fetch
+        // 尝试加载主路径
+        try {
             response = await fetch(primaryPath);
             if (!response.ok) {
-                console.warn(`主路径加载失败 (${response.status})，尝试备用路径`);
-                response = await fetch(fallbackPath);
-                if (!response.ok) {
-                    throw new Error(`主路径和备用路径都加载失败`);
-                }
+                throw new Error(`HTTP ${response.status}`);
+            }
+        } catch (primaryError) {
+            console.warn(`主路径加载失败 (${primaryError.message})，尝试备用路径: ${fallbackPath}`);
+            response = await fetch(fallbackPath);
+            if (!response.ok) {
+                throw new Error(`主路径和备用路径都加载失败: HTTP ${response.status}`);
             }
         }
 
         gradeQuestions = await response.json();
         console.log(`成功加载 ${gradeQuestions.length} 道题目`);
 
-        // 隐藏加载指示器并显示成功消息
-        if (window.networkManager) {
-            window.networkManager.hideLoading();
-            window.networkManager.showSuccess(`成功加载 ${gradeQuestions.length} 道题目`);
-        }
-
     } catch (error) {
-        // 隐藏加载指示器并显示错误消息
-        if (window.networkManager) {
-            window.networkManager.hideLoading();
-            window.networkManager.showError(`加载题库失败: ${error.message}`);
-        }
-
         console.error(`加载题库数据失败 (${gradeId}):`, error.message);
         throw new Error(`无法加载题库数据。请检查网络连接并重试。错误: ${error.message}`);
     }
