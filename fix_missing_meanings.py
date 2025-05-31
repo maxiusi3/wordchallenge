@@ -1,14 +1,15 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
-修复所有词库中 meaning 为"无"的单词
+修复所有词库文件中meaning为"无"的词条
 """
 
 import json
 import os
 import glob
 
-# 单词释义映射表
-WORD_MEANINGS = {
+# 词条的正确中文释义映射
+MEANING_CORRECTIONS = {
     # Grade 4
     "maths book": "数学书",
     "teacher's office": "教师办公室",
@@ -29,7 +30,7 @@ WORD_MEANINGS = {
     "eating lunch": "吃午饭",
     "reading a book": "读书",
     "listening to music": "听音乐",
-    "keep your desk clean": "保持桌面整洁",
+    "keep your desk clean": "保持你的桌子整洁",
     "talk quietly": "安静地说话",
     
     # Grade 6
@@ -103,14 +104,14 @@ WORD_MEANINGS = {
 }
 
 def fix_missing_meanings():
-    """修复所有 meaning 为"无"的单词"""
+    """修复所有词库文件中meaning为"无"的词条"""
     
-    # 词库文件路径
-    vocab_files = glob.glob('data/renjiaoban/*.json')
+    # 获取所有词库文件
+    json_files = glob.glob("data/renjiaoban/*.json")
     
     total_fixed = 0
     
-    for file_path in vocab_files:
+    for file_path in json_files:
         grade = os.path.basename(file_path).replace('.json', '')
         print(f"\n处理 {grade}...")
         
@@ -121,71 +122,70 @@ def fix_missing_meanings():
             
             fixed_count = 0
             
-            # 修复每个条目
-            for i, item in enumerate(data):
-                if item.get('meaning') == '无':
-                    word = item.get('word', '')
-                    if word in WORD_MEANINGS:
-                        old_meaning = item['meaning']
-                        item['meaning'] = WORD_MEANINGS[word]
-                        print(f"  修复: {word} -> {WORD_MEANINGS[word]}")
+            # 修复meaning为"无"的词条
+            for i, word in enumerate(data):
+                if word.get('meaning') == '无':
+                    # 尝试从映射中找到正确的释义
+                    english_word = word.get('word', '') or word.get('english', '')
+                    
+                    if english_word in MEANING_CORRECTIONS:
+                        old_meaning = word['meaning']
+                        word['meaning'] = MEANING_CORRECTIONS[english_word]
+                        print(f"  修复: {english_word} -> {word['meaning']}")
                         fixed_count += 1
                     else:
-                        print(f"  警告: 未找到单词 '{word}' 的释义")
+                        print(f"  警告: 未找到 '{english_word}' 的释义映射")
             
-            # 保存文件
+            # 如果有修复，保存文件
             if fixed_count > 0:
                 with open(file_path, 'w', encoding='utf-8') as f:
                     json.dump(data, f, ensure_ascii=False, indent=2)
-                print(f"  {grade} 修复了 {fixed_count} 个单词")
+                print(f"  {grade} 修复了 {fixed_count} 个词条")
                 total_fixed += fixed_count
             else:
-                print(f"  {grade} 没有需要修复的单词")
+                print(f"  {grade} 没有需要修复的词条")
                 
         except Exception as e:
             print(f"处理文件 {file_path} 时出错: {e}")
     
-    print(f"\n总计修复了 {total_fixed} 个单词的释义")
+    print(f"\n总计修复了 {total_fixed} 个词条")
 
 def verify_fixes():
     """验证修复结果"""
     print("\n验证修复结果...")
     
-    vocab_files = glob.glob('data/renjiaoban/*.json')
-    remaining_missing = 0
+    json_files = glob.glob("data/renjiaoban/*.json")
+    remaining_issues = 0
     
-    for file_path in vocab_files:
+    for file_path in json_files:
         grade = os.path.basename(file_path).replace('.json', '')
         
         try:
             with open(file_path, 'r', encoding='utf-8') as f:
                 data = json.load(f)
             
-            missing_count = 0
-            for item in data:
-                if item.get('meaning') == '无':
-                    missing_count += 1
-                    print(f"  {grade}: {item.get('word', '')} 仍然缺失释义")
+            issues = []
+            for i, word in enumerate(data):
+                if word.get('meaning') == '无':
+                    issues.append(word.get('word', '') or word.get('english', ''))
             
-            if missing_count == 0:
-                print(f"  {grade}: ✅ 所有单词都有释义")
+            if issues:
+                print(f"  {grade}: 仍有 {len(issues)} 个未修复的词条")
+                for issue in issues:
+                    print(f"    - {issue}")
+                remaining_issues += len(issues)
             else:
-                print(f"  {grade}: ❌ 还有 {missing_count} 个单词缺失释义")
-                remaining_missing += missing_count
+                print(f"  {grade}: ✓ 所有词条已修复")
                 
         except Exception as e:
             print(f"验证文件 {file_path} 时出错: {e}")
     
-    if remaining_missing == 0:
-        print("\n🎉 所有单词的释义都已修复完成！")
+    if remaining_issues == 0:
+        print("\n✓ 所有词条都已成功修复！")
     else:
-        print(f"\n⚠️  还有 {remaining_missing} 个单词需要手动添加释义")
+        print(f"\n⚠ 仍有 {remaining_issues} 个词条需要手动处理")
 
-if __name__ == '__main__':
-    print("开始修复所有 meaning 为'无'的单词...")
-    
-    # 修复释义
+if __name__ == "__main__":
+    print("开始修复词库中meaning为'无'的词条...")
     fix_missing_meanings()
-    
-    # 验证修复结果
     verify_fixes()
