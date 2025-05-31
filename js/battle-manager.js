@@ -671,15 +671,11 @@ class BattleManager {
      * 生成音频URL
      */
     generateAudioUrl(word) {
-        // 使用 Edge TTS 服务器生成音频
-        // 首先尝试本地 TTS 服务器，如果不可用则使用 Google TTS 作为备用
+        // 在线版本使用免费的TTS服务
+        // 使用ResponsiveVoice作为主要TTS服务
 
-        // 检查是否有本地 TTS 服务器运行
-        const localTtsUrl = `http://localhost:5000/tts?text=${encodeURIComponent(word)}`;
-
-        // 返回本地 TTS 服务器 URL
-        // 如果服务器不可用，浏览器会自动失败并显示错误
-        return localTtsUrl;
+        // 创建一个特殊的URL标识符，实际播放时会使用ResponsiveVoice
+        return `tts://responsivevoice/${encodeURIComponent(word)}`;
     }
 
     /**

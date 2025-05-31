@@ -255,7 +255,8 @@ class OnlineBattleClient {
                 break;
 
             case 'joinMatching':
-                // 模拟匹配过程
+                // 模拟匹配过程 - 30秒后才提供模拟对手
+                console.log('开始匹配，30秒后如无真实对手将提供模拟对手');
                 setTimeout(() => {
                     const mockOpponent = {
                         nickname: '模拟对手',
@@ -264,11 +265,12 @@ class OnlineBattleClient {
                     };
                     const roomId = 'room_' + Math.random().toString(36).substr(2, 9);
                     this.currentRoom = roomId;
+                    console.log('30秒匹配超时，提供模拟对手');
                     this.triggerEvent('matchFound', {
                         opponent: mockOpponent,
                         roomId: roomId
                     });
-                }, 2000); // 2秒后匹配成功
+                }, 30000); // 30秒后匹配成功
                 break;
 
             case 'gameAction':
