@@ -822,8 +822,8 @@ class BattleManager {
             wordPoolStats: this.wordPool.getUsageStats()
         });
 
-        // 播放游戏结束音效
-        this.playBattleSound(isVictory ? 'challenge_win' : 'challenge_lose');
+        // 注释掉这里的音效播放，由结果页面负责播放以避免重复
+        // this.playBattleSound(isVictory ? 'challenge_win' : 'challenge_lose');
 
         // 准备结果数据
         const resultData = {
