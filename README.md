@@ -1,149 +1,192 @@
-# 单词闯关 - 在线英语学习游戏
+# 🎮 单词闯关游戏 v2.1.0
 
-🎮 **一个互动式的英语单词学习游戏，支持单人闯关和在线双人对战！**
+一个支持真实跨设备对战的在线单词学习游戏，专为中小学生设计。
 
 🌐 **在线体验**: [https://maxiusi3.github.io/wordchallenge/](https://maxiusi3.github.io/wordchallenge/)
 
-## 🎆 游戏特色
+## ✨ 主要功能
 
-### 🏆 双模式游戏体验
-- **📚 单人闯关模式**: 逐关挑战，稳步提升
-- **⚔️ 在线对战模式**: 与真实玩家实时对战，竞技互动
+### 🎯 游戏模式
+- **单人闯关**: 三个难度等级的单词挑战
+- **双人对战**: 真实跨设备匹配对战
+- **智能匹配**: 按年级自动匹配同水平玩家
+- **AI对手**: 无法匹配时提供AI助手
 
-### 🎯 三大游戏关卡
-1. **🇨🇳→🇬🇧 中译英**: 根据中文释义输入英文单词
-2. **🇬🇧→🇨🇳 英译中**: 根据英文单词选择中文释义
-3. **🎧 听写练习**: 根据音频输入正确的英文单词
+### 📚 学习内容
+- 覆盖小学3-6年级、初中7-9年级
+- 高中高频词汇和完整词库
+- 多种题型：填空、选择、听写
 
-### 🎮 双人对战小游戏
-- **🚔 警察抓小偷**: 第一关的追逐游戏
-- **🏗️ 登天梯竞赛**: 第二关的攀爬挑战
-- **🤜 词力拔河**: 第三关的力量对决
-
-### 📊 学习功能
-- **🎧 智能语音**: 内置 TTS 音频播放
-- **📊 进度跟踪**: 实时显示学习进度
-- **📈 错题复习**: 自动收集错题供复习
-- **🏆 成就系统**: 完成挑战获得成就
-
-### 📱 技术特性
-- **📱 响应式设计**: 完美支持手机、平板和PC
-- **🌐 在线对战**: 基于Socket.IO的实时通信
-- **💾 本地存储**: 支持离线游戏和数据缓存
-- **🎨 精美界面**: 现代化设计，流畅动画
+### 🎵 互动体验
+- 实时音效反馈
+- 语音播放功能
+- 动画效果
+- 成绩统计
 
 ## 🚀 快速开始
 
-### 🌐 在线体验
-直接访问: **[https://maxiusi3.github.io/wordchallenge/](https://maxiusi3.github.io/wordchallenge/)**
+### 在线体验
+直接访问：[https://maxiusi3.github.io/wordchallenge/](https://maxiusi3.github.io/wordchallenge/)
 
-### 💻 本地部署
-
-```bash
-# 克隆仓库
-git clone https://github.com/maxiusi3/wordchallenge.git
-cd wordchallenge
-
-# 使用本地服务器打开
-python -m http.server 8000
-# 或者
-npx serve .
-
-# 访问 http://localhost:8000
-```
+### 双人对战测试
+访问测试页面：[https://maxiusi3.github.io/wordchallenge/test-matching.html](https://maxiusi3.github.io/wordchallenge/test-matching.html)
 
 ## 🎮 游戏玩法
 
-### 📚 单人闯关模式
-1. 输入你的昵称和年级
-2. 逐关挑战，每关都有不同的游戏方式
-3. 完成所有关卡获得最终成绩
+### 单人模式
+1. 选择年级和昵称
+2. 挑战三个关卡：
+   - **关卡1**: 单词填空
+   - **关卡2**: 选择题
+   - **关卡3**: 听写模式
+3. 查看成绩和排名
 
-### ⚔️ 在线对战模式
-1. 输入你的昵称、年级和头像
-2. 系统自动匹配同年级的对手
-3. 与对手实时竞技，争夺胜利
-4. 三局两胜制，每关都有独特的小游戏
+### 双人对战
+1. 选择年级和昵称
+2. 点击“双人对战”
+3. 等待系统匹配同年级玩家
+4. 实时对战，先完成者获胜
 
-## 📚 词库资源
+## 🔧 技术特性
 
-游戏包含丰富的词库资源：
-- **小学阶段**: 3-6年级词汇
-- **初中阶段**: 7-9年级词汇
-- **高中阶段**: 高频词汇和全部词汇
+### v2.1.0 新功能
+- ✅ **真实跨设备匹配**: 支持iPad、MacBook等不同设备间对战
+- ✅ **智能匹配算法**: 按年级自动匹配，确保公平竞争
+- ✅ **AI对手备选**: 60秒无匹配自动提供AI助手
+- ✅ **缓存管理**: 自动版本控制，解决更新问题
+- ✅ **测试工具**: 完整的匹配测试界面
 
-所有词汇都经过精心筛选，符合各年级学习标准。
+### 技术架构
+- **前端**: HTML5 + CSS3 + JavaScript
+- **样式**: Tailwind CSS
+- **匹配系统**: localStorage + 轮询机制
+- **音频**: Web Audio API + Edge TTS
+- **部署**: GitHub Pages + Cloudflare CDN
 
-## 🛠️ 技术栈
+## 📱 设备支持
 
-- **前端框架**: 原生 HTML5 + CSS3 + JavaScript (ES6+)
-- **UI 框架**: Tailwind CSS
-- **图标库**: Lucide Icons
-- **音频处理**: Web Audio API + Edge TTS
-- **实时通信**: Socket.IO (在线对战)
-- **数据存储**: LocalStorage + JSON
+### 完全支持
+- 📱 iPad (Safari)
+- 💻 MacBook (Chrome/Safari)
+- 📱 iPhone (Safari)
+- 🤖 Android (Chrome)
+- 🖥️ Windows PC (Chrome/Edge)
 
-## 📁 项目结构
+### 最佳体验
+- **iPad**: 专门优化的界面布局
+- **触屏设备**: 触摸友好的交互设计
+- **桌面设备**: 键盘快捷键支持
 
+## 🔍 使用说明
+
+### 双人对战匹配
+1. **开始匹配**: 两个设备选择相同年级，点击“双人对战”
+2. **等待匹配**: 系统自动寻找同年级玩家（最多60秒）
+3. **开始游戏**: 匹配成功后自动进入对战界面
+4. **AI备选**: 超时无匹配时自动提供AI对手
+
+### 故障排除
+- **匹配失败**: 确保两设备选择相同年级，清空浏览器缓存重试
+- **缓存问题**: 硬刷新页面 (Ctrl+F5) 或使用隐私模式
+- **跨设备问题**: 确保使用相同域名访问
+
+## 🛠️ 开发和部署
+
+### 本地开发
+```bash
+# 克隆仓库
+git clone https://github.com/maxiusi3/wordchallenge.git
+
+# 启动本地服务器
+cd wordchallenge
+python -m http.server 8000
+
+# 访问游戏
+open http://localhost:8000
 ```
-wordchallenge/
-├── index.html              # 主入口文件
-├── css/
-│   └── style.css           # 主样式文件
-├── js/
-│   ├── main.js             # 单人游戏主逻辑
-│   ├── battle-manager.js   # 双人对战管理
-│   ├── websocket-client.js # 在线通信客户端
-│   ├── audio.js            # 音频处理
-│   └── navigation.js       # 页面导航
-├── screens/
-│   ├── welcome.html        # 欢迎页面
-│   ├── info_input.html     # 用户信息输入
-│   ├── level1.html         # 单人第一关
-│   ├── level2.html         # 单人第二关
-│   ├── level3.html         # 单人第三关
-│   ├── battle_*.html       # 双人对战页面
-│   └── result_*.html       # 结果页面
-├── data/
-│   └── renjiaoban/         # 人教版词库数据
-└── audio/
-    └── *.wav               # 游戏音效文件
+
+### 测试匹配功能
+```bash
+# 访问测试页面
+open http://localhost:8000/test-matching.html
+
+# 或在线测试
+open https://maxiusi3.github.io/wordchallenge/test-matching.html
 ```
 
-## 🌟 更新日志
+### 调试命令
+```javascript
+// 查看匹配池状态
+JSON.parse(localStorage.getItem('wordchallenge_matching_pool'))
 
-### v2.0.0 - 在线对战版本
-- ✨ 新增在线双人对战模式
-- 🎮 三个独特的对战小游戏
-- 🔄 实时匹配系统
-- 🎨 全新的界面设计
-- 📊 完善的数据统计
+// 清空匹配池
+localStorage.removeItem('wordchallenge_matching_pool')
 
-### v1.0.0 - 基础版本
-- 📚 单人闯关模式
-- 🎧 音频播放功能
-- 📊 进度跟踪系统
-- 📱 响应式设计
+// 强制刷新缓存
+window.forceRefresh()
+
+// 查看版本信息
+console.log(window.GAME_VERSION)
+```
+
+## 📊 项目统计
+
+- **代码行数**: ~3000+ 行
+- **支持年级**: 7个年级 (小学3-6年级 + 初中7-9年级)
+- **词汇量**: 5000+ 单词
+- **游戏关卡**: 3个难度等级
+- **设备支持**: 5+ 主流平台
 
 ## 🤝 贡献指南
 
-欢迎参与项目开发！
+欢迎提交Issue和Pull Request！
 
-1. **Fork** 这个仓库
-2. 创建你的特性分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交你的修改 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 打开一个 **Pull Request**
+### 开发规范
+- 使用ES6+语法
+- 遵循响应式设计原则
+- 添加适当的注释
+- 测试跨设备兼容性
 
-## 📝 许可证
+### 提交格式
+```
+🎮 feat: 添加新功能
+🔧 fix: 修复问题
+📚 docs: 更新文档
+🎨 style: 样式调整
+```
 
-该项目采用 MIT 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情。
+## 📄 许可证
 
-## 📧 联系方式
+MIT License - 详见 [LICENSE](LICENSE) 文件
 
-- **GitHub Issues**: [问题反馈](https://github.com/maxiusi3/wordchallenge/issues)
-- **项目作者**: @maxiusi3
+## 📞 联系方式
+
+- **GitHub**: [maxiusi3](https://github.com/maxiusi3)
+- **项目地址**: [wordchallenge](https://github.com/maxiusi3/wordchallenge)
+- **在线演示**: [https://maxiusi3.github.io/wordchallenge/](https://maxiusi3.github.io/wordchallenge/)
 
 ---
 
-🎆 **立即开始你的英语学习之旅！** [https://maxiusi3.github.io/wordchallenge/](https://maxiusi3.github.io/wordchallenge/)
+## 🎯 更新日志
+
+### v2.1.0 (2024-12-19)
+- ✨ 新增真实跨设备对战功能
+- 🔧 修复Cloudflare缓存问题
+- 📱 优化移动端体验
+- 🤖 添加AI对手备选机制
+- 🛠️ 完善测试工具
+
+### v2.0.3 (2024-12-18)
+- 🎲 实现随机题目系统
+- 🔄 优化题库加载逻辑
+- 📊 改进成绩统计
+
+### v2.0.0 (2024-12-17)
+- 🌐 转为纯在线游戏
+- 🎮 添加双人对战模式
+- 📱 iPad界面优化
+- 🎵 集成Edge TTS语音
+
+---
+
+**享受学习，快乐成长！** 🌟
