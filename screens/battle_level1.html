@@ -325,26 +325,26 @@
 
             // 检查游戏结束条件
             if (!gameState.gameEnded) {
-                if (copPos >= thiefPos) {
-                    // 警察的胜利条件：警察位置 >= 小偷位置
-                    gameStatusEl.textContent = '警察获胜！';
-                    gameStatusEl.className = 'font-bold text-lg text-blue-300';
-
-                    gameState.gameEnded = true;
-                    // 通知主游戏管理器关卡结束
-                    const winner = gameState.myRole === 'cop' ? 'my' : 'opponent';
-                    window.parent.postMessage({
-                        action: 'levelEnded',
-                        payload: { level: 1, winner: winner }
-                    }, '*');
-                } else if (thiefPos > copPos && thiefPos >= 30) {
-                    // 小偷的胜利条件：小偷位置 > 警察位置 且 小偷位置 >= 30
+                if (thiefPos >= 30) {
+                    // 小偷的胜利条件：小偷到达终点（30格）
                     gameStatusEl.textContent = '小偷逃脱！';
                     gameStatusEl.className = 'font-bold text-lg text-red-300';
 
                     gameState.gameEnded = true;
                     // 通知主游戏管理器关卡结束
                     const winner = gameState.myRole === 'thief' ? 'my' : 'opponent';
+                    window.parent.postMessage({
+                        action: 'levelEnded',
+                        payload: { level: 1, winner: winner }
+                    }, '*');
+                } else if (copPos >= thiefPos) {
+                    // 警察的胜利条件：警察追上或超过小偷
+                    gameStatusEl.textContent = '警察获胜！';
+                    gameStatusEl.className = 'font-bold text-lg text-blue-300';
+
+                    gameState.gameEnded = true;
+                    // 通知主游戏管理器关卡结束
+                    const winner = gameState.myRole === 'cop' ? 'my' : 'opponent';
                     window.parent.postMessage({
                         action: 'levelEnded',
                         payload: { level: 1, winner: winner }
