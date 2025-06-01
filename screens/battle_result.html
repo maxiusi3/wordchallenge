@@ -487,36 +487,31 @@
         window.addEventListener('load', () => {
             // 从父页面获取对战结果数据
             if (window.parent && window.parent.battleResultData) {
+                console.log('使用实际游戏结果数据:', window.parent.battleResultData);
                 displayBattleResult(window.parent.battleResultData);
             } else {
-                // 默认数据
+                console.log('未找到实际游戏结果，使用默认数据');
+                // 默认数据（仅用于测试）
                 const defaultData = {
-                    isVictory: true,
+                    isVictory: false, // 改为失败以区分默认数据
                     player: {
-                        nickname: '我',
-                        totalScore: 8,
-                        totalTime: 205, // 3分25秒
-                        correctAnswers: 8
+                        nickname: '测试玩家',
+                        totalScore: 1,
+                        totalTime: 205,
+                        correctAnswers: 3
                     },
                     opponent: {
-                        nickname: '对手',
-                        totalScore: 6,
-                        totalTime: 252, // 4分12秒
+                        nickname: '测试对手',
+                        totalScore: 2,
+                        totalTime: 252,
                         correctAnswers: 6
                     },
                     levelResults: [
-                        { level: 1, result: 'victory', description: '警察成功抓到小偷' },
-                        { level: 2, result: 'defeat', description: '对手先到达20层' },
-                        { level: 3, result: 'victory', description: '成功拉过8格线' }
+                        { level: 1, result: 'defeat', description: '测试数据 - 警察被小偷逃脱' },
+                        { level: 2, result: 'defeat', description: '测试数据 - 对手先到达20层' },
+                        { level: 3, result: 'victory', description: '测试数据 - 成功拉过8格线' }
                     ],
-                    wrongAnswers: [
-                        {
-                            level: 2,
-                            question: 'world',
-                            correctAnswer: '世界',
-                            userAnswer: '地球'
-                        }
-                    ]
+                    wrongAnswers: []
                 };
                 displayBattleResult(defaultData);
             }
