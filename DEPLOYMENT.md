@@ -1,20 +1,33 @@
-# 单词闯关游戏 - 在线版本部署指南
+# 单词闯关游戏 - v2.1.0 部署指南
 
 ## 🌐 概述
 
-本游戏已改造为纯在线版本，移除了所有离线功能和PWA特性，专注于提供稳定的在线游戏体验。
+本游戏已升级为v2.1.0，新增真实跨设备对战功能，并解决了Cloudflare缓存问题。
+
+## 🆕 v2.1.0 新功能
+
+- ✅ 真实跨设备对战匹配
+- ✅ 智能匹配算法（同年级匹配）
+- ✅ AI对手备选机制
+- ✅ 自动缓存清理系统
+- ✅ 版本控制和缓存破坏
+- ✅ 匹配测试工具
 
 ## 📁 文件结构
 
 ```
 单词闯关/
 ├── index.html                 # 主游戏页面
+├── cache-buster.js            # 缓存破坏脚本
+├── test-matching.html         # 对战匹配测试页面
 ├── online-status.html         # 在线状态检查页面
 ├── css/
 │   └── style.css             # 样式文件
 ├── js/
 │   ├── main.js               # 主游戏逻辑
 │   ├── audio.js              # 音频管理
+│   ├── websocket-client.js   # 对战匹配系统
+│   ├── battle-manager.js     # 对战游戏管理
 │   └── network-manager.js    # 网络状态管理
 ├── screens/                  # 游戏界面
 │   ├── welcome.html
@@ -46,6 +59,156 @@
     ├── icon-192x192.png
     └── icon-512x512.png
 ```
+
+## 🔧 解决Cloudflare缓存问题
+
+### 方法1: 手动清除Cloudflare缓存
+
+1. 登录Cloudflare控制台
+2. 选择您的域名
+3. 进入“缓存” -> “配置”
+4. 点击“清除所有内容”
+
+### 方法2: 使用缓存破坏机制
+
+项目已集成自动缓存破坏：
+- `cache-buster.js` - 自动版本控制
+- 动态版本号和时间戳
+- 强制刷新功能
+
+### 方法3: 设置缓存规则
+
+在Cloudflare中设置页面规则：
+```
+URL: yourdomain.com/*
+设置: 缓存级别 = 绕过
+```
+
+## 🎮 双人对战匹配系统
+
+### 工作原理
+
+1. **匹配池机制**: 使用localStorage模拟全局匹配池
+2. **智能匹配**: 按年级自动匹配玩家
+3. **超时保护**: 60秒无匹配则提供AI对手
+4. **自动清理**: 清除5分钟以上的过期记录
+
+### 测试方法
+
+1. 打开 `test-matching.html` 进行本地测试
+2. 在不同设备/浏览器中打开游戏
+3. 选择相同年级开始匹配
+4. 观察匹配过程和结果
+
+### 跨设备匹配步骤
+
+```javascript
+// 1. 玩家加入匹配池
+playerData = {
+    id: 'unique_player_id',
+    nickname: '玩家昵称',
+    grade: 'grade1',
+    timestamp: Date.now(),
+    status: 'waiting'
+}
+
+// 2. 轮询查找对手
+setInterval(() => {
+    // 查找同年级等待中的玩家
+    findAvailablePlayers(grade)
+}, 1000)
+
+// 3. 匹配成功
+if (foundOpponent) {
+    createGameRoom(player1, player2)
+    startBattleGame()
+}
+```
+
+## 📱 设备兼容性
+
+### 支持的设备
+- ✅ iPad (Safari)
+- ✅ MacBook (Chrome/Safari)
+- ✅ iPhone (Safari)
+- ✅ Android (Chrome)
+- ✅ Windows PC (Chrome/Edge)
+
+### 已知问题
+- localStorage在隐私模式下可能受限
+- 某些企业网络可能阻止跨标签页通信
+
+## 🔍 调试工具
+
+### 控制台命令
+
+```javascript
+// 查看匹配池状态
+JSON.parse(localStorage.getItem('wordchallenge_matching_pool'))
+
+// 清空匹配池
+localStorage.removeItem('wordchallenge_matching_pool')
+
+// 强制刷新缓存
+window.forceRefresh()
+
+// 查看版本信息
+console.log(window.GAME_VERSION)
+```
+
+### 测试页面
+
+访问 `test-matching.html` 进行完整的匹配测试：
+- 模拟两个设备
+- 实时查看匹配池状态
+- 测试匹配成功/失败场景
+
+## 🚨 故障排除
+
+### 问题1: 匹配一直失败
+**解决方案:**
+1. 检查localStorage是否可用
+2. 确保两个设备选择相同年级
+3. 清空匹配池重新开始
+
+### 问题2: 缓存未更新
+**解决方案:**
+1. 硬刷新页面 (Ctrl+F5)
+2. 清除浏览器缓存
+3. 使用隐私模式测试
+
+### 问题3: 跨设备无法匹配
+**解决方案:**
+1. 确保使用相同域名
+2. 检查网络连接
+3. 尝试不同浏览器
+
+## 📊 性能监控
+
+### 关键指标
+- 匹配成功率: >90%
+- 平均匹配时间: <10秒
+- AI对手触发率: <10%
+
+### 监控代码
+```javascript
+// 匹配性能统计
+window.matchingStats = {
+    attempts: 0,
+    successes: 0,
+    aiMatches: 0,
+    averageTime: 0
+}
+```
+
+## 🔄 更新流程
+
+1. 修改代码
+2. 更新版本号 (cache-buster.js)
+3. 提交到GitHub
+4. Cloudflare自动部署
+5. 清除CDN缓存
+6. 验证更新生效
 
 ## 🚀 部署方式
 

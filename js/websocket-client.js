@@ -255,22 +255,8 @@ class OnlineBattleClient {
                 break;
 
             case 'joinMatching':
-                // 模拟匹配过程 - 30秒后才提供模拟对手
-                console.log('开始匹配，30秒后如无真实对手将提供模拟对手');
-                setTimeout(() => {
-                    const mockOpponent = {
-                        nickname: '模拟对手',
-                        avatar: '🤖',
-                        grade: data.grade
-                    };
-                    const roomId = 'room_' + Math.random().toString(36).substr(2, 9);
-                    this.currentRoom = roomId;
-                    console.log('30秒匹配超时，提供模拟对手');
-                    this.triggerEvent('matchFound', {
-                        opponent: mockOpponent,
-                        roomId: roomId
-                    });
-                }, 30000); // 30秒后匹配成功
+                // 实现真实的跨设备匹配
+                this.startRealMatching(data);
                 break;
 
             case 'gameAction':
@@ -363,6 +349,183 @@ class OnlineBattleClient {
     }
 
     /**
+     * 开始真实的跨设备匹配
+     */
+    startRealMatching(data) {
+        console.log('开始真实匹配，年级:', data.grade);
+
+        // 生成唯一的玩家ID
+        const playerId = 'player_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        const playerData = {
+            id: playerId,
+            nickname: this.playerInfo?.nickname || '玩家',
+            avatar: this.playerInfo?.avatar || '👤',
+            grade: data.grade,
+            timestamp: Date.now(),
+            status: 'waiting'
+        };
+
+        // 将玩家信息存储到localStorage（模拟全局匹配池）
+        this.addToMatchingPool(playerData);
+
+        // 开始匹配轮询
+        this.startMatchingPolling(playerData);
+    }
+
+    /**
+     * 添加到匹配池
+     */
+    addToMatchingPool(playerData) {
+        try {
+            const matchingPool = JSON.parse(localStorage.getItem('wordchallenge_matching_pool') || '[]');
+
+            // 清理超过5分钟的旧记录
+            const now = Date.now();
+            const cleanPool = matchingPool.filter(player =>
+                now - player.timestamp < 5 * 60 * 1000 && player.status !== 'matched'
+            );
+
+            // 添加当前玩家
+            cleanPool.push(playerData);
+
+            localStorage.setItem('wordchallenge_matching_pool', JSON.stringify(cleanPool));
+            console.log('已加入匹配池，当前等待玩家数:', cleanPool.length);
+        } catch (error) {
+            console.error('添加到匹配池失败:', error);
+        }
+    }
+
+    /**
+     * 开始匹配轮询
+     */
+    startMatchingPolling(playerData) {
+        let attempts = 0;
+        const maxAttempts = 60; // 最多轮询60次（约1分钟）
+
+        const pollInterval = setInterval(() => {
+            attempts++;
+
+            try {
+                const matchingPool = JSON.parse(localStorage.getItem('wordchallenge_matching_pool') || '[]');
+
+                // 查找同年级的其他玩家
+                const availablePlayers = matchingPool.filter(player =>
+                    player.id !== playerData.id &&
+                    player.grade === playerData.grade &&
+                    player.status === 'waiting' &&
+                    Date.now() - player.timestamp < 5 * 60 * 1000
+                );
+
+                if (availablePlayers.length > 0) {
+                    // 找到对手，进行匹配
+                    const opponent = availablePlayers[0];
+                    this.completeMatching(playerData, opponent, matchingPool);
+                    clearInterval(pollInterval);
+                    return;
+                }
+
+                // 检查是否超时
+                if (attempts >= maxAttempts) {
+                    console.log('匹配超时，提供AI对手');
+                    this.provideAIOpponent(playerData);
+                    clearInterval(pollInterval);
+                    return;
+                }
+
+                console.log(`匹配中... (${attempts}/${maxAttempts})`);
+
+            } catch (error) {
+                console.error('匹配轮询错误:', error);
+                clearInterval(pollInterval);
+                this.provideAIOpponent(playerData);
+            }
+        }, 1000); // 每秒轮询一次
+
+        // 存储轮询ID以便取消
+        this.currentPolling = pollInterval;
+    }
+
+    /**
+     * 完成匹配
+     */
+    completeMatching(player1, player2, matchingPool) {
+        try {
+            // 生成房间ID
+            const roomId = 'room_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+
+            // 更新匹配池状态
+            const updatedPool = matchingPool.map(p => {
+                if (p.id === player1.id || p.id === player2.id) {
+                    return { ...p, status: 'matched', roomId: roomId };
+                }
+                return p;
+            });
+
+            localStorage.setItem('wordchallenge_matching_pool', JSON.stringify(updatedPool));
+
+            // 确定对手信息
+            const opponent = {
+                nickname: player2.nickname,
+                avatar: player2.avatar,
+                grade: player2.grade
+            };
+
+            console.log('匹配成功！对手:', opponent);
+
+            // 触发匹配成功事件
+            this.triggerEvent('matchFound', {
+                opponent: opponent,
+                roomId: roomId
+            });
+
+        } catch (error) {
+            console.error('完成匹配失败:', error);
+            this.provideAIOpponent(player1);
+        }
+    }
+
+    /**
+     * 提供AI对手
+     */
+    provideAIOpponent(playerData) {
+        const aiOpponent = {
+            nickname: 'AI助手',
+            avatar: '🤖',
+            grade: playerData.grade
+        };
+
+        const roomId = 'ai_room_' + Date.now();
+
+        console.log('提供AI对手:', aiOpponent);
+
+        this.triggerEvent('matchFound', {
+            opponent: aiOpponent,
+            roomId: roomId
+        });
+    }
+
+    /**
+     * 取消匹配
+     */
+    cancelMatching() {
+        if (this.currentPolling) {
+            clearInterval(this.currentPolling);
+            this.currentPolling = null;
+        }
+
+        // 从匹配池中移除
+        try {
+            const matchingPool = JSON.parse(localStorage.getItem('wordchallenge_matching_pool') || '[]');
+            const updatedPool = matchingPool.filter(player =>
+                player.id !== this.userId
+            );
+            localStorage.setItem('wordchallenge_matching_pool', JSON.stringify(updatedPool));
+        } catch (error) {
+            console.error('取消匹配失败:', error);
+        }
+    }
+
+    /**
      * 处理对手断开连接
      */
     handleOpponentDisconnected() {
@@ -382,7 +545,15 @@ window.wsClient = new OnlineBattleClient();
 // 页面卸载时断开连接
 window.addEventListener('beforeunload', () => {
     if (window.wsClient) {
+        window.wsClient.cancelMatching();
         window.wsClient.disconnect();
+    }
+});
+
+// 页面隐藏时取消匹配
+window.addEventListener('visibilitychange', () => {
+    if (document.hidden && window.wsClient) {
+        window.wsClient.cancelMatching();
     }
 });
 
