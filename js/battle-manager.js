@@ -36,13 +36,58 @@ class BattleWordPool {
      */
     async loadAllQuestions(grade) {
         try {
-            // 标准化年级格式
-            let normalizedGrade = grade;
-            if (grade && grade.startsWith('g') && /^g\d+$/.test(grade)) {
-                normalizedGrade = 'grade' + grade.substring(1);
+            // 标准化年级格式并映射到正确的文件路径
+            let questionPath;
+
+            switch (grade) {
+                case 'g3':
+                case 'grade3':
+                    questionPath = 'data/renjiaoban/grade3.json';
+                    break;
+                case 'g4':
+                case 'grade4':
+                    questionPath = 'data/renjiaoban/grade4.json';
+                    break;
+                case 'g5':
+                case 'grade5':
+                    questionPath = 'data/renjiaoban/grade5.json';
+                    break;
+                case 'g6':
+                case 'grade6':
+                    questionPath = 'data/renjiaoban/grade6.json';
+                    break;
+                case 'g7':
+                case 'grade7':
+                    questionPath = 'data/renjiaoban/grade7.json';
+                    break;
+                case 'g8':
+                case 'grade8':
+                    questionPath = 'data/renjiaoban/grade8.json';
+                    break;
+                case 'g9':
+                case 'grade9':
+                    questionPath = 'data/renjiaoban/grade9.json';
+                    break;
+                case 'grade10':
+                case 'hshf':
+                    questionPath = 'data/renjiaoban/highschool_high_freq.json';
+                    break;
+                case 'grade11':
+                case 'grade12':
+                case 'hsa':
+                    questionPath = 'data/renjiaoban/highschool_all.json';
+                    break;
+                default:
+                    // 对于其他年级，尝试直接映射
+                    if (grade && grade.startsWith('g') && /^g\d+$/.test(grade)) {
+                        questionPath = `data/renjiaoban/grade${grade.substring(1)}.json`;
+                    } else {
+                        questionPath = `data/renjiaoban/${grade}.json`;
+                    }
+                    break;
             }
 
-            const questionPath = `data/renjiaoban/${normalizedGrade}.json`;
+            console.log(`加载题库文件: ${questionPath}`);
             const response = await fetch(questionPath);
 
             if (!response.ok) {
@@ -54,7 +99,7 @@ class BattleWordPool {
             // 为每个题目添加唯一ID
             this.allQuestions.forEach((question, index) => {
                 if (!question.id) {
-                    question.id = `${normalizedGrade}_${index}`;
+                    question.id = `${grade}_${index}`;
                 }
             });
 
@@ -172,6 +217,7 @@ class BattleManager {
             myScore: 0,
             opponentScore: 0,
             levelWins: { my: 0, opponent: 0 },
+            levelResults: [], // 记录每个关卡的具体胜负结果
             wrongAnswers: [],
             startTime: null,
             levelStartTime: null,
@@ -198,12 +244,26 @@ class BattleManager {
      * 初始化双人对战
      */
     async initializeBattle(playerInfo, opponentInfo) {
+        // 完全重置游戏状态，避免上一局数据累积
+        this.gameState = {
+            isActive: true,
+            currentLevel: 1,
+            currentQuestion: null,
+            myScore: 0,
+            opponentScore: 0,
+            levelWins: { my: 0, opponent: 0 },
+            levelResults: [], // 记录每个关卡的具体胜负结果
+            wrongAnswers: [],
+            startTime: Date.now(),
+            levelStartTime: null,
+            gameTimeLimit: 15 * 60 * 1000, // 15分钟游戏时间限制
+            gameTimer: null
+        };
+
         this.playerInfo = playerInfo;
         this.opponentInfo = opponentInfo;
-        this.gameState.isActive = true;
-        this.gameState.startTime = Date.now();
 
-        console.log('双人对战初始化:', { playerInfo, opponentInfo });
+        console.log('双人对战初始化 - 游戏状态已重置:', { playerInfo, opponentInfo });
 
         // 播放游戏开始音效
         this.playBattleSound('confirm');
@@ -345,14 +405,56 @@ class BattleManager {
         try {
             console.log('开始加载题库:', grade);
 
-            // 标准化年级格式（将 g3, g4, g5 等转换为 grade3, grade4, grade5）
-            let normalizedGrade = grade;
-            if (grade && grade.startsWith('g') && /^g\d+$/.test(grade)) {
-                normalizedGrade = 'grade' + grade.substring(1);
-            }
+            // 使用与 loadAllQuestions 相同的映射逻辑
+            let questionPath;
 
-            // 构建题库文件路径
-            const questionPath = `data/renjiaoban/${normalizedGrade}.json`;
+            switch (grade) {
+                case 'g3':
+                case 'grade3':
+                    questionPath = 'data/renjiaoban/grade3.json';
+                    break;
+                case 'g4':
+                case 'grade4':
+                    questionPath = 'data/renjiaoban/grade4.json';
+                    break;
+                case 'g5':
+                case 'grade5':
+                    questionPath = 'data/renjiaoban/grade5.json';
+                    break;
+                case 'g6':
+                case 'grade6':
+                    questionPath = 'data/renjiaoban/grade6.json';
+                    break;
+                case 'g7':
+                case 'grade7':
+                    questionPath = 'data/renjiaoban/grade7.json';
+                    break;
+                case 'g8':
+                case 'grade8':
+                    questionPath = 'data/renjiaoban/grade8.json';
+                    break;
+                case 'g9':
+                case 'grade9':
+                    questionPath = 'data/renjiaoban/grade9.json';
+                    break;
+                case 'grade10':
+                case 'hshf':
+                    questionPath = 'data/renjiaoban/highschool_high_freq.json';
+                    break;
+                case 'grade11':
+                case 'grade12':
+                case 'hsa':
+                    questionPath = 'data/renjiaoban/highschool_all.json';
+                    break;
+                default:
+                    // 对于其他年级，尝试直接映射
+                    if (grade && grade.startsWith('g') && /^g\d+$/.test(grade)) {
+                        questionPath = `data/renjiaoban/grade${grade.substring(1)}.json`;
+                    } else {
+                        questionPath = `data/renjiaoban/${grade}.json`;
+                    }
+                    break;
+            }
 
             console.log('题库文件路径:', questionPath);
 
@@ -367,7 +469,7 @@ class BattleManager {
             // 将题库数据存储到全局变量
             window.gradeQuestions = questionData;
 
-            console.log(`题库加载成功: ${normalizedGrade}，共 ${questionData.length} 道题`);
+            console.log(`题库加载成功: ${grade}，共 ${questionData.length} 道题`);
 
         } catch (error) {
             console.error('加载题库失败:', error);
@@ -765,11 +867,15 @@ class BattleManager {
         const level = this.gameState.currentLevel;
         let myWin;
 
+        console.log(`endLevel 被调用 - 关卡: ${level}, winner: ${winner}`);
+
         if (winner) {
             myWin = winner === 'my';
         } else {
             myWin = this.gameState.myScore > this.gameState.opponentScore;
         }
+
+        console.log(`关卡 ${level} 结果判定: myWin = ${myWin}`);
 
         if (myWin) {
             this.gameState.levelWins.my++;
@@ -777,7 +883,16 @@ class BattleManager {
             this.gameState.levelWins.opponent++;
         }
 
+        // 记录当前关卡的具体结果
+        this.gameState.levelResults.push({
+            level: level,
+            result: myWin ? 'victory' : 'defeat',
+            description: myWin ? '成功获胜' : '遗憾失败'
+        });
+
         console.log(`关卡 ${level} 结束，我方${myWin ? '获胜' : '失败'}`);
+        console.log('当前 levelWins 状态:', this.gameState.levelWins);
+        console.log('当前 levelResults 状态:', this.gameState.levelResults);
 
         // 播放关卡结束音效
         this.playBattleSound(myWin ? 'level_win' : 'level_lose');
@@ -861,15 +976,8 @@ class BattleManager {
      * 生成关卡结果
      */
     generateLevelResults() {
-        const results = [];
-        for (let i = 1; i <= 3; i++) {
-            const myWin = i <= this.gameState.levelWins.my;
-            results.push({
-                result: myWin ? 'victory' : 'defeat',
-                description: myWin ? '成功获胜' : '遗憾失败'
-            });
-        }
-        return results;
+        // 直接返回实际记录的关卡结果
+        return this.gameState.levelResults;
     }
 
     /**
@@ -973,6 +1081,7 @@ window.addEventListener('message', (event) => {
                 // 关卡结束
                 const { level: endedLevel, winner } = event.data.payload;
                 console.log(`关卡 ${endedLevel} 结束，获胜者: ${winner}`);
+                console.log('关卡结束消息详情:', event.data);
                 battleManager.endLevel(winner);
                 break;
         }

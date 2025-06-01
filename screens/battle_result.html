@@ -362,8 +362,9 @@
         function displayLevelResults(levelResults) {
             levelResultsContainerEl.innerHTML = '';
 
-            levelResults.forEach((result, index) => {
-                const level = index + 1;
+            levelResults.forEach((result) => {
+                // 使用result对象中的level属性，而不是数组索引
+                const level = result.level || 1;
                 const minigameName = minigameNames[level] || `关卡${level}`;
 
                 const div = document.createElement('div');
@@ -504,9 +505,9 @@
                         correctAnswers: 6
                     },
                     levelResults: [
-                        { result: 'victory', description: '警察成功抓到小偷' },
-                        { result: 'defeat', description: '对手先到达20层' },
-                        { result: 'victory', description: '成功拉过8格线' }
+                        { level: 1, result: 'victory', description: '警察成功抓到小偷' },
+                        { level: 2, result: 'defeat', description: '对手先到达20层' },
+                        { level: 3, result: 'victory', description: '成功拉过8格线' }
                     ],
                     wrongAnswers: [
                         {
@@ -517,7 +518,7 @@
                         }
                     ]
                 };
-                displayBattleResult(mockData);
+                displayBattleResult(defaultData);
             }
         });
 
