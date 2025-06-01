@@ -958,13 +958,10 @@ function loadNextQuestion() {
             payload = { english: question.word, chinese: question.meaning };
         } else if (gameSession.currentLevel === 2) {
             // Level 2 expects { english, options, correct }
-            // Pass the current question object and all questions for the level to generate options
-            const levelKey = `level${gameSession.currentLevel}`;
-            const allQuestionsForLevel = gameSession.questions[levelKey] || [];
             payload = {
                 english: question.english,
-                options: generateOptionsForL2(question, gameSession.uniqueQuestionPool), // Pass uniqueQuestionPool for L2 options
-                correct: question.chinese // Keep correct as the string for comparison
+                options: generateOptionsForL2(question, gameSession.uniqueQuestionPool),
+                correct: question.chinese
             };
         } else if (gameSession.currentLevel === 3) {
             // Level 3 expects { english }
@@ -1024,7 +1021,7 @@ function showGameResults(success) {
         // Maybe navigate home or show an error?
         if (window.parent && typeof window.parent.navigateTo === 'function') {
              window.parent.navigateTo('welcome');
-        } else if (typeof navigateTo === 'function') { // Fallback for direct testing
+        } else {
              navigateTo('welcome');
         }
         return;
@@ -1086,9 +1083,6 @@ function showGameResults(success) {
 
     if (window.parent && typeof window.parent.navigateTo === 'function') {
         window.parent.navigateTo(targetScreen);
-    } else if (typeof navigateTo === 'function') { // Fallback for direct testing
-         console.warn("Navigating directly within main.js context (likely testing).");
-         navigateTo(targetScreen);
     } else {
         console.error("navigateTo function not found in parent or current scope!");
     }
@@ -1213,8 +1207,6 @@ window.addEventListener('message', (event) => {
                             // Trigger navigation
                             if (window.self !== window.top && typeof window.parent.navigateTo === 'function') {
                                 window.parent.navigateTo('level1');
-                            } else if (typeof navigateTo === 'function') {
-                                 navigateTo('level1');
                             } else {
                                 console.error("Cannot navigate: navigateTo function not found.");
                             }
@@ -1250,11 +1242,8 @@ window.addEventListener('message', (event) => {
                  if (window.self !== window.top && typeof window.parent.navigateTo === 'function') {
                      window.parent.navigateTo(messageData.screen);
                      playSound('click'); // Play click for general navigation
-                 } else if (typeof navigateTo === 'function') {
-                     navigateTo(messageData.screen);
-                     playSound('click'); // Play click for general navigation
                  } else {
-                      console.error(`Cannot navigate to ${messageData.screen}: navigateTo function not found.`);
+                     console.error(`Cannot navigate to ${messageData.screen}: navigateTo function not found.`);
                  }
             } else {
                  console.warn("Received navigate message without screen:", messageData);
@@ -1423,7 +1412,7 @@ window.addEventListener('message', (event) => {
                                 console.log('[MainJS_L3_AUDIO_DEBUG] Auto-play detected, attempting to trigger user interaction.');
                                 // 尝试触发一个静音音频来启动音频上下文
                                 try {
-                                    if (window.initAudioContext) {
+                                    if (typeof window.initAudioContext === 'function') {
                                         await window.initAudioContext();
                                         console.log('[MainJS_L3_AUDIO_DEBUG] AudioContext initialized for auto-play.');
                                     }
@@ -1440,7 +1429,7 @@ window.addEventListener('message', (event) => {
                                 }
                             }
 
-                            if (window.initAudioContext) {
+                            if (typeof window.initAudioContext === 'function') {
                                 console.log('[MainJS_L3_AUDIO_DEBUG] playQuestionAudioL3: Ensuring AudioContext is active for TTS.');
                                 try {
                                     await window.initAudioContext();
@@ -1488,7 +1477,7 @@ window.addEventListener('message', (event) => {
             break;
         case 'requestAdminConfig':
              // Send current config to admin screen when it loads
-            loadAdminConfig(); // Ensure latest is loaded before sending
+            loadAdminConfig();
             sendMessageToIframe('loadAdminConfig', adminConfig);
             break;
         case 'saveAdminConfig':
@@ -1661,7 +1650,7 @@ function sendDisplayUpdate() {
 
 // Function to handle answer submission for Level 1 (Multiple Choice or Fill-in-the-blank)
 // This function needs to be adapted based on L1's specific logic if it's different from L3.
-// For now, let's assume a similar structure to L3 for demonstration, but it will need review.
+
 async function handleAnswerL1(submittedAnswer) {
     if (!gameSession || !gameSession.currentQuestionData) {
         console.error("[MainJS] handleAnswerL1: gameSession or currentQuestionData is not available.");

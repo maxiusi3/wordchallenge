@@ -150,14 +150,14 @@
                     matchingStatus.textContent = statusMessages[index];
                 }
 
-                // 模拟匹配成功 (测试用，实际应该由WebSocket控制)
-                if (waitTime >= 15 && Math.random() < 0.1) { // 15秒后有10%概率匹配成功
+                // 模拟匹配成功 (备用机制)
+                if (waitTime >= 15 && Math.random() < 0.1) {
                     simulateMatchFound();
                 }
             }, 1000);
         }
 
-        // 模拟匹配成功 (测试用)
+        // 模拟匹配成功 (备用机制)
         function simulateMatchFound() {
             if (!isMatching) return;
 

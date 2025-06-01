@@ -79,7 +79,7 @@
              100% { transform: scale(1); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); }
          }
 
-        /* 测试样式已移除 - 恢复正常显示 - v1.1 */
+
     </style>
 </head>
 <body class="flex flex-col h-screen p-4 md:p-6">
@@ -388,7 +388,7 @@
               console.log('[L3_HTML] Action: showQuestion');
               displayQuestion(payload);
           } else if (action === 'updateTimer') {
-              // This log can be very frequent, uncomment if needed for specific debugging
+
               // console.log('[L3_HTML] Action: updateTimer, Seconds:', payload ? payload.seconds : 'N/A');
               if (payload && typeof payload.seconds === 'number') {
                 timerDisplayEl.textContent = String(payload.seconds).padStart(2, '0');
@@ -465,7 +465,7 @@
            // displayQuestion({ english: "example" }); // Only need structure
        });
 
-        // 重复的消息监听器代码已清理
+
 
     </script>
 </body>

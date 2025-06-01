@@ -370,8 +370,7 @@
             const oldPosition = gameState.ropePosition;
             gameState.ropePosition = Math.max(-10, Math.min(10, position));
 
-            // 调试信息
-            console.log(`[拉河调试] 位置更新: ${oldPosition} -> ${gameState.ropePosition}, 阈值: ${gameState.winThreshold}, 绝对值: ${Math.abs(gameState.ropePosition)}`)
+
 
             // 计算绳结位置 (50%是中心，负数向左，正数向右)
             // 范围是-10到+10，对应0%到100%
@@ -382,7 +381,7 @@
             const percentage = 50 + (gameState.ropePosition / 10) * 50;
             const clampedPercentage = Math.max(0, Math.min(100, percentage));
 
-            console.log(`[拉河调试] 绳结位置计算: position=${gameState.ropePosition}, percentage=${percentage.toFixed(1)}%, clamped=${clampedPercentage.toFixed(1)}%`);
+
 
             ropeKnotEl.style.left = `${clampedPercentage}%`;
 
@@ -433,7 +432,7 @@
             if (isMyAnswer) {
                 // 我的答题结果
                 positionChange = isCorrect ? -2 : 1; // 答对我方拉2格，答错对方得1格
-                console.log(`[拉河调试] 我的答题: ${isCorrect ? '正确' : '错误'}, 位置变化: ${positionChange}`);
+
 
                 // 播放拉河游戏音效
                 if (isCorrect) {
@@ -444,7 +443,7 @@
             } else {
                 // 对手的答题结果
                 positionChange = isCorrect ? 2 : -1; // 对手答对拉2格，答错我方得1格
-                console.log(`[拉河调试] 对手答题: ${isCorrect ? '正确' : '错误'}, 位置变化: ${positionChange}`);
+
             }
 
             updateRopePosition(gameState.ropePosition + positionChange);
