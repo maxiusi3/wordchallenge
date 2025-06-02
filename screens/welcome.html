@@ -41,11 +41,6 @@
 
         <!-- 游戏模式选择 -->
         <div class="space-y-4 mb-6">
-            <button id="singlePlayerButton"
-                    class="start-button bg-white text-indigo-600 font-bold text-2xl md:text-3xl py-5 px-12 rounded-lg shadow-xl hover:bg-gray-100 focus:outline-none focus:ring-4 focus:ring-indigo-300 w-80 transition duration-150 ease-in-out">
-                🎯 单人挑战
-            </button>
-
             <button id="multiPlayerButton"
                     class="start-button bg-blue-500 text-white font-bold text-2xl md:text-3xl py-5 px-12 rounded-lg shadow-xl hover:bg-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-300 w-80 transition duration-150 ease-in-out">
                 ⚔️ 双人对战
@@ -59,11 +54,7 @@
         </div>
     </div>
 
-    <!-- 管理员入口图标 -->
-    <div id="adminEntryIconContainerWelcome" class="admin-icon" style="position: absolute; top: 20px; right: 20px; cursor: pointer; z-index: 1000;">
-         <!-- 使用 Lucide Settings Icon -->
-         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 .54 1.85l-.01.45a2 2 0 0 1-1 1.74l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 .54 1.85l-.01.45a2 2 0 0 1-1 1.74l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 .54 1.85v.19a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-.54-1.85l.01-.45a2 2 0 0 1 1-1.74l.43.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l-.22.38a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-.54-1.85v-.19a2 2 0 0 0-2-2h-.44Z"/><circle cx="12" cy="12" r="3"/></svg>
-    </div>
+
 
     <script>
         // let welcomeMessageSent = false; // Flag is no longer needed
@@ -78,7 +69,6 @@
         });
         */
 
-        const singlePlayerButton = document.getElementById('singlePlayerButton');
         const multiPlayerButton = document.getElementById('multiPlayerButton');
         const networkIndicator = document.getElementById('networkIndicator');
         const networkText = document.getElementById('networkText');
@@ -89,16 +79,12 @@
             if (isOnline) {
                 networkIndicator.textContent = '✅';
                 networkText.textContent = '网络连接正常';
-                singlePlayerButton.disabled = false;
                 multiPlayerButton.disabled = false;
-                singlePlayerButton.classList.remove('opacity-50', 'cursor-not-allowed');
                 multiPlayerButton.classList.remove('opacity-50', 'cursor-not-allowed');
             } else {
                 networkIndicator.textContent = '❌';
                 networkText.textContent = '网络连接不可用';
-                singlePlayerButton.disabled = true;
                 multiPlayerButton.disabled = true;
-                singlePlayerButton.classList.add('opacity-50', 'cursor-not-allowed');
                 multiPlayerButton.classList.add('opacity-50', 'cursor-not-allowed');
             }
         }
@@ -141,18 +127,7 @@
             return true;
         }
 
-        // 单人挑战按钮事件
-        singlePlayerButton.addEventListener('click', async () => {
-            const canProceed = await handleButtonClick();
-            if (!canProceed) return;
 
-            // 通知父页面导航到 info_input 屏幕 (保持原有单人模式流程)
-            if (window.parent && window.parent.postMessage) {
-                window.parent.postMessage({ action: 'navigate', screen: 'info_input' }, '*');
-            } else {
-                console.error("无法与父窗口通信以进行导航。");
-            }
-        });
 
         // 双人对战按钮事件
         multiPlayerButton.addEventListener('click', async () => {
@@ -167,22 +142,7 @@
             }
         });
 
-        // 管理员入口图标逻辑
-        const adminIconElement = document.getElementById('adminEntryIconContainerWelcome');
-        if (adminIconElement) {
-            adminIconElement.addEventListener('click', function() {
-                // 播放点击音效 (如果 audio.js 已实现且音效已加载)
-                if (window.parent && typeof window.parent.playSound === 'function') {
-                    window.parent.playSound('click');
-                }
-                // 通知父页面导航到 admin_login 屏幕
-                if (window.parent && window.parent.postMessage) {
-                    window.parent.postMessage({ type: 'navigate', screen: 'admin_login' }, '*');
-                } else {
-                    console.error("无法与父窗口通信以导航到管理员登录页面。");
-                }
-            });
-        }
+
 
         // 确保 Lucide 图标被创建
         // DOMContentLoaded 可能已经触发，或者对于 iframe 来说行为可能不同
