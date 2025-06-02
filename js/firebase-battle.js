@@ -8,10 +8,11 @@ class FirebaseBattleManager {
         this.roomRef = null;
         this.isMatching = false;
         this.matchingTimeout = null;
-        
+        this.lastProcessedActionId = null; // 记录最后处理的动作ID
+
         // 事件监听器
         this.eventListeners = new Map();
-        
+
         // 绑定方法
         this.init = this.init.bind(this);
         this.startMatching = this.startMatching.bind(this);
@@ -26,7 +27,7 @@ class FirebaseBattleManager {
         try {
             // 确保Firebase已初始化
             const firebaseReady = await window.firebaseManager.init();
-            
+
             if (!firebaseReady) {
                 console.log('Firebase不可用，使用本地匹配模式');
                 return false;
@@ -66,10 +67,10 @@ class FirebaseBattleManager {
             // 添加到匹配池
             const matchingPoolRef = this.database.ref(`matching/${this.currentUser.grade}`);
             const userRef = matchingPoolRef.child(this.currentUser.id);
-            
+
             // 设置用户数据
             await userRef.set(this.currentUser);
-            
+
             // 设置断线时自动移除
             userRef.onDisconnect().remove();
 
@@ -148,7 +149,7 @@ class FirebaseBattleManager {
 
             if (result.committed) {
                 console.log('🏠 成功创建房间:', roomId);
-                
+
                 // 更新双方状态为已匹配
                 const updates = {};
                 updates[`matching/${this.currentUser.grade}/${this.currentUser.id}/status`] = 'matched';
@@ -203,7 +204,7 @@ class FirebaseBattleManager {
      */
     onRoomUpdate(snapshot) {
         const roomData = snapshot.val();
-        
+
         if (!roomData) {
             console.log('房间已被删除');
             this.leaveRoom();
@@ -215,7 +216,7 @@ class FirebaseBattleManager {
         // 检查对手是否离线
         const players = Object.values(roomData.players || {});
         const opponent = players.find(p => p.id !== this.currentUser.id);
-        
+
         if (opponent && opponent.status === 'disconnected') {
             console.log('对手已断开连接');
             this.triggerEvent('opponentDisconnected');
@@ -224,10 +225,22 @@ class FirebaseBattleManager {
         // 处理游戏动作
         if (roomData.gameActions) {
             const actions = Object.values(roomData.gameActions);
-            const latestAction = actions[actions.length - 1];
-            
-            if (latestAction && latestAction.playerId !== this.currentUser.id) {
-                this.triggerEvent('gameAction', latestAction);
+            console.log('🎮 房间中的所有游戏动作:', actions);
+
+            // 找到最新的对手动作
+            const opponentActions = actions.filter(action =>
+                action.playerId !== this.currentUser.id
+            );
+
+            if (opponentActions.length > 0) {
+                const latestAction = opponentActions[opponentActions.length - 1];
+                console.log('📨 最新的对手动作:', latestAction);
+
+                // 检查是否是新动作（避免重复处理）
+                if (!this.lastProcessedActionId || this.lastProcessedActionId !== latestAction.timestamp) {
+                    this.lastProcessedActionId = latestAction.timestamp;
+                    this.triggerEvent('gameAction', latestAction);
+                }
             }
         }
     }
@@ -248,7 +261,7 @@ class FirebaseBattleManager {
 
             // 添加到游戏动作列表
             await this.roomRef.child('gameActions').push(actionData);
-            
+
         } catch (error) {
             console.error('发送游戏动作失败:', error);
         }

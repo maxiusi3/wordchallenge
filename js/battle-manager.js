@@ -606,11 +606,19 @@ class BattleManager {
 
         // 通过WebSocket发送答题结果给对手
         if (this.wsClient) {
+            console.log('📤 发送答题结果给对手:', {
+                level: level,
+                isCorrect: isCorrect,
+                answer: answer
+            });
+
             this.wsClient.sendGameAction('playerAnswer', {
                 level: level,
                 isCorrect: isCorrect,
                 answer: answer
             });
+        } else {
+            console.warn('⚠️ WebSocket客户端不可用，无法发送游戏动作');
         }
 
         // 检查关卡是否结束
@@ -1021,15 +1029,29 @@ class BattleManager {
      * 处理对手的答题结果
      */
     handleOpponentAnswer(data) {
+        console.log('🎯 处理对手答题结果:', data);
+
         if (data.isCorrect) {
             this.gameState.opponentScore++;
+            console.log('✅ 对手答对了！对手分数:', this.gameState.opponentScore);
+        } else {
+            console.log('❌ 对手答错了');
         }
+
+        // 立即更新显示信息
+        this.updateLevelDisplay();
 
         // 通知当前关卡页面
         this.sendToCurrentLevel('opponentAnswer', {
             isCorrect: data.isCorrect,
-            level: data.level
+            level: data.level,
+            opponentScore: this.gameState.opponentScore
         });
+
+        // 检查关卡是否结束
+        setTimeout(() => {
+            this.checkLevelEnd();
+        }, 1000);
     }
 
     /**
@@ -1088,11 +1110,32 @@ window.addEventListener('message', (event) => {
     }
 });
 
-// 监听WebSocket消息
-if (window.wsClient) {
-    window.wsClient.addMessageHandler('gameAction', (message) => {
-        if (message.action === 'playerAnswer') {
-            window.battleManager.handleOpponentAnswer(message.data);
-        }
-    });
+// 设置消息处理器连接函数
+function setupBattleMessageHandlers() {
+    console.log('🔗 设置双人对战消息处理器');
+
+    // 确保WebSocket客户端存在
+    if (window.wsClient) {
+        // 添加游戏动作处理器
+        window.wsClient.addMessageHandler('gameAction', (message) => {
+            console.log('📨 收到对手游戏动作:', message);
+
+            if (message.action === 'playerAnswer') {
+                console.log('🎯 处理对手答题:', message.data);
+                window.battleManager.handleOpponentAnswer(message.data);
+            }
+        });
+
+        console.log('✅ 双人对战消息处理器设置完成');
+    } else {
+        console.warn('⚠️ WebSocket客户端未就绪，稍后重试');
+        // 延迟重试
+        setTimeout(setupBattleMessageHandlers, 1000);
+    }
 }
+
+// 立即尝试设置，如果失败会自动重试
+setupBattleMessageHandlers();
+
+// 也在window加载完成后再次尝试
+window.addEventListener('load', setupBattleMessageHandlers);
