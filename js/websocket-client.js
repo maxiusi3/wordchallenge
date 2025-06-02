@@ -390,6 +390,12 @@ class OnlineBattleClient {
 
             localStorage.setItem('wordchallenge_matching_pool', JSON.stringify(cleanPool));
             console.log('已加入匹配池，当前等待玩家数:', cleanPool.length);
+            console.log('匹配池详情:', cleanPool.map(p => ({ nickname: p.nickname, grade: p.grade, status: p.status })));
+
+            // 提示用户如何测试真实匹配
+            if (cleanPool.length === 1) {
+                console.log('%c📝 测试提示：要测试真实玩家匹配，请在另一个浏览器标签页或隐私模式中打开同一个网址，选择相同年级并开始匹配', 'color: #3498db; font-size: 14px; font-weight: bold;');
+            }
         } catch (error) {
             console.error('添加到匹配池失败:', error);
         }
@@ -400,7 +406,9 @@ class OnlineBattleClient {
      */
     startMatchingPolling(playerData) {
         let attempts = 0;
-        const maxAttempts = 60; // 最多轮询60次（约1分钟）
+        const maxAttempts = 15; // 减少到15秒，更快提供AI对手
+
+        console.log('开始匹配轮询，将在', maxAttempts, '秒后提供AI对手');
 
         const pollInterval = setInterval(() => {
             attempts++;
@@ -416,9 +424,12 @@ class OnlineBattleClient {
                     Date.now() - player.timestamp < 5 * 60 * 1000
                 );
 
+                console.log(`匹配中... (${attempts}/${maxAttempts}) - 可用玩家: ${availablePlayers.length}`);
+
                 if (availablePlayers.length > 0) {
                     // 找到对手，进行匹配
                     const opponent = availablePlayers[0];
+                    console.log('找到真实对手！', opponent);
                     this.completeMatching(playerData, opponent, matchingPool);
                     clearInterval(pollInterval);
                     return;
@@ -431,8 +442,6 @@ class OnlineBattleClient {
                     clearInterval(pollInterval);
                     return;
                 }
-
-                console.log(`匹配中... (${attempts}/${maxAttempts})`);
 
             } catch (error) {
                 console.error('匹配轮询错误:', error);
@@ -537,6 +546,46 @@ class OnlineBattleClient {
             window.navigateTo('welcome');
         }
     }
+
+    /**
+     * 调试工具：查看当前匹配池状态
+     */
+    debugMatchingPool() {
+        try {
+            const matchingPool = JSON.parse(localStorage.getItem('wordchallenge_matching_pool') || '[]');
+            const now = Date.now();
+
+            console.log('%c🔍 匹配池调试信息', 'color: #e74c3c; font-size: 16px; font-weight: bold;');
+            console.log('总玩家数:', matchingPool.length);
+
+            matchingPool.forEach((player, index) => {
+                const ageMinutes = Math.floor((now - player.timestamp) / (1000 * 60));
+                console.log(`${index + 1}. ${player.nickname} (年级: ${player.grade}, 状态: ${player.status}, ${ageMinutes}分钟前)`);
+            });
+
+            const activePool = matchingPool.filter(player =>
+                now - player.timestamp < 5 * 60 * 1000 && player.status === 'waiting'
+            );
+            console.log('活跃等待玩家数:', activePool.length);
+
+            return { total: matchingPool.length, active: activePool.length, players: matchingPool };
+        } catch (error) {
+            console.error('调试匹配池失败:', error);
+            return null;
+        }
+    }
+
+    /**
+     * 调试工具：清空匹配池
+     */
+    clearMatchingPool() {
+        try {
+            localStorage.removeItem('wordchallenge_matching_pool');
+            console.log('%c🗑️ 匹配池已清空', 'color: #27ae60; font-size: 14px; font-weight: bold;');
+        } catch (error) {
+            console.error('清空匹配池失败:', error);
+        }
+    }
 }
 
 // 创建全局在线对战客户端实例
@@ -559,3 +608,13 @@ window.addEventListener('visibilitychange', () => {
 
 // 兼容性别名
 window.onlineBattleClient = window.wsClient;
+
+// 暴露调试工具到全局作用域
+window.debugMatchingPool = () => window.wsClient.debugMatchingPool();
+window.clearMatchingPool = () => window.wsClient.clearMatchingPool();
+
+// 提示用户可用的调试命令
+console.log('%c🔧 调试工具已加载', 'color: #9b59b6; font-size: 14px; font-weight: bold;');
+console.log('可用命令:');
+console.log('- debugMatchingPool() - 查看当前匹配池状态');
+console.log('- clearMatchingPool() - 清空匹配池');
