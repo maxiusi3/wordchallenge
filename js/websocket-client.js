@@ -175,6 +175,10 @@ class OnlineBattleClient {
         window.firebaseBattle.on('matchFound', (data) => {
             console.log('🎉 Firebase匹配成功:', data);
             this.currentRoom = data.roomId;
+
+            // 设置房间ID到全局变量
+            window.currentRoomId = data.roomId;
+
             this.notifyMatchFound(data);
         });
 
@@ -419,6 +423,14 @@ class OnlineBattleClient {
      * 通知匹配页面匹配成功
      */
     notifyMatchFound(matchData) {
+        console.log('🎉 通知匹配成功:', matchData);
+
+        // 存储房间ID到父页面
+        if (window.parent) {
+            window.parent.currentRoomId = matchData.roomId;
+            console.log('🏠 设置房间ID:', matchData.roomId);
+        }
+
         // 通过postMessage通知iframe页面
         const screenFrame = document.getElementById('screenFrame');
         if (screenFrame && screenFrame.contentWindow) {

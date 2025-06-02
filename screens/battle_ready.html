@@ -182,11 +182,17 @@
 
             // 准备游戏数据
             const gameData = {
-                player: window.parent.battleUserInfo,
+                player: {
+                    ...window.parent.battleUserInfo,
+                    id: window.parent.battleUserInfo?.id || window.parent.battleUserInfo?.nickname || 'player1'
+                },
                 opponent: window.parent.opponentInfo,
+                roomId: window.parent.currentRoomId || 'default_room',
                 currentLevel: 1,
                 gameMode: 'battle'
             };
+
+            console.log('🎮 准备游戏数据:', gameData);
 
             // 存储游戏数据到父页面
             if (window.parent) {

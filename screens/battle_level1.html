@@ -269,6 +269,17 @@
             gameEnded: false     // 游戏是否已结束标志
         };
 
+        // 简单的字符串哈希函数
+        function simpleHash(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                const char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash; // 转换为32位整数
+            }
+            return Math.abs(hash);
+        }
+
         // 初始化双人对战信息
         function initializeBattleInfo() {
             if (window.parent && window.parent.battleGameData) {
@@ -279,9 +290,20 @@
                 myNicknameEl.textContent = player.nickname || '我';
                 opponentNicknameEl.textContent = opponent.nickname || '对手';
 
-                // 随机分配角色（确保50%概率）
-                gameState.myRole = Math.random() < 0.5 ? 'cop' : 'thief';
-                console.log('角色分配结果:', gameState.myRole, '随机数:', Math.random());
+                // 基于房间ID和玩家ID确定性分配角色
+                const roomId = gameData.roomId || 'default_room';
+                const playerId = player.id || player.nickname || 'player1';
+
+                // 使用房间ID和玩家ID的组合来确定角色
+                const roleHash = simpleHash(roomId + playerId);
+                gameState.myRole = (roleHash % 2 === 0) ? 'cop' : 'thief';
+
+                console.log('角色分配结果:', {
+                    roomId: roomId,
+                    playerId: playerId,
+                    roleHash: roleHash,
+                    myRole: gameState.myRole
+                });
 
                 // 更新玩家名字显示（简化显示，避免名字过长）
                 if (gameState.myRole === 'cop') {

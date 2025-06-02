@@ -53,14 +53,20 @@ class FirebaseBattleManager {
 
         try {
             // 生成用户ID和数据
+            const userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
             this.currentUser = {
-                id: 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                id: userId,
                 nickname: userInfo.nickname || '玩家',
                 avatar: userInfo.avatar || '👤',
                 grade: userInfo.grade,
                 timestamp: firebase.database.ServerValue.TIMESTAMP,
                 status: 'waiting'
             };
+
+            // 将用户ID存储到全局变量，供角色分配使用
+            if (window.battleUserInfo) {
+                window.battleUserInfo.id = userId;
+            }
 
             console.log('🔍 开始匹配，用户信息:', this.currentUser);
 
