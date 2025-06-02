@@ -290,18 +290,24 @@
                 myNicknameEl.textContent = player.nickname || '我';
                 opponentNicknameEl.textContent = opponent.nickname || '对手';
 
-                // 基于房间ID和玩家ID确定性分配角色
+                // 基于玩家ID的字典序确定性分配角色
                 const roomId = gameData.roomId || 'default_room';
                 const playerId = player.id || player.nickname || 'player1';
+                const opponentId = opponent.id || opponent.nickname || 'player2';
 
-                // 使用房间ID和玩家ID的组合来确定角色
-                const roleHash = simpleHash(roomId + playerId);
-                gameState.myRole = (roleHash % 2 === 0) ? 'cop' : 'thief';
+                // 使用字典序来确保两个玩家在同一房间中有不同角色
+                const playerIds = [playerId, opponentId].sort(); // 按字典序排序
+                const isFirstPlayer = playerId === playerIds[0];
+
+                // 第一个玩家（字典序较小）为警察，第二个玩家为小偷
+                gameState.myRole = isFirstPlayer ? 'cop' : 'thief';
 
                 console.log('角色分配结果:', {
                     roomId: roomId,
                     playerId: playerId,
-                    roleHash: roleHash,
+                    opponentId: opponentId,
+                    playerIds: playerIds,
+                    isFirstPlayer: isFirstPlayer,
                     myRole: gameState.myRole
                 });
 

@@ -1237,12 +1237,30 @@ function setupBattleMessageHandlers() {
         window.wsClient.addMessageHandler('gameAction', (message) => {
             console.log('📨 收到对手游戏动作:', message);
 
-            if (message.action === 'playerAnswer') {
-                console.log('🎯 处理对手答题:', message.data);
-                window.battleManager.handleOpponentAnswer(message.data);
-            } else if (message.action === 'levelEnd') {
-                console.log('🏁 处理对手关卡结束:', message.data);
-                window.battleManager.handleOpponentLevelEnd(message.data);
+            // 处理Firebase和WebSocket两种不同的数据结构
+            let action, data;
+
+            if (message.action && message.data) {
+                // WebSocket格式: {action: 'playerAnswer', data: {...}}
+                action = message.action;
+                data = message.data;
+            } else if (message.playerId && message.action) {
+                // Firebase格式: {playerId: 'xxx', action: 'playerAnswer', data: {...}}
+                action = message.action;
+                data = message.data || message;
+            } else {
+                console.warn('⚠️ 未知的游戏动作格式:', message);
+                return;
+            }
+
+            console.log('🔄 解析后的动作:', { action, data });
+
+            if (action === 'playerAnswer') {
+                console.log('🎯 处理对手答题:', data);
+                window.battleManager.handleOpponentAnswer(data);
+            } else if (action === 'levelEnd') {
+                console.log('🏁 处理对手关卡结束:', data);
+                window.battleManager.handleOpponentLevelEnd(data);
             }
         });
 
