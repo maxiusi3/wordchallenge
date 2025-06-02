@@ -171,12 +171,20 @@
 
             // 模拟对手信息
             const opponents = [
-                { nickname: '英语小达人', grade: '五年级', winRate: 85 },
-                { nickname: '单词王者', grade: '五年级', winRate: 78 },
-                { nickname: '学霸小明', grade: '四年级', winRate: 92 },
-                { nickname: '词汇大师', grade: '六年级', winRate: 73 }
+                { nickname: '英语小达人', grade: '五年级', winRate: 85, avatar: '🎓' },
+                { nickname: '单词王者', grade: '五年级', winRate: 78, avatar: '👑' },
+                { nickname: '学霸小明', grade: '四年级', winRate: 92, avatar: '🤓' },
+                { nickname: '词汇大师', grade: '六年级', winRate: 73, avatar: '📚' }
             ];
-            const opponent = opponents[Math.floor(Math.random() * opponents.length)];
+            const baseOpponent = opponents[Math.floor(Math.random() * opponents.length)];
+
+            // 为对手生成唯一ID，确保与玩家ID不同
+            const opponent = {
+                ...baseOpponent,
+                id: 'opponent_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9)
+            };
+
+            console.log('生成模拟对手信息:', opponent);
 
             // 存储对手信息到父页面
             if (window.parent) {

@@ -256,8 +256,19 @@ class FirebaseBattleManager {
 
                 if (!this.lastProcessedActionId || this.lastProcessedActionId !== actionKey) {
                     console.log('🆕 处理新动作:', actionKey);
+                    console.log('📊 动作详情:', latestAction);
                     this.lastProcessedActionId = actionKey;
-                    this.triggerEvent('gameAction', latestAction);
+
+                    // 确保动作数据格式正确
+                    const processedAction = {
+                        action: latestAction.action,
+                        data: latestAction.data || latestAction,
+                        playerId: latestAction.playerId,
+                        timestamp: latestAction.timestamp
+                    };
+
+                    console.log('🚀 触发事件:', processedAction);
+                    this.triggerEvent('gameAction', processedAction);
                 } else {
                     console.log('🔄 跳过重复动作:', actionKey);
                 }

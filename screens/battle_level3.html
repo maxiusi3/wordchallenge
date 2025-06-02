@@ -198,6 +198,71 @@
             color: white;
             transform: scale(1.1);
         }
+
+        /* 游戏动作统计区样式 */
+        .action-stats-area {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 16px;
+            max-height: 200px;
+        }
+
+        .action-stats-container {
+            max-height: 120px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 6px;
+            padding: 8px;
+        }
+
+        .action-record {
+            padding: 4px 8px;
+            margin-bottom: 2px;
+            border-radius: 4px;
+            font-size: 14px;
+            line-height: 1.4;
+            border-left: 3px solid transparent;
+        }
+
+        .action-record.my-action {
+            background: rgba(34, 197, 94, 0.2);
+            border-left-color: #22c55e;
+            color: #dcfce7;
+        }
+
+        .action-record.opponent-action {
+            background: rgba(239, 68, 68, 0.2);
+            border-left-color: #ef4444;
+            color: #fecaca;
+        }
+
+        .action-record.correct {
+            font-weight: bold;
+        }
+
+        .action-record.incorrect {
+            opacity: 0.8;
+        }
+
+        /* 滚动条样式 */
+        .action-stats-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .action-stats-container::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 3px;
+        }
+
+        .action-stats-container::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+        }
+
+        .action-stats-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
     </style>
 </head>
 <body class="flex flex-col h-screen p-4 md:p-6">
@@ -264,7 +329,15 @@
         </div>
     </div>
 
-    <!-- 移除统计区 -->
+    <!-- 3. 游戏动作统计区 -->
+    <div class="action-stats-area">
+        <div class="text-center mb-2">
+            <h4 class="text-lg font-bold">游戏动作记录</h4>
+        </div>
+        <div id="action-stats-container" class="action-stats-container">
+            <!-- 动作记录将在这里显示 -->
+        </div>
+    </div>
 
     <!-- 4. 答题区域 -->
     <div class="flex-grow flex flex-col items-center justify-center text-center px-4 relative">
@@ -339,10 +412,104 @@
             gameEnded: false
         };
 
+        // 动作记录管理
+        let actionRecords = [];
+        const maxRecords = 20; // 最多保存20条记录
+        const visibleRecords = 4; // 显示最近4条
+
+        // 动作记录管理函数（第三关：词力拔河）
+        function addActionRecord(playerId, playerNickname, isCorrect, isMyAction) {
+            const timestamp = new Date().toLocaleTimeString('zh-CN', {
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+
+            // 计算绳子移动情况
+            let moveDescription = '';
+            let newPosition = gameState.ropePosition;
+
+            if (isMyAction) {
+                if (isCorrect) {
+                    moveDescription = '向我方移2格';
+                } else {
+                    moveDescription = '向对方移1格';
+                }
+            } else {
+                if (isCorrect) {
+                    moveDescription = '向对方移2格';
+                } else {
+                    moveDescription = '向我方移1格';
+                }
+            }
+
+            const record = {
+                id: Date.now() + Math.random(),
+                timestamp,
+                playerId,
+                playerNickname,
+                isCorrect,
+                isMyAction,
+                moveDescription,
+                newPosition,
+                message: `${playerNickname} ${isCorrect ? '答对' : '答错'}，${moveDescription}，当前位置${newPosition}`
+            };
+
+            // 添加到记录数组
+            actionRecords.push(record);
+
+            // 保持最大记录数量
+            if (actionRecords.length > maxRecords) {
+                actionRecords = actionRecords.slice(-maxRecords);
+            }
+
+            // 更新显示
+            updateActionRecordsDisplay();
+
+            console.log('添加动作记录:', record);
+        }
+
+        function updateActionRecordsDisplay() {
+            const container = document.getElementById('action-stats-container');
+            if (!container) return;
+
+            // 获取最近的记录（最多4条）
+            const recentRecords = actionRecords.slice(-visibleRecords);
+
+            // 清空容器
+            container.innerHTML = '';
+
+            if (recentRecords.length === 0) {
+                container.innerHTML = '<div class="text-center text-gray-400 text-sm">暂无动作记录</div>';
+                return;
+            }
+
+            // 按时间顺序显示（最新的在下方）
+            recentRecords.forEach(record => {
+                const recordEl = document.createElement('div');
+                recordEl.className = `action-record ${record.isMyAction ? 'my-action' : 'opponent-action'} ${record.isCorrect ? 'correct' : 'incorrect'}`;
+                recordEl.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <span class="flex-1">${record.message}</span>
+                        <span class="text-xs opacity-75 ml-2">${record.timestamp}</span>
+                    </div>
+                `;
+                container.appendChild(recordEl);
+            });
+
+            // 自动滚动到底部
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // 存储本地的游戏数据
+        let localBattleGameData = null;
+
         // 初始化双人对战信息
         function initializeBattleInfo() {
-            if (window.parent && window.parent.battleGameData) {
-                const gameData = window.parent.battleGameData;
+            // 优先使用本地存储的数据
+            const gameData = localBattleGameData || (window.parent && window.parent.battleGameData);
+            if (gameData) {
                 const player = gameData.player;
                 const opponent = gameData.opponent;
 
@@ -427,12 +594,21 @@
 
         // 处理答题结果对小游戏的影响
         function handleAnswerResult(isCorrect, isMyAnswer) {
+            // 获取玩家信息用于记录
+            let playerNickname, opponentNickname;
+            if (window.parent && window.parent.battleGameData) {
+                playerNickname = window.parent.battleGameData.player.nickname || '我';
+                opponentNickname = window.parent.battleGameData.opponent.nickname || '对手';
+            } else {
+                playerNickname = '我';
+                opponentNickname = '对手';
+            }
+
             let positionChange = 0;
 
             if (isMyAnswer) {
                 // 我的答题结果
                 positionChange = isCorrect ? -2 : 1; // 答对我方拉2格，答错对方得1格
-
 
                 // 播放拉河游戏音效
                 if (isCorrect) {
@@ -443,10 +619,17 @@
             } else {
                 // 对手的答题结果
                 positionChange = isCorrect ? 2 : -1; // 对手答对拉2格，答错我方得1格
-
             }
 
+            // 更新绳子位置
             updateRopePosition(gameState.ropePosition + positionChange);
+
+            // 在位置更新后添加动作记录
+            if (isMyAnswer) {
+                addActionRecord('my_player', playerNickname, isCorrect, true);
+            } else {
+                addActionRecord('opponent_player', opponentNickname, isCorrect, false);
+            }
         }
 
         // 动态调整输入框宽度的函数
@@ -939,6 +1122,9 @@
         window.addEventListener('load', () => {
             initializeBattleInfo();
 
+            // 初始化统计区显示
+            updateActionRecordsDisplay();
+
             if (window.parent && window.parent.postMessage) {
                 window.parent.postMessage({
                     action: 'requestBattleLevelData',
@@ -980,6 +1166,27 @@
                     case 'opponentAnswer':
                         // 处理对手的答题结果
                         handleAnswerResult(event.data.payload.isCorrect, false);
+                        break;
+                    case 'initTestData':
+                        // 初始化测试数据
+                        console.log('第三关收到测试初始化数据:', event.data.payload);
+                        if (event.data.payload) {
+                            localBattleGameData = event.data.payload;
+                            initializeBattleInfo();
+                        }
+                        break;
+                    case 'simulateAnswer':
+                        // 模拟答题
+                        console.log('第三关模拟答题:', event.data.payload);
+                        if (event.data.payload) {
+                            handleAnswerResult(event.data.payload.isCorrect, event.data.payload.isMyAnswer);
+                        }
+                        break;
+                    case 'clearRecords':
+                        // 清空记录
+                        console.log('第三关清空记录');
+                        actionRecords = [];
+                        updateActionRecordsDisplay();
                         break;
                 }
             }

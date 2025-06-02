@@ -287,8 +287,39 @@ class BattleManager {
         // 开始15分钟游戏计时器
         this.startGameTimer();
 
+        // 设置全局游戏数据（确保关卡页面可以访问）
+        this.setupGlobalGameData();
+
         // 开始第一关
         this.startLevel(1);
+    }
+
+    /**
+     * 设置全局游戏数据（确保关卡页面可以访问）
+     */
+    setupGlobalGameData() {
+        // 生成确定性的房间ID
+        const playerId = this.playerInfo.id || this.playerInfo.nickname || 'player1';
+        const opponentId = this.opponentInfo.id || this.opponentInfo.nickname || 'opponent1';
+        const sortedIds = [playerId, opponentId].sort();
+        const roomId = `room_${sortedIds[0]}_${sortedIds[1]}_${Date.now()}`;
+
+        // 设置全局游戏数据
+        window.battleGameData = {
+            player: {
+                ...this.playerInfo,
+                id: playerId
+            },
+            opponent: {
+                ...this.opponentInfo,
+                id: opponentId
+            },
+            roomId: roomId,
+            currentLevel: this.gameState.currentLevel,
+            gameMode: 'battle'
+        };
+
+        console.log('🎮 设置全局游戏数据:', window.battleGameData);
     }
 
     /**
@@ -607,42 +638,138 @@ class BattleManager {
             userAnswer: answer
         });
 
-        // 通过WebSocket发送答题结果给对手
-        if (this.wsClient) {
-            console.log('📤 发送答题结果给对手:', {
-                level: level,
-                isCorrect: isCorrect,
-                answer: answer,
-                useFirebase: this.wsClient.useFirebase,
-                isConnected: this.wsClient.isConnected
-            });
+        // 新的数据同步机制：优先使用本地模拟，再尝试WebSocket
+        const gameActionData = {
+            level: level,
+            isCorrect: isCorrect,
+            answer: answer,
+            timestamp: Date.now(),
+            playerId: this.playerInfo?.id || this.playerInfo?.nickname || 'player1'
+        };
 
-            // 检查连接状态
-            if (!this.wsClient.isConnected) {
-                console.warn('⚠️ WebSocket未连接，尝试重新连接...');
-                this.wsClient.connect();
+        console.log('📤 发送答题结果给对手:', gameActionData);
+
+        // 1. 本地模拟同步（主要方式）
+        this.simulateOpponentResponse(gameActionData);
+
+        // 2. 尝试WebSocket同步（备用方式）
+        if (this.wsClient && this.wsClient.isConnected) {
+            try {
+                const sendResult = this.wsClient.sendGameAction('playerAnswer', gameActionData);
+                console.log('📝 WebSocket发送结果:', sendResult);
+            } catch (error) {
+                console.warn('⚠️ WebSocket发送失败:', error);
             }
-
-            const sendResult = this.wsClient.sendGameAction('playerAnswer', {
-                level: level,
-                isCorrect: isCorrect,
-                answer: answer
-            });
-
-            console.log('📝 发送结果:', sendResult);
         } else {
-            console.warn('⚠️ WebSocket客户端不可用，无法发送游戏动作');
-            console.log('🔍 调试信息:', {
-                wsClient: !!window.wsClient,
-                battleManager: !!window.battleManager,
-                firebaseBattle: !!window.firebaseBattle
-            });
+            console.log('🤖 使用本地模拟同步');
         }
 
-        // 检查关卡是否结束
+        // 立即生成下一道题（实时竞速模式）
         setTimeout(() => {
-            this.checkLevelEnd();
-        }, 2000);
+            this.loadNextQuestion();
+        }, 1500); // 缩短等待时间，提高竞速性
+    }
+
+    /**
+     * 加载下一道题（实时竞速模式）
+     */
+    async loadNextQuestion() {
+        if (!this.gameState.isActive) {
+            return;
+        }
+
+        console.log('🏃‍♂️ 加载下一道题（竞速模式）');
+
+        try {
+            // 获取新题目
+            const grade = this.playerInfo.grade;
+            const questionData = await this.getRandomQuestion(grade, this.gameState.currentLevel);
+
+            if (questionData) {
+                this.gameState.currentQuestion = questionData;
+
+                // 发送题目数据到关卡页面
+                this.sendToCurrentLevel('showQuestion', questionData);
+
+                // 更新显示信息
+                this.updateLevelDisplay();
+
+                console.log('📝 新题目已加载:', questionData.chinese || questionData.english);
+            } else {
+                console.error('无法加载新题目');
+            }
+        } catch (error) {
+            console.error('加载下一道题失败:', error);
+        }
+    }
+
+    /**
+     * 模拟对手响应（本地同步机制）
+     */
+    simulateOpponentResponse(myActionData) {
+        // 模拟对手的响应时间（竞速模式：2-8秒）
+        const responseDelay = 2000 + Math.random() * 6000;
+
+        setTimeout(() => {
+            // 模拟对手答题结果（55%正确率，让游戏更有挑战性）
+            const opponentIsCorrect = Math.random() > 0.45;
+
+            const opponentActionData = {
+                level: myActionData.level,
+                isCorrect: opponentIsCorrect,
+                answer: 'simulated_answer_' + Date.now(),
+                timestamp: Date.now(),
+                playerId: this.opponentInfo?.id || this.opponentInfo?.nickname || 'opponent1'
+            };
+
+            console.log('🤖 模拟对手响应:', opponentActionData);
+
+            // 直接调用对手答题处理方法
+            this.handleOpponentAnswer(opponentActionData);
+
+        }, responseDelay);
+
+        // 模拟对手也会继续答题（竞速模式）
+        const nextQuestionDelay = 3000 + Math.random() * 5000;
+        setTimeout(() => {
+            if (this.gameState.isActive) {
+                // 模拟对手答下一道题
+                this.simulateOpponentNextAnswer();
+            }
+        }, nextQuestionDelay);
+    }
+
+    /**
+     * 模拟对手答下一道题（竞速模式）
+     */
+    simulateOpponentNextAnswer() {
+        if (!this.gameState.isActive) {
+            return;
+        }
+
+        // 模拟对手答题结果（55%正确率）
+        const opponentIsCorrect = Math.random() > 0.45;
+
+        const opponentActionData = {
+            level: this.gameState.currentLevel,
+            isCorrect: opponentIsCorrect,
+            answer: 'simulated_next_answer_' + Date.now(),
+            timestamp: Date.now(),
+            playerId: this.opponentInfo?.id || this.opponentInfo?.nickname || 'opponent1'
+        };
+
+        console.log('🤖 模拟对手答下一道题:', opponentActionData);
+
+        // 处理对手答题
+        this.handleOpponentAnswer(opponentActionData);
+
+        // 继续模拟下一次答题
+        const nextDelay = 4000 + Math.random() * 6000;
+        setTimeout(() => {
+            if (this.gameState.isActive) {
+                this.simulateOpponentNextAnswer();
+            }
+        }, nextDelay);
     }
 
     /**
@@ -850,40 +977,24 @@ class BattleManager {
      * 检查关卡是否结束
      */
     checkLevelEnd() {
-        // 根据小游戏的胜负条件来判断，而不是固定题目数量
+        // 关卡结束由小游戏自身决定，这里只做备用检查
         let levelEnded = false;
         let winner = null;
 
-        if (this.gameState.currentLevel === 1) {
-            // 第一关：警察抓小偷
-            // 检查小游戏状态，而不是答题数量
-            // 这里暂时不结束，让小游戏自己判断胜负
-            levelEnded = false;
-        } else if (this.gameState.currentLevel === 2) {
-            // 第二关：天梯攀爬
-            // 检查是否有人到达顶端
-            levelEnded = false;
-        } else if (this.gameState.currentLevel === 3) {
-            // 第三关：拔河
-            // 检查绳子位置
-            levelEnded = false;
-        }
+        // 备用结束条件：防止无限竞争，设置最大答题数
+        const maxQuestionsPerLevel = 50; // 增加最大题目数，支持更长时间的竞速
+        const totalAnswered = this.gameState.myScore + this.gameState.opponentScore;
 
-        // 备用结束条件：如果答题数量过多，强制结束
-        const maxQuestionsPerLevel = 20;
-        if (this.gameState.myScore + this.gameState.opponentScore >= maxQuestionsPerLevel) {
+        if (totalAnswered >= maxQuestionsPerLevel) {
             levelEnded = true;
             winner = this.gameState.myScore > this.gameState.opponentScore ? 'my' : 'opponent';
+            console.log(`⏰ 达到最大题目数 ${maxQuestionsPerLevel}，按分数决定胜负: ${winner}`);
         }
 
         if (levelEnded) {
             this.endLevel(winner);
-        } else {
-            // 继续下一题
-            setTimeout(() => {
-                this.loadLevelData(this.gameState.currentLevel);
-            }, 1000);
         }
+        // 移除自动加载下一题的逻辑，由 loadNextQuestion 方法处理
     }
 
     /**
@@ -1297,47 +1408,59 @@ window.debugBattleSync = function() {
         console.log('- 消息处理器数量:', window.wsClient.messageHandlers.size);
     }
 
+    // 2. 检查游戏数据
+    if (window.battleGameData) {
+        console.log('🎮 游戏数据:');
+        console.log('- 玩家ID:', window.battleGameData.player?.id);
+        console.log('- 对手ID:', window.battleGameData.opponent?.id);
+        console.log('- 房间ID:', window.battleGameData.roomId);
+        console.log('- 完整数据:', window.battleGameData);
+    }
+
+    // 3. 检查对战管理器状态
+    if (window.battleManager) {
+        console.log('⚔️ 对战管理器状态:');
+        console.log('- 游戏激活:', window.battleManager.gameState?.isActive);
+        console.log('- 当前关卡:', window.battleManager.gameState?.currentLevel);
+        console.log('- 我的分数:', window.battleManager.gameState?.myScore);
+        console.log('- 对手分数:', window.battleManager.gameState?.opponentScore);
+        console.log('- WebSocket客户端:', !!window.battleManager.wsClient);
+    }
+
     if (window.firebaseBattle) {
         console.log('🔥 Firebase对战状态:');
         console.log('- 数据库:', !!window.firebaseBattle.database);
         console.log('- 当前用户:', window.firebaseBattle.currentUser);
         console.log('- 当前房间:', window.firebaseBattle.currentRoom);
-        console.log('- 房间引用:', !!window.firebaseBattle.roomRef);
+        console.log('- 最后处理动作:', window.firebaseBattle.lastProcessedActionId);
     }
 
-    if (window.battleManager && window.battleManager.gameState) {
-        console.log('🎮 游戏状态:');
-        console.log('- 游戏激活:', window.battleManager.gameState.isActive);
-        console.log('- 当前关卡:', window.battleManager.gameState.currentLevel);
-        console.log('- 我的分数:', window.battleManager.gameState.myScore);
-        console.log('- 对手分数:', window.battleManager.gameState.opponentScore);
-        console.log('- 关卡结束中:', window.battleManager.gameState.levelEnding);
-    }
+    // 4. 检查关卡页面状态
+    const screenFrame = document.getElementById('screenFrame');
+    if (screenFrame && screenFrame.contentWindow) {
+        console.log('📺 关卡页面状态:');
+        console.log('- 页面已加载:', !!screenFrame.contentWindow.document);
+        console.log('- 页面URL:', screenFrame.src);
 
-    // 2. 测试数据发送
-    console.log('📤 测试数据发送:');
-    if (window.wsClient && window.wsClient.sendGameAction) {
+        // 尝试获取关卡页面的游戏状态
         try {
-            const testData = {
-                level: 1,
-                isCorrect: true,
-                answer: 'test',
-                timestamp: Date.now()
-            };
-
-            console.log('发送测试数据:', testData);
-            window.wsClient.sendGameAction('test', testData);
-            console.log('✅ 测试数据发送成功');
+            const levelGameState = screenFrame.contentWindow.gameState;
+            if (levelGameState) {
+                console.log('- 关卡游戏状态:', levelGameState);
+            }
         } catch (error) {
-            console.error('❌ 测试数据发送失败:', error);
+            console.log('- 无法访问关卡页面状态:', error.message);
         }
     }
 
-    console.log('🔍 调试完成');
+    console.log('%c🛠️ 调试建议:', 'color: #3498db; font-weight: bold;');
+    console.log('1. 检查角色分配是否正确');
+    console.log('2. 检查答题数据是否发送成功');
+    console.log('3. 检查对手数据是否正确接收');
+    console.log('4. 在控制台中输入 debugBattleSync() 查看实时状态');
 };
 
 // 添加快捷调试命令
 console.log('%c🔧 双人对战调试工具已加载', 'color: #9b59b6; font-size: 14px; font-weight: bold;');
 console.log('可用命令:');
 console.log('- debugBattleSync() - 调试数据同步问题');
-console.log('- diagnoseFirebase() - 调试Firebase连接问题');

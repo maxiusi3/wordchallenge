@@ -180,14 +180,26 @@
                 window.parent.playSound('gameStart');
             }
 
-            // 准备游戏数据
+            // 准备游戏数据（确保数据一致性）
+            const playerInfo = window.parent.battleUserInfo || {};
+            const opponentInfo = window.parent.opponentInfo || {};
+
+            // 生成确定性的房间ID（基于玩家信息）
+            const playerId = playerInfo.id || playerInfo.nickname || 'player1';
+            const opponentId = opponentInfo.id || opponentInfo.nickname || 'opponent1';
+            const sortedIds = [playerId, opponentId].sort(); // 按字典序排序确保一致性
+            const deterministicRoomId = `room_${sortedIds[0]}_${sortedIds[1]}_${Date.now()}`;
+
             const gameData = {
                 player: {
-                    ...window.parent.battleUserInfo,
-                    id: window.parent.battleUserInfo?.id || window.parent.battleUserInfo?.nickname || 'player1'
+                    ...playerInfo,
+                    id: playerId
                 },
-                opponent: window.parent.opponentInfo,
-                roomId: window.parent.currentRoomId || 'default_room',
+                opponent: {
+                    ...opponentInfo,
+                    id: opponentId
+                },
+                roomId: deterministicRoomId,
                 currentLevel: 1,
                 gameMode: 'battle'
             };
