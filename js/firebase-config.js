@@ -120,28 +120,65 @@ class FirebaseManager {
         return new Promise((resolve, reject) => {
             // 检查是否已经加载
             if (typeof firebase !== 'undefined') {
+                console.log('✅ Firebase SDK已经加载');
                 resolve();
                 return;
             }
 
             console.log('📦 正在加载Firebase SDK...');
 
-            // 加载Firebase核心库
-            const coreScript = document.createElement('script');
-            coreScript.src = 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js';
-            coreScript.onload = () => {
-                // 加载数据库库
-                const dbScript = document.createElement('script');
-                dbScript.src = 'https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js';
-                dbScript.onload = () => {
-                    console.log('✅ Firebase SDK加载完成');
-                    resolve();
+            // 尝试多个CDN源
+            const cdnSources = [
+                {
+                    name: 'Google CDN',
+                    core: 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js',
+                    database: 'https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js'
+                },
+                {
+                    name: 'jsDelivr CDN',
+                    core: 'https://cdn.jsdelivr.net/npm/firebase@9.23.0/compat/firebase-app.js',
+                    database: 'https://cdn.jsdelivr.net/npm/firebase@9.23.0/compat/firebase-database.js'
+                }
+            ];
+
+            let currentCdnIndex = 0;
+
+            const tryLoadFromCdn = () => {
+                if (currentCdnIndex >= cdnSources.length) {
+                    reject(new Error('所有CDN源都加载失败'));
+                    return;
+                }
+
+                const cdn = cdnSources[currentCdnIndex];
+                console.log(`🔄 尝试从 ${cdn.name} 加载...`);
+
+                // 加载Firebase核心库
+                const coreScript = document.createElement('script');
+                coreScript.src = cdn.core;
+                coreScript.onload = () => {
+                    // 加载数据库库
+                    const dbScript = document.createElement('script');
+                    dbScript.src = cdn.database;
+                    dbScript.onload = () => {
+                        console.log(`✅ Firebase SDK从 ${cdn.name} 加载完成`);
+                        resolve();
+                    };
+                    dbScript.onerror = () => {
+                        console.warn(`⚠️ ${cdn.name} 数据库库加载失败`);
+                        currentCdnIndex++;
+                        tryLoadFromCdn();
+                    };
+                    document.head.appendChild(dbScript);
                 };
-                dbScript.onerror = reject;
-                document.head.appendChild(dbScript);
+                coreScript.onerror = () => {
+                    console.warn(`⚠️ ${cdn.name} 核心库加载失败`);
+                    currentCdnIndex++;
+                    tryLoadFromCdn();
+                };
+                document.head.appendChild(coreScript);
             };
-            coreScript.onerror = reject;
-            document.head.appendChild(coreScript);
+
+            tryLoadFromCdn();
         });
     }
 
@@ -274,10 +311,24 @@ window.addEventListener('beforeunload', () => {
 
 // 暴露Firebase诊断工具到全局作用域
 window.diagnoseFirebase = () => window.firebaseManager.diagnose();
+window.initFirebase = () => window.firebaseManager.init();
+
+// 页面加载完成后自动初始化Firebase
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        console.log('🚀 页面加载完成，自动初始化Firebase...');
+        window.firebaseManager.init();
+    });
+} else {
+    // 如果页面已经加载完成，立即初始化
+    console.log('🚀 立即初始化Firebase...');
+    window.firebaseManager.init();
+}
 
 // 提示用户可用的调试命令
 console.log('%c🔧 Firebase调试工具已加载', 'color: #9b59b6; font-size: 14px; font-weight: bold;');
 console.log('可用命令:');
 console.log('- diagnoseFirebase() - 诊断Firebase连接问题');
+console.log('- initFirebase() - 手动初始化Firebase');
 
 console.log('🔥 Firebase配置已加载');
