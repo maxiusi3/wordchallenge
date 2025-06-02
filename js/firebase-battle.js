@@ -115,7 +115,29 @@ class FirebaseBattleManager {
         const userId = snapshot.key;
 
         // 忽略自己
-        if (userId === this.currentUser.id) return;
+        if (userId === this.currentUser.id) {
+            // 检查自己是否已被匹配
+            if (userData && userData.status === 'matched' && userData.roomId) {
+                console.log('🎯 我已被其他玩家匹配，加入房间:', userData.roomId);
+
+                // 获取房间信息
+                const roomRef = this.database.ref(`rooms/${userData.roomId}`);
+                const roomSnapshot = await roomRef.once('value');
+                const roomData = roomSnapshot.val();
+
+                if (roomData && roomData.players) {
+                    // 找到对手
+                    const opponentId = Object.keys(roomData.players).find(id => id !== this.currentUser.id);
+                    const opponent = roomData.players[opponentId];
+
+                    if (opponent) {
+                        // 加入房间
+                        this.joinRoom(userData.roomId, opponent, userData.role);
+                    }
+                }
+            }
+            return;
+        }
 
         // 检查是否是等待中的用户
         if (userData.status !== 'waiting') return;
@@ -156,17 +178,39 @@ class FirebaseBattleManager {
             if (result.committed) {
                 console.log('🏠 成功创建房间:', roomId);
 
-                // 更新双方状态为已匹配
+                // 确定性角色分配（基于用户ID排序）
+                const sortedIds = [this.currentUser.id, userId].sort();
+                const player1 = sortedIds[0];
+                const player2 = sortedIds[1];
+
+                // 第一个玩家是警察，第二个玩家是小偷
+                const roles = {
+                    [player1]: 'cop',
+                    [player2]: 'thief'
+                };
+
+                // 更新双方状态为已匹配，并包含角色信息
                 const updates = {};
                 updates[`matching/${this.currentUser.grade}/${this.currentUser.id}/status`] = 'matched';
                 updates[`matching/${this.currentUser.grade}/${this.currentUser.id}/roomId`] = roomId;
+                updates[`matching/${this.currentUser.grade}/${this.currentUser.id}/role`] = roles[this.currentUser.id];
                 updates[`matching/${this.currentUser.grade}/${userId}/status`] = 'matched';
                 updates[`matching/${this.currentUser.grade}/${userId}/roomId`] = roomId;
+                updates[`matching/${this.currentUser.grade}/${userId}/role`] = roles[userId];
 
                 await this.database.ref().update(updates);
 
+                // 在房间中设置角色信息
+                await roomRef.child('roles').set(roles);
+
+                // 设置玩家准备状态
+                await roomRef.child('playerReady').set({
+                    [this.currentUser.id]: false,
+                    [userId]: false
+                });
+
                 // 加入房间
-                this.joinRoom(roomId, userData);
+                this.joinRoom(roomId, userData, roles[this.currentUser.id]);
             }
 
         } catch (error) {
@@ -177,10 +221,11 @@ class FirebaseBattleManager {
     /**
      * 加入房间
      */
-    async joinRoom(roomId, opponent) {
+    async joinRoom(roomId, opponent, myRole) {
         try {
             this.currentRoom = roomId;
             this.roomRef = this.database.ref(`rooms/${roomId}`);
+            this.myRole = myRole; // 保存我的角色
 
             // 停止匹配
             this.stopMatching();
@@ -188,16 +233,18 @@ class FirebaseBattleManager {
             // 监听房间状态
             this.roomRef.on('value', this.onRoomUpdate);
 
-            console.log('🎯 匹配成功！对手:', opponent);
+            console.log('🎯 匹配成功！对手:', opponent, '我的角色:', myRole);
 
-            // 通知匹配成功
+            // 通知匹配成功，包含角色信息
             this.triggerEvent('matchFound', {
                 opponent: {
                     nickname: opponent.nickname,
                     avatar: opponent.avatar,
-                    grade: opponent.grade
+                    grade: opponent.grade,
+                    id: opponent.id
                 },
-                roomId: roomId
+                roomId: roomId,
+                myRole: myRole
             });
 
         } catch (error) {
@@ -226,6 +273,20 @@ class FirebaseBattleManager {
         if (opponent && opponent.status === 'disconnected') {
             console.log('对手已断开连接');
             this.triggerEvent('opponentDisconnected');
+        }
+
+        // 处理玩家准备状态
+        if (roomData.playerReady) {
+            const readyStates = roomData.playerReady;
+            const allReady = Object.values(readyStates).every(ready => ready === true);
+
+            console.log('📝 玩家准备状态:', readyStates, '全部准备:', allReady);
+
+            if (allReady && !this.gameStarted) {
+                this.gameStarted = true;
+                console.log('🎮 所有玩家已准备，开始游戏！');
+                this.triggerEvent('allPlayersReady');
+            }
         }
 
         // 处理游戏动作
@@ -386,6 +447,23 @@ class FirebaseBattleManager {
             opponent: aiOpponent,
             roomId: roomId
         });
+    }
+
+    /**
+     * 设置玩家准备状态
+     */
+    async setPlayerReady(ready = true) {
+        if (!this.roomRef || !this.currentUser) {
+            console.error('⚠️ 无法设置准备状态：房间或用户信息不存在');
+            return;
+        }
+
+        try {
+            await this.roomRef.child(`playerReady/${this.currentUser.id}`).set(ready);
+            console.log('📝 设置玩家准备状态:', ready);
+        } catch (error) {
+            console.error('设置准备状态失败:', error);
+        }
     }
 
     /**

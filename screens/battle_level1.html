@@ -490,29 +490,28 @@
                 myNicknameEl.textContent = player.nickname || '我';
                 opponentNicknameEl.textContent = opponent.nickname || '对手';
 
-                // 新的角色分配策略：使用简单而可靠的方法
-                const roomId = gameData.roomId || 'default_room';
-                const playerId = player.id || player.nickname || 'player1';
-                const opponentId = opponent.id || opponent.nickname || 'player2';
+                // 优先使用Firebase传递的角色信息
+                let myRole = null;
+                if (window.parent && window.parent.firebaseBattle && window.parent.firebaseBattle.myRole) {
+                    myRole = window.parent.firebaseBattle.myRole;
+                    console.log('🔥 使用Firebase角色信息:', myRole);
+                } else {
+                    // 备用方案：使用确定性角色分配
+                    const roomId = gameData.roomId || 'default_room';
+                    const playerId = player.id || player.nickname || 'player1';
+                    const opponentId = opponent.id || opponent.nickname || 'player2';
 
-                console.log('角色分配输入数据:', {
-                    roomId: roomId,
-                    playerId: playerId,
-                    opponentId: opponentId,
-                    playerData: player,
-                    opponentData: opponent
-                });
+                    const roleAssignment = assignRoles(roomId, playerId, opponentId);
+                    myRole = roleAssignment[playerId];
+                    console.log('🔄 使用备用角色分配:', myRole);
+                }
 
-                // 使用改进的角色分配算法（确保两个玩家角色不同）
-                const roleAssignment = assignRoles(roomId, playerId, opponentId);
-                gameState.myRole = roleAssignment[playerId];
+                gameState.myRole = myRole;
 
                 console.log('角色分配结果:', {
-                    roomId: roomId,
-                    playerId: playerId,
-                    opponentId: opponentId,
-                    roleAssignment: roleAssignment,
-                    myRole: gameState.myRole
+                    myRole: gameState.myRole,
+                    playerData: player,
+                    opponentData: opponent
                 });
 
                 // 更新玩家名字显示（简化显示，避免名字过长）

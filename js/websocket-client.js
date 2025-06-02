@@ -438,13 +438,23 @@ class OnlineBattleClient {
             console.log('🏠 设置房间ID:', matchData.roomId);
         }
 
+        // 存储对手信息，包含角色信息
+        if (window.parent && matchData.opponent) {
+            window.parent.opponentInfo = {
+                ...matchData.opponent,
+                role: matchData.myRole === 'cop' ? 'thief' : 'cop' // 对手角色与我相反
+            };
+            console.log('👥 存储对手信息:', window.parent.opponentInfo);
+        }
+
         // 通过postMessage通知iframe页面
         const screenFrame = document.getElementById('screenFrame');
         if (screenFrame && screenFrame.contentWindow) {
             screenFrame.contentWindow.postMessage({
                 action: 'matchFound',
                 opponent: matchData.opponent,
-                roomId: matchData.roomId
+                roomId: matchData.roomId,
+                myRole: matchData.myRole
             }, '*');
         }
     }

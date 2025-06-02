@@ -98,7 +98,38 @@
           }
       });
 
-      document.addEventListener('DOMContentLoaded', () => {
+      // 初始化Firebase和WebSocket客户端
+      async function initializeBattleSystems() {
+          try {
+              // 初始化Firebase对战系统
+              if (typeof FirebaseBattleManager !== 'undefined') {
+                  window.firebaseBattle = new FirebaseBattleManager();
+                  console.log('🔥 Firebase对战系统初始化');
+              }
+
+              // 初始化WebSocket客户端
+              if (typeof WebSocketClient !== 'undefined') {
+                  window.wsClient = new WebSocketClient();
+                  await window.wsClient.connect();
+                  console.log('🔌 WebSocket客户端初始化');
+              }
+
+              // 初始化对战管理器
+              if (typeof BattleManager !== 'undefined') {
+                  window.battleManager = new BattleManager();
+                  console.log('🎮 对战管理器初始化');
+              }
+
+          } catch (error) {
+              console.error('初始化对战系统失败:', error);
+          }
+      }
+
+      document.addEventListener('DOMContentLoaded', async () => {
+          // 初始化对战系统
+          await initializeBattleSystems();
+
+          // 导航到欢迎页面
           navigateTo('welcome');
       });
 

@@ -122,6 +122,8 @@
 
         let countdownTime = 5;
         let countdownTimer = null;
+        let isReady = false;
+        let opponentReady = false;
 
         // 初始化用户信息
         function initializeUserInfo() {
@@ -145,6 +147,9 @@
                 opponentLevel.textContent = '1';
                 opponentWinRate.textContent = opponent.winRate || '0';
             }
+
+            // 设置自己为准备状态
+            setPlayerReady();
         }
 
         // 开始倒计时
@@ -219,14 +224,46 @@
             }, 1000);
         }
 
+        // 设置玩家准备状态
+        function setPlayerReady() {
+            if (window.parent && window.parent.firebaseBattle) {
+                window.parent.firebaseBattle.setPlayerReady(true);
+                isReady = true;
+                console.log('📝 设置自己为准备状态');
+
+                // 更新显示
+                readyStatus.textContent = '等待对手准备...';
+            }
+        }
+
+        // 监听所有玩家准备事件
+        function setupReadyListener() {
+            if (window.parent && window.parent.firebaseBattle) {
+                window.parent.firebaseBattle.on('allPlayersReady', () => {
+                    console.log('🎮 所有玩家已准备，开始倒计时！');
+                    readyStatus.textContent = '所有玩家已准备！';
+
+                    // 延迟1秒后开始倒计时
+                    setTimeout(() => {
+                        startCountdown();
+                    }, 1000);
+                });
+            }
+        }
+
         // 页面加载时初始化
         window.addEventListener('load', () => {
             initializeUserInfo();
+            setupReadyListener();
 
-            // 延迟1秒后开始倒计时，让用户有时间查看信息
-            setTimeout(() => {
-                startCountdown();
-            }, 1000);
+            // 如果是AI对手，直接开始倒计时
+            if (window.parent && window.parent.opponentInfo &&
+                window.parent.opponentInfo.nickname === 'AI助手') {
+                console.log('🤖 AI对手模式，直接开始倒计时');
+                setTimeout(() => {
+                    startCountdown();
+                }, 2000);
+            }
         });
 
         // 页面卸载时清理定时器

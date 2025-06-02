@@ -232,9 +232,24 @@
                 isMatching = false;
                 clearInterval(matchingTimer);
 
-                // 存储对手信息
+                console.log('🎉 收到匹配成功消息:', event.data);
+
+                // 存储对手信息（包含角色信息）
                 if (window.parent && event.data.opponent) {
-                    window.parent.opponentInfo = event.data.opponent;
+                    window.parent.opponentInfo = {
+                        ...event.data.opponent,
+                        role: event.data.myRole === 'cop' ? 'thief' : 'cop' // 对手角色与我相反
+                    };
+                    console.log('👥 存储对手信息:', window.parent.opponentInfo);
+                }
+
+                // 存储房间ID和我的角色
+                if (window.parent) {
+                    window.parent.currentRoomId = event.data.roomId;
+                    if (window.parent.firebaseBattle) {
+                        window.parent.firebaseBattle.myRole = event.data.myRole;
+                    }
+                    console.log('🏠 存储房间ID:', event.data.roomId, '我的角色:', event.data.myRole);
                 }
 
                 // 播放匹配成功音效
