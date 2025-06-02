@@ -238,16 +238,34 @@ class FirebaseBattleManager {
                 action.playerId !== this.currentUser.id
             );
 
+            console.log('👥 对手动作数量:', opponentActions.length);
+
             if (opponentActions.length > 0) {
-                const latestAction = opponentActions[opponentActions.length - 1];
+                // 按时间排序，获取最新动作
+                const sortedActions = opponentActions.sort((a, b) => {
+                    const timeA = a.timestamp || 0;
+                    const timeB = b.timestamp || 0;
+                    return timeA - timeB;
+                });
+
+                const latestAction = sortedActions[sortedActions.length - 1];
                 console.log('📨 最新的对手动作:', latestAction);
 
-                // 检查是否是新动作（避免重复处理）
-                if (!this.lastProcessedActionId || this.lastProcessedActionId !== latestAction.timestamp) {
-                    this.lastProcessedActionId = latestAction.timestamp;
+                // 使用动作的唯一标识符来避免重复处理
+                const actionKey = `${latestAction.playerId}_${latestAction.timestamp}_${latestAction.action}`;
+
+                if (!this.lastProcessedActionId || this.lastProcessedActionId !== actionKey) {
+                    console.log('🆕 处理新动作:', actionKey);
+                    this.lastProcessedActionId = actionKey;
                     this.triggerEvent('gameAction', latestAction);
+                } else {
+                    console.log('🔄 跳过重复动作:', actionKey);
                 }
+            } else {
+                console.log('🚫 没有找到对手动作');
             }
+        } else {
+            console.log('💭 房间中没有游戏动作');
         }
     }
 
@@ -266,11 +284,14 @@ class FirebaseBattleManager {
         }
 
         try {
+            // 使用客户端时间戳以确保唯一性
+            const clientTimestamp = Date.now();
             const actionData = {
                 playerId: this.currentUser.id,
                 action: action,
                 data: data,
-                timestamp: firebase.database.ServerValue.TIMESTAMP
+                timestamp: clientTimestamp,
+                serverTimestamp: firebase.database.ServerValue.TIMESTAMP
             };
 
             console.log('📤 发送Firebase游戏动作:', actionData);
@@ -278,7 +299,7 @@ class FirebaseBattleManager {
             // 添加到游戏动作列表
             const result = await this.roomRef.child('gameActions').push(actionData);
 
-            console.log('✅ Firebase游戏动作发送成功:', result.key);
+            console.log('✅ Firebase游戏动作发送成功:', result.key, '时间戳:', clientTimestamp);
 
         } catch (error) {
             console.error('❌ 发送游戏动作失败:', error);
