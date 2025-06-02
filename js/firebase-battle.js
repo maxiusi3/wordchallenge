@@ -255,7 +255,15 @@ class FirebaseBattleManager {
      * 发送游戏动作
      */
     async sendGameAction(action, data) {
-        if (!this.roomRef) return;
+        if (!this.roomRef) {
+            console.error('⚠️ 无法发送游戏动作：房间引用不存在');
+            return;
+        }
+
+        if (!this.currentUser) {
+            console.error('⚠️ 无法发送游戏动作：用户信息不存在');
+            return;
+        }
 
         try {
             const actionData = {
@@ -265,11 +273,20 @@ class FirebaseBattleManager {
                 timestamp: firebase.database.ServerValue.TIMESTAMP
             };
 
+            console.log('📤 发送Firebase游戏动作:', actionData);
+
             // 添加到游戏动作列表
-            await this.roomRef.child('gameActions').push(actionData);
+            const result = await this.roomRef.child('gameActions').push(actionData);
+
+            console.log('✅ Firebase游戏动作发送成功:', result.key);
 
         } catch (error) {
-            console.error('发送游戏动作失败:', error);
+            console.error('❌ 发送游戏动作失败:', error);
+
+            // 检查Firebase连接状态
+            if (this.database) {
+                console.log('🔍 Firebase数据库状态:', this.database.app.options);
+            }
         }
     }
 

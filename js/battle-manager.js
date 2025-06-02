@@ -612,16 +612,31 @@ class BattleManager {
             console.log('📤 发送答题结果给对手:', {
                 level: level,
                 isCorrect: isCorrect,
-                answer: answer
+                answer: answer,
+                useFirebase: this.wsClient.useFirebase,
+                isConnected: this.wsClient.isConnected
             });
 
-            this.wsClient.sendGameAction('playerAnswer', {
+            // 检查连接状态
+            if (!this.wsClient.isConnected) {
+                console.warn('⚠️ WebSocket未连接，尝试重新连接...');
+                this.wsClient.connect();
+            }
+
+            const sendResult = this.wsClient.sendGameAction('playerAnswer', {
                 level: level,
                 isCorrect: isCorrect,
                 answer: answer
             });
+
+            console.log('📝 发送结果:', sendResult);
         } else {
             console.warn('⚠️ WebSocket客户端不可用，无法发送游戏动作');
+            console.log('🔍 调试信息:', {
+                wsClient: !!window.wsClient,
+                battleManager: !!window.battleManager,
+                firebaseBattle: !!window.firebaseBattle
+            });
         }
 
         // 检查关卡是否结束
@@ -1244,3 +1259,67 @@ setupBattleMessageHandlers();
 
 // 也在window加载完成后再次尝试
 window.addEventListener('load', setupBattleMessageHandlers);
+
+// 添加全局调试工具
+window.debugBattleSync = function() {
+    console.log('%c🔍 双人对战同步调试工具', 'color: #e74c3c; font-size: 16px; font-weight: bold;');
+
+    // 1. 检查基本组件
+    console.log('💻 组件状态:');
+    console.log('- WebSocket客户端:', !!window.wsClient);
+    console.log('- 对战管理器:', !!window.battleManager);
+    console.log('- Firebase对战:', !!window.firebaseBattle);
+    console.log('- Firebase管理器:', !!window.firebaseManager);
+
+    if (window.wsClient) {
+        console.log('🌐 WebSocket状态:');
+        console.log('- 使用Firebase:', window.wsClient.useFirebase);
+        console.log('- 已连接:', window.wsClient.isConnected);
+        console.log('- 当前房间:', window.wsClient.currentRoom);
+        console.log('- 消息处理器数量:', window.wsClient.messageHandlers.size);
+    }
+
+    if (window.firebaseBattle) {
+        console.log('🔥 Firebase对战状态:');
+        console.log('- 数据库:', !!window.firebaseBattle.database);
+        console.log('- 当前用户:', window.firebaseBattle.currentUser);
+        console.log('- 当前房间:', window.firebaseBattle.currentRoom);
+        console.log('- 房间引用:', !!window.firebaseBattle.roomRef);
+    }
+
+    if (window.battleManager && window.battleManager.gameState) {
+        console.log('🎮 游戏状态:');
+        console.log('- 游戏激活:', window.battleManager.gameState.isActive);
+        console.log('- 当前关卡:', window.battleManager.gameState.currentLevel);
+        console.log('- 我的分数:', window.battleManager.gameState.myScore);
+        console.log('- 对手分数:', window.battleManager.gameState.opponentScore);
+        console.log('- 关卡结束中:', window.battleManager.gameState.levelEnding);
+    }
+
+    // 2. 测试数据发送
+    console.log('📤 测试数据发送:');
+    if (window.wsClient && window.wsClient.sendGameAction) {
+        try {
+            const testData = {
+                level: 1,
+                isCorrect: true,
+                answer: 'test',
+                timestamp: Date.now()
+            };
+
+            console.log('发送测试数据:', testData);
+            window.wsClient.sendGameAction('test', testData);
+            console.log('✅ 测试数据发送成功');
+        } catch (error) {
+            console.error('❌ 测试数据发送失败:', error);
+        }
+    }
+
+    console.log('🔍 调试完成');
+};
+
+// 添加快捷调试命令
+console.log('%c🔧 双人对战调试工具已加载', 'color: #9b59b6; font-size: 14px; font-weight: bold;');
+console.log('可用命令:');
+console.log('- debugBattleSync() - 调试数据同步问题');
+console.log('- diagnoseFirebase() - 调试Firebase连接问题');
