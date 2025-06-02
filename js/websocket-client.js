@@ -25,25 +25,47 @@ class OnlineBattleClient {
      * 连接到在线对战服务器
      */
     async connect() {
-        if (this.socket && this.socket.connected) {
-            console.log('Socket.IO已经连接');
+        if (this.isConnected) {
+            console.log('已连接到在线对战系统');
             return Promise.resolve();
         }
 
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             try {
+                // 优先尝试Firebase对战系统
+                if (window.firebaseBattle) {
+                    const firebaseReady = await window.firebaseBattle.init();
+                    if (firebaseReady) {
+                        console.log('✨ 使用Firebase对战系统');
+                        this.useFirebase = true;
+                        this.isConnected = true;
+                        this.setupFirebaseEventListeners();
+                        resolve();
+                        return;
+                    }
+                }
+
+                // Firebase不可用，回退到本地模拟
+                console.log('🔄 Firebase不可用，使用本地模拟模式');
+                this.useFirebase = false;
+
                 // 加载Socket.IO库
                 if (typeof io === 'undefined') {
                     this.loadSocketIO().then(() => {
                         this.initializeSocket(resolve, reject);
-                    }).catch(reject);
+                    }).catch(() => {
+                        // Socket.IO加载失败，使用本地模拟
+                        this.initializeLocalP2P(resolve, reject);
+                    });
                 } else {
                     this.initializeSocket(resolve, reject);
                 }
 
             } catch (error) {
-                console.error('Socket.IO连接失败:', error);
-                reject(error);
+                console.error('初始化对战系统失败:', error);
+                // 最终回退到本地模拟
+                this.useFirebase = false;
+                this.initializeLocalP2P(resolve, reject);
             }
         });
     }
@@ -144,36 +166,96 @@ class OnlineBattleClient {
     }
 
     /**
+     * 设置Firebase事件监听器
+     */
+    setupFirebaseEventListeners() {
+        if (!window.firebaseBattle) return;
+
+        // 监听匹配成功事件
+        window.firebaseBattle.on('matchFound', (data) => {
+            console.log('🎉 Firebase匹配成功:', data);
+            this.currentRoom = data.roomId;
+            this.notifyMatchFound(data);
+        });
+
+        // 监听对手断开连接
+        window.firebaseBattle.on('opponentDisconnected', () => {
+            console.log('对手已断开连接');
+            this.handleOpponentDisconnected();
+        });
+
+        // 监听游戏动作
+        window.firebaseBattle.on('gameAction', (data) => {
+            console.log('收到Firebase游戏动作:', data);
+            // 调用对应的消息处理器
+            if (this.messageHandlers.has('gameAction')) {
+                const handlers = this.messageHandlers.get('gameAction');
+                handlers.forEach(handler => {
+                    try {
+                        handler(data);
+                    } catch (error) {
+                        console.error('消息处理器执行错误:', error);
+                    }
+                });
+            }
+        });
+    }
+
+    /**
      * 注册用户
      */
     register(userInfo) {
         this.playerInfo = userInfo;
-        return this.emit('register', userInfo);
+
+        if (this.useFirebase) {
+            // Firebase模式下不需要显式注册
+            return true;
+        } else {
+            return this.emit('register', userInfo);
+        }
     }
 
     /**
      * 加入匹配队列
      */
     joinMatching(grade) {
-        return this.emit('joinMatching', { grade: grade });
+        if (this.useFirebase && window.firebaseBattle) {
+            // 使用Firebase匹配系统
+            const userInfo = {
+                nickname: this.playerInfo?.nickname || '玩家',
+                avatar: this.playerInfo?.avatar || '👤',
+                grade: grade
+            };
+            return window.firebaseBattle.startMatching(userInfo);
+        } else {
+            return this.emit('joinMatching', { grade: grade });
+        }
     }
 
     /**
      * 离开匹配队列
      */
     leaveMatching() {
-        return this.emit('leaveMatching');
+        if (this.useFirebase && window.firebaseBattle) {
+            return window.firebaseBattle.cancelMatching();
+        } else {
+            return this.emit('leaveMatching');
+        }
     }
 
     /**
      * 发送游戏动作
      */
     sendGameAction(action, data) {
-        return this.emit('gameAction', {
-            action: action,
-            data: data,
-            room: this.currentRoom
-        });
+        if (this.useFirebase && window.firebaseBattle) {
+            return window.firebaseBattle.sendGameAction(action, data);
+        } else {
+            return this.emit('gameAction', {
+                action: action,
+                data: data,
+                room: this.currentRoom
+            });
+        }
     }
 
     /**
