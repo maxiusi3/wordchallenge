@@ -222,7 +222,8 @@ class BattleManager {
             startTime: null,
             levelStartTime: null,
             gameTimeLimit: 15 * 60 * 1000, // 15分钟游戏时间限制
-            gameTimer: null
+            gameTimer: null,
+            levelEnding: false // 防止关卡结束重复触发
         };
 
         this.playerInfo = null;
@@ -257,7 +258,8 @@ class BattleManager {
             startTime: Date.now(),
             levelStartTime: null,
             gameTimeLimit: 15 * 60 * 1000, // 15分钟游戏时间限制
-            gameTimer: null
+            gameTimer: null,
+            levelEnding: false // 防止关卡结束重复触发
         };
 
         this.playerInfo = playerInfo;
@@ -352,6 +354,7 @@ class BattleManager {
     async startLevel(level) {
         this.gameState.currentLevel = level;
         this.gameState.levelStartTime = Date.now();
+        this.gameState.levelEnding = false; // 重置关卡结束标志
 
         console.log(`开始关卡 ${level}`);
 
@@ -872,6 +875,13 @@ class BattleManager {
      * 结束当前关卡
      */
     endLevel(winner = null) {
+        // 防止重复触发
+        if (this.gameState.levelEnding) {
+            console.log('⚠️ 关卡已在结束中，忽略重复调用');
+            return;
+        }
+
+        this.gameState.levelEnding = true;
         const level = this.gameState.currentLevel;
         let myWin;
 
@@ -884,6 +894,21 @@ class BattleManager {
         }
 
         console.log(`关卡 ${level} 结果判定: myWin = ${myWin}`);
+
+        // 发送关卡结束消息给对手
+        if (this.wsClient) {
+            console.log('📤 发送关卡结束消息给对手:', {
+                level: level,
+                winner: winner,
+                myWin: myWin
+            });
+
+            this.wsClient.sendGameAction('levelEnd', {
+                level: level,
+                winner: winner,
+                myWin: myWin
+            });
+        }
 
         if (myWin) {
             this.gameState.levelWins.my++;
@@ -1055,6 +1080,83 @@ class BattleManager {
     }
 
     /**
+     * 处理对手的关卡结束消息
+     */
+    handleOpponentLevelEnd(data) {
+        console.log('🏁 收到对手关卡结束消息:', data);
+
+        // 检查是否在同一关卡
+        if (data.level === this.gameState.currentLevel) {
+            console.log('🔄 同步关卡结束，对手先结束了关卡', data.level);
+
+            // 如果对手先结束关卡，我们也结束当前关卡
+            // 但不再发送消息给对手（避免循环）
+            this.endLevelSilently(data.winner);
+        } else {
+            console.log('⚠️ 关卡不同步！我在关卡', this.gameState.currentLevel, '，对手在关卡', data.level);
+        }
+    }
+
+    /**
+     * 静默结束关卡（不发送消息给对手）
+     */
+    endLevelSilently(winner = null) {
+        // 防止重复触发
+        if (this.gameState.levelEnding) {
+            console.log('⚠️ 关卡已在结束中，忽略重复调用');
+            return;
+        }
+
+        this.gameState.levelEnding = true;
+        const level = this.gameState.currentLevel;
+        let myWin;
+
+        console.log(`endLevelSilently 被调用 - 关卡: ${level}, winner: ${winner}`);
+
+        if (winner) {
+            myWin = winner === 'my';
+        } else {
+            myWin = this.gameState.myScore > this.gameState.opponentScore;
+        }
+
+        console.log(`关卡 ${level} 结果判定: myWin = ${myWin}`);
+
+        if (myWin) {
+            this.gameState.levelWins.my++;
+        } else {
+            this.gameState.levelWins.opponent++;
+        }
+
+        // 记录当前关卡的具体结果
+        this.gameState.levelResults.push({
+            level: level,
+            result: myWin ? 'victory' : 'defeat',
+            description: myWin ? '成功获胜' : '遗憾失败'
+        });
+
+        console.log(`关卡 ${level} 结束，我方${myWin ? '获胜' : '失败'}`);
+        console.log('当前 levelWins 状态:', this.gameState.levelWins);
+        console.log('当前 levelResults 状态:', this.gameState.levelResults);
+
+        // 播放关卡结束音效
+        this.playBattleSound(myWin ? 'level_win' : 'level_lose');
+
+        // 重置关卡分数
+        this.gameState.myScore = 0;
+        this.gameState.opponentScore = 0;
+
+        // 检查游戏是否结束
+        if (this.gameState.currentLevel >= 3) {
+            this.endGame();
+        } else {
+            // 进入下一关
+            setTimeout(() => {
+                this.startLevel(this.gameState.currentLevel + 1);
+            }, 3000);
+        }
+    }
+
+    /**
      * 播放双人模式音效
      */
     playBattleSound(soundName) {
@@ -1123,6 +1225,9 @@ function setupBattleMessageHandlers() {
             if (message.action === 'playerAnswer') {
                 console.log('🎯 处理对手答题:', message.data);
                 window.battleManager.handleOpponentAnswer(message.data);
+            } else if (message.action === 'levelEnd') {
+                console.log('🏁 处理对手关卡结束:', message.data);
+                window.battleManager.handleOpponentLevelEnd(message.data);
             }
         });
 
