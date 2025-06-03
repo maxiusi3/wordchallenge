@@ -80,6 +80,10 @@ class FirebaseBattleManager {
             return;
         }
 
+        // 重置游戏状态，确保新匹配时状态正确
+        this.gameStarted = false;
+        console.log('🔄 重置游戏状态: gameStarted = false');
+
         try {
             // 生成用户ID和数据
             const userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
@@ -454,6 +458,9 @@ class FirebaseBattleManager {
         if (!this.isMatching) return;
 
         this.isMatching = false;
+        // 重置游戏状态
+        this.gameStarted = false;
+        console.log('🔄 停止匹配时重置游戏状态: gameStarted = false');
 
         // 清除超时
         if (this.matchingTimeout) {
