@@ -649,19 +649,26 @@ class BattleManager {
 
         console.log('📤 发送答题结果给对手:', gameActionData);
 
-        // 1. 本地模拟同步（主要方式）
-        this.simulateOpponentResponse(gameActionData);
-
-        // 2. 尝试WebSocket同步（备用方式）
-        if (this.wsClient && this.wsClient.isConnected) {
-            try {
-                const sendResult = this.wsClient.sendGameAction('playerAnswer', gameActionData);
-                console.log('📝 WebSocket发送结果:', sendResult);
-            } catch (error) {
-                console.warn('⚠️ WebSocket发送失败:', error);
-            }
+        // 判断是否为AI对手模式
+        const isAIOpponent = this.opponentInfo && this.opponentInfo.nickname === 'AI助手';
+        
+        if (isAIOpponent) {
+            // AI对手模式：使用本地模拟
+            console.log('🤖 AI对手模式，启用模拟对手响应');
+            this.simulateOpponentResponse(gameActionData);
         } else {
-            console.log('🤖 使用本地模拟同步');
+            // 真人对战模式：只使用WebSocket同步
+            console.log('👥 真人对战模式，禁用模拟对手');
+            if (this.wsClient && this.wsClient.isConnected) {
+                try {
+                    const sendResult = this.wsClient.sendGameAction('playerAnswer', gameActionData);
+                    console.log('📝 WebSocket发送结果:', sendResult);
+                } catch (error) {
+                    console.warn('⚠️ WebSocket发送失败:', error);
+                }
+            } else {
+                console.warn('⚠️ 真人对战模式但WebSocket未连接');
+            }
         }
 
         // 立即生成下一道题（实时竞速模式）

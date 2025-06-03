@@ -346,28 +346,37 @@ class OnlineBattleClient {
                 break;
 
             case 'gameAction':
-                // 模拟对手的游戏动作
-                console.log('🤖 模拟对手响应游戏动作:', data);
-                setTimeout(() => {
-                    if (data.action === 'playerAnswer') {
-                        // 模拟对手答题，使用更真实的响应时间
-                        const mockResponse = {
-                            action: 'playerAnswer',
-                            data: {
-                                level: data.data.level,
-                                isCorrect: Math.random() > 0.4, // 60%正确率，更加真实
-                                answer: 'mock_answer_' + Date.now()
-                            },
-                            playerId: 'mock_opponent_' + Date.now()
-                        };
-                        console.log('📤 发送模拟对手答题结果:', mockResponse);
-                        this.triggerEvent('gameAction', mockResponse);
-                    } else if (data.action === 'levelEnd') {
-                        // 模拟对手关卡结束响应
-                        console.log('🏁 模拟对手关卡结束响应');
-                        // 不需要特别响应，让游戏自然结束
-                    }
-                }, 800 + Math.random() * 1500); // 0.8-2.3秒后响应，更加真实
+                // 检查是否为AI对手模式
+                const isAIOpponent = window.parent && window.parent.opponentInfo && 
+                                   window.parent.opponentInfo.nickname === 'AI助手';
+                
+                if (isAIOpponent) {
+                    // AI对手模式：模拟对手的游戏动作
+                    console.log('🤖 AI对手模式，模拟对手响应游戏动作:', data);
+                    setTimeout(() => {
+                        if (data.action === 'playerAnswer') {
+                            // 模拟对手答题，使用更真实的响应时间
+                            const mockResponse = {
+                                action: 'playerAnswer',
+                                data: {
+                                    level: data.data.level,
+                                    isCorrect: Math.random() > 0.4, // 60%正确率，更加真实
+                                    answer: 'mock_answer_' + Date.now()
+                                },
+                                playerId: 'mock_opponent_' + Date.now()
+                            };
+                            console.log('📤 发送模拟对手答题结果:', mockResponse);
+                            this.triggerEvent('gameAction', mockResponse);
+                        } else if (data.action === 'levelEnd') {
+                            // 模拟对手关卡结束响应
+                            console.log('🏁 模拟对手关卡结束响应');
+                            // 不需要特别响应，让游戏自然结束
+                        }
+                    }, 800 + Math.random() * 1500); // 0.8-2.3秒后响应，更加真实
+                } else {
+                    // 真人对战模式：不进行模拟响应
+                    console.log('👥 真人对战模式，不模拟对手响应:', data);
+                }
                 break;
         }
     }
