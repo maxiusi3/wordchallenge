@@ -148,8 +148,24 @@
                 opponentWinRate.textContent = opponent.winRate || '0';
             }
 
-            // 设置自己为准备状态
-            setPlayerReady();
+            // 监听房间就绪事件
+            if (window.parent && window.parent.firebaseBattle) {
+                window.parent.firebaseBattle.on('roomReady', () => {
+                    console.log('🏠 收到房间就绪事件，开始设置准备状态');
+                    readyRetryCount = 0; // 重置重试计数
+                    setTimeout(() => {
+                        setPlayerReady();
+                    }, 500);
+                });
+            }
+            
+            // 备用方案：延迟设置准备状态，等待Firebase房间初始化完成
+            setTimeout(() => {
+                if (!isReady) {
+                    console.log('🔄 备用方案：直接尝试设置准备状态');
+                    setPlayerReady();
+                }
+            }, 3000);
         }
 
         // 开始倒计时
@@ -225,14 +241,57 @@
         }
 
         // 设置玩家准备状态
-        function setPlayerReady() {
-            if (window.parent && window.parent.firebaseBattle) {
-                window.parent.firebaseBattle.setPlayerReady(true);
-                isReady = true;
-                console.log('📝 设置自己为准备状态');
-
-                // 更新显示
-                readyStatus.textContent = '等待对手准备...';
+        let readyRetryCount = 0;
+        const maxReadyRetries = 10;
+        
+        async function setPlayerReady() {
+            readyRetryCount++;
+            console.log(`🔍 尝试设置准备状态 (第${readyRetryCount}次)`);
+            
+            if (!window.parent || !window.parent.firebaseBattle) {
+                console.log('⏳ Firebase Battle未初始化');
+                if (readyRetryCount < maxReadyRetries) {
+                    setTimeout(() => setPlayerReady(), 1000);
+                }
+                return;
+            }
+            
+            const firebaseBattle = window.parent.firebaseBattle;
+            
+            if (!firebaseBattle.roomRef || !firebaseBattle.currentUser || !firebaseBattle.currentRoom) {
+                console.log('⏳ Firebase房间未完全就绪，等待中...');
+                console.log('🔍 roomRef:', !!firebaseBattle.roomRef);
+                console.log('🔍 currentUser:', !!firebaseBattle.currentUser);
+                console.log('🔍 currentRoom:', firebaseBattle.currentRoom);
+                
+                if (readyRetryCount < maxReadyRetries) {
+                    setTimeout(() => setPlayerReady(), 1000);
+                }
+                return;
+            }
+            
+            try {
+                console.log('📝 开始设置准备状态...');
+                const success = await firebaseBattle.setPlayerReady(true);
+                
+                if (success) {
+                    isReady = true;
+                    console.log('✅ 成功设置自己为准备状态');
+                    readyStatus.textContent = '等待对手准备...';
+                } else {
+                    console.log('❌ 设置准备状态失败，重试中...');
+                    if (readyRetryCount < maxReadyRetries) {
+                        setTimeout(() => setPlayerReady(), 1000);
+                    } else {
+                        console.error('❌ 达到最大重试次数，设置准备状态失败');
+                        readyStatus.textContent = '准备状态设置失败，请刷新页面重试';
+                    }
+                }
+            } catch (error) {
+                console.error('❌ 设置准备状态异常:', error);
+                if (readyRetryCount < maxReadyRetries) {
+                    setTimeout(() => setPlayerReady(), 1000);
+                }
             }
         }
 

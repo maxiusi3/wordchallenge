@@ -9,6 +9,7 @@ class FirebaseBattleManager {
         this.isMatching = false;
         this.matchingTimeout = null;
         this.lastProcessedActionId = null; // 记录最后处理的动作ID
+        this.gameStarted = false;
 
         // 事件监听器
         this.eventListeners = new Map();
@@ -18,6 +19,34 @@ class FirebaseBattleManager {
         this.startMatching = this.startMatching.bind(this);
         this.onMatchingPoolChange = this.onMatchingPoolChange.bind(this);
         this.onRoomUpdate = this.onRoomUpdate.bind(this);
+
+        // 自动初始化Firebase
+        this.initFirebase();
+    }
+
+    /**
+     * 初始化Firebase连接
+     */
+    async initFirebase() {
+        try {
+            // 等待Firebase管理器初始化
+            if (window.firebaseManager) {
+                const success = await window.firebaseManager.init();
+                if (success) {
+                    this.database = window.firebaseManager.getDatabase();
+                    console.log('✅ Firebase对战系统初始化成功');
+                } else {
+                    console.log('⚠️ Firebase不可用，使用本地模式');
+                }
+            } else {
+                // 如果Firebase管理器还没有加载，等待一下
+                setTimeout(() => {
+                    this.initFirebase();
+                }, 1000);
+            }
+        } catch (error) {
+            console.error('❌ Firebase初始化失败:', error);
+        }
     }
 
     /**
@@ -203,8 +232,13 @@ class FirebaseBattleManager {
                 // 在房间中设置角色信息
                 await roomRef.child('roles').set(roles);
 
-                // 设置玩家准备状态
+                // 初始化玩家准备状态为false
                 await roomRef.child('playerReady').set({
+                    [this.currentUser.id]: false,
+                    [userId]: false
+                });
+
+                console.log('📝 初始化房间准备状态:', {
                     [this.currentUser.id]: false,
                     [userId]: false
                 });
@@ -226,14 +260,25 @@ class FirebaseBattleManager {
             this.currentRoom = roomId;
             this.roomRef = this.database.ref(`rooms/${roomId}`);
             this.myRole = myRole; // 保存我的角色
+            this.gameStarted = false; // 重置游戏状态
 
             // 停止匹配
             this.stopMatching();
 
             // 监听房间状态
-            this.roomRef.on('value', this.onRoomUpdate);
+            this.roomRef.on('value', this.onRoomUpdate.bind(this));
 
             console.log('🎯 匹配成功！对手:', opponent, '我的角色:', myRole);
+            console.log('🔍 房间加入完成，开始监听状态变化');
+
+            // 等待房间监听完全建立后再触发事件
+            setTimeout(() => {
+                console.log('🏠 房间监听已建立，触发roomReady事件');
+                this.triggerEvent('roomReady', {
+                    roomId: roomId,
+                    myRole: myRole
+                });
+            }, 500);
 
             // 通知匹配成功，包含角色信息
             this.triggerEvent('matchFound', {
@@ -266,6 +311,12 @@ class FirebaseBattleManager {
 
         console.log('🏠 房间状态更新:', roomData);
 
+        // 检查当前用户是否存在
+        if (!this.currentUser) {
+            console.error('⚠️ 当前用户信息不存在');
+            return;
+        }
+
         // 检查对手是否离线
         const players = Object.values(roomData.players || {});
         const opponent = players.find(p => p.id !== this.currentUser.id);
@@ -278,15 +329,28 @@ class FirebaseBattleManager {
         // 处理玩家准备状态
         if (roomData.playerReady) {
             const readyStates = roomData.playerReady;
-            const allReady = Object.values(readyStates).every(ready => ready === true);
+            const readyValues = Object.values(readyStates);
+            const allReady = readyValues.every(ready => ready === true);
+            const readyCount = readyValues.filter(ready => ready === true).length;
+            const totalPlayers = readyValues.length;
 
-            console.log('📝 玩家准备状态:', readyStates, '全部准备:', allReady);
+            console.log('📝 玩家准备状态详情:');
+            console.log('  - 准备状态对象:', readyStates);
+            console.log('  - 准备状态值:', readyValues);
+            console.log('  - 已准备玩家数:', readyCount);
+            console.log('  - 总玩家数:', totalPlayers);
+            console.log('  - 全部准备:', allReady);
+            console.log('  - 游戏已开始:', this.gameStarted);
 
-            if (allReady && !this.gameStarted) {
+            if (allReady && !this.gameStarted && totalPlayers >= 2) {
                 this.gameStarted = true;
                 console.log('🎮 所有玩家已准备，开始游戏！');
                 this.triggerEvent('allPlayersReady');
+            } else if (!allReady) {
+                console.log('⏳ 等待更多玩家准备...');
             }
+        } else {
+            console.log('📝 房间中没有准备状态数据');
         }
 
         // 处理游戏动作
@@ -420,10 +484,11 @@ class FirebaseBattleManager {
      */
     leaveRoom() {
         if (this.roomRef) {
-            this.roomRef.off('value', this.onRoomUpdate);
+            this.roomRef.off('value');
             this.roomRef = null;
         }
         this.currentRoom = null;
+        this.gameStarted = false;
         console.log('🚪 已离开房间');
     }
 
@@ -453,16 +518,41 @@ class FirebaseBattleManager {
      * 设置玩家准备状态
      */
     async setPlayerReady(ready = true) {
+        console.log('🔍 尝试设置准备状态:', ready);
+        console.log('🔍 roomRef存在:', !!this.roomRef);
+        console.log('🔍 currentUser存在:', !!this.currentUser);
+        console.log('🔍 currentRoom:', this.currentRoom);
+
         if (!this.roomRef || !this.currentUser) {
             console.error('⚠️ 无法设置准备状态：房间或用户信息不存在');
-            return;
+            console.log('🔍 roomRef:', this.roomRef);
+            console.log('🔍 currentUser:', this.currentUser);
+            return false;
         }
 
         try {
-            await this.roomRef.child(`playerReady/${this.currentUser.id}`).set(ready);
-            console.log('📝 设置玩家准备状态:', ready);
+            const path = `playerReady/${this.currentUser.id}`;
+            console.log('📝 设置路径:', path, '值:', ready);
+
+            // 先检查房间是否存在
+            const roomSnapshot = await this.roomRef.once('value');
+            if (!roomSnapshot.exists()) {
+                console.error('⚠️ 房间不存在，无法设置准备状态');
+                return false;
+            }
+
+            await this.roomRef.child(path).set(ready);
+            console.log('✅ 玩家准备状态设置成功:', ready);
+            
+            // 验证设置是否成功
+            const verifySnapshot = await this.roomRef.child(path).once('value');
+            const actualValue = verifySnapshot.val();
+            console.log('🔍 验证准备状态设置结果:', actualValue);
+            
+            return actualValue === ready;
         } catch (error) {
-            console.error('设置准备状态失败:', error);
+            console.error('❌ 设置准备状态失败:', error);
+            return false;
         }
     }
 
