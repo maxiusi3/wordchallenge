@@ -517,41 +517,118 @@ class FirebaseBattleManager {
     /**
      * 设置玩家准备状态
      */
-    async setPlayerReady(ready = true) {
-        console.log('🔍 尝试设置准备状态:', ready);
-        console.log('🔍 roomRef存在:', !!this.roomRef);
-        console.log('🔍 currentUser存在:', !!this.currentUser);
-        console.log('🔍 currentRoom:', this.currentRoom);
-
-        if (!this.roomRef || !this.currentUser) {
-            console.error('⚠️ 无法设置准备状态：房间或用户信息不存在');
-            console.log('🔍 roomRef:', this.roomRef);
-            console.log('🔍 currentUser:', this.currentUser);
+    async setPlayerReady(ready = true, retryCount = 0) {
+        const maxRetries = 3;
+        
+        console.log(`🎯 设置准备状态开始 (第${retryCount + 1}次尝试)`);
+        console.log('📊 当前状态检查:');
+        console.log('  - roomRef存在:', !!this.roomRef);
+        console.log('  - currentUser存在:', !!this.currentUser);
+        console.log('  - currentRoom:', this.currentRoom);
+        
+        if (this.currentUser) {
+            console.log('👤 用户详细信息:');
+            console.log('  - ID:', this.currentUser.id);
+            console.log('  - 昵称:', this.currentUser.nickname);
+            console.log('  - 完整对象:', this.currentUser);
+        }
+        
+        // 检查Firebase连接状态
+        if (this.database) {
+            try {
+                const connectedRef = this.database.ref('.info/connected');
+                const snapshot = await connectedRef.once('value');
+                const connected = snapshot.val();
+                console.log('🔗 Firebase连接状态:', connected);
+                
+                if (!connected) {
+                    console.error('❌ Firebase未连接');
+                    if (retryCount < maxRetries) {
+                        console.log(`⏳ 等待2秒后重试...`);
+                        await new Promise(resolve => setTimeout(resolve, 2000));
+                        return this.setPlayerReady(ready, retryCount + 1);
+                    }
+                    return false;
+                }
+            } catch (error) {
+                console.error('❌ 检查Firebase连接状态失败:', error);
+            }
+        }
+        
+        if (!this.roomRef || !this.currentUser || !this.currentRoom) {
+            console.error('❌ 必要条件不满足:');
+            console.log('  - roomRef:', !!this.roomRef);
+            console.log('  - currentUser:', !!this.currentUser);
+            console.log('  - currentRoom:', this.currentRoom);
+            
+            if (retryCount < maxRetries) {
+                console.log(`⏳ 等待2秒后重试...`);
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                return this.setPlayerReady(ready, retryCount + 1);
+            }
+            return false;
+        }
+        
+        if (!this.currentUser.id) {
+            console.error('❌ 用户ID不存在:', this.currentUser);
+            if (retryCount < maxRetries) {
+                console.log(`⏳ 等待2秒后重试...`);
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                return this.setPlayerReady(ready, retryCount + 1);
+            }
             return false;
         }
 
         try {
-            const path = `playerReady/${this.currentUser.id}`;
-            console.log('📝 设置路径:', path, '值:', ready);
-
-            // 先检查房间是否存在
-            const roomSnapshot = await this.roomRef.once('value');
-            if (!roomSnapshot.exists()) {
-                console.error('⚠️ 房间不存在，无法设置准备状态');
-                return false;
-            }
-
-            await this.roomRef.child(path).set(ready);
-            console.log('✅ 玩家准备状态设置成功:', ready);
+            const path = `rooms/${this.currentRoom}/playerReady/${this.currentUser.id}`;
+            console.log('📝 准备写入数据:');
+            console.log('  - 路径:', path);
+            console.log('  - 值:', ready);
+            console.log('  - 用户ID:', this.currentUser.id);
+            
+            // 写入数据
+            await this.roomRef.child(`playerReady/${this.currentUser.id}`).set(ready);
+            console.log('✅ 数据写入完成，等待1.5秒后验证...');
+            
+            // 等待更长时间确保数据同步
+            await new Promise(resolve => setTimeout(resolve, 1500));
             
             // 验证设置是否成功
-            const verifySnapshot = await this.roomRef.child(path).once('value');
-            const actualValue = verifySnapshot.val();
-            console.log('🔍 验证准备状态设置结果:', actualValue);
+            console.log('🔍 开始验证写入结果...');
+            const snapshot = await this.roomRef.child(`playerReady/${this.currentUser.id}`).once('value');
+            const actualValue = snapshot.val();
             
-            return actualValue === ready;
+            console.log('📊 验证结果:');
+            console.log('  - 期望值:', ready);
+            console.log('  - 实际值:', actualValue);
+            console.log('  - 类型匹配:', typeof actualValue, '===', typeof ready);
+            
+            if (actualValue === ready) {
+                console.log('✅ 准备状态设置成功并验证通过!');
+                return true;
+            } else {
+                console.error('❌ 准备状态验证失败');
+                if (retryCount < maxRetries) {
+                    console.log(`⏳ 等待2秒后重试...`);
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                    return this.setPlayerReady(ready, retryCount + 1);
+                }
+                return false;
+            }
         } catch (error) {
-            console.error('❌ 设置准备状态失败:', error);
+            console.error('❌ 设置准备状态异常:', error);
+            console.error('❌ 错误详情:', {
+                name: error.name,
+                message: error.message,
+                code: error.code,
+                stack: error.stack
+            });
+            
+            if (retryCount < maxRetries) {
+                console.log(`⏳ 发生异常，等待2秒后重试...`);
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                return this.setPlayerReady(ready, retryCount + 1);
+            }
             return false;
         }
     }
