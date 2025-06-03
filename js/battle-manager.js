@@ -1346,8 +1346,16 @@ window.addEventListener('message', (event) => {
 });
 
 // 设置消息处理器连接函数
+let messageHandlersSetup = false; // 防止重复设置
+
 function setupBattleMessageHandlers() {
     console.log('🔗 设置双人对战消息处理器');
+
+    // 防止重复设置
+    if (messageHandlersSetup) {
+        console.log('⚠️ 消息处理器已设置，跳过重复设置');
+        return;
+    }
 
     // 确保WebSocket客户端存在
     if (window.wsClient) {
@@ -1382,6 +1390,7 @@ function setupBattleMessageHandlers() {
             }
         });
 
+        messageHandlersSetup = true; // 标记已设置
         console.log('✅ 双人对战消息处理器设置完成');
     } else {
         console.warn('⚠️ WebSocket客户端未就绪，稍后重试');
@@ -1393,7 +1402,7 @@ function setupBattleMessageHandlers() {
 // 立即尝试设置，如果失败会自动重试
 setupBattleMessageHandlers();
 
-// 也在window加载完成后再次尝试
+// 也在window加载完成后再次尝试（但有重复检查保护）
 window.addEventListener('load', setupBattleMessageHandlers);
 
 // 添加全局调试工具
