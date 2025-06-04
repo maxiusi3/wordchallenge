@@ -331,28 +331,35 @@ class FirebaseBattleManager {
         }
 
         // 处理玩家准备状态
-        if (roomData.playerReady) {
+        const totalPlayers = Object.keys(roomData.players || {}).length;
+        console.log('👥 房间中总玩家数:', totalPlayers);
+        
+        if (roomData.playerReady && totalPlayers >= 2) {
             const readyStates = roomData.playerReady;
-            const readyValues = Object.values(readyStates);
-            const allReady = readyValues.every(ready => ready === true);
-            const readyCount = readyValues.filter(ready => ready === true).length;
-            const totalPlayers = readyValues.length;
+            const playerIds = Object.keys(roomData.players || {});
+            
+            // 检查每个玩家是否都已准备
+            const allReady = playerIds.every(playerId => readyStates[playerId] === true);
+            const readyCount = playerIds.filter(playerId => readyStates[playerId] === true).length;
 
             console.log('📝 玩家准备状态详情:');
+            console.log('  - 房间玩家ID列表:', playerIds);
             console.log('  - 准备状态对象:', readyStates);
-            console.log('  - 准备状态值:', readyValues);
             console.log('  - 已准备玩家数:', readyCount);
             console.log('  - 总玩家数:', totalPlayers);
             console.log('  - 全部准备:', allReady);
             console.log('  - 游戏已开始:', this.gameStarted);
 
-            if (allReady && !this.gameStarted && totalPlayers >= 2) {
+            if (allReady && !this.gameStarted) {
                 this.gameStarted = true;
                 console.log('🎮 所有玩家已准备，开始游戏！');
                 this.triggerEvent('allPlayersReady');
             } else if (!allReady) {
                 console.log('⏳ 等待更多玩家准备...');
+                console.log('  - 未准备的玩家:', playerIds.filter(playerId => !readyStates[playerId]));
             }
+        } else if (totalPlayers < 2) {
+            console.log('⏳ 等待更多玩家加入房间...');
         } else {
             console.log('📝 房间中没有准备状态数据');
         }
