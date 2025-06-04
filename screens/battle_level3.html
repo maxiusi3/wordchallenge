@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>双人对战 - 关卡3 - 词力拔河</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="../css/style.css">
+    <style>
+        body {
+            /* 双人对战专用背景 */
+            background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%); /* Purple to Pink */
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            color: white;
+        }
+
+        /* 小游戏区域样式 */
+        .minigame-area {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            min-height: 200px; /* 增加最小高度 */
+        }
+
+        /* 拔河游戏样式 */
+        .tug-of-war-container {
+            position: relative;
+            height: 200px; /* 增加高度为头像留出空间 */
+            margin: 30px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 20px; /* 减少内边距，给头像更多空间 */
+        }
+
+        .rope-track {
+            position: relative;
+            width: 100%;
+            height: 24px; /* 稍微增加绾子高度 */
+            background: linear-gradient(90deg, #3b82f6 0%, #ffffff 50%, #ef4444 100%);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* 添加阴影效果 */
+        }
+
+        .rope-markers {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .rope-marker {
+            flex: 1;
+            height: 100%;
+            border-right: 1px solid rgba(0, 0, 0, 0.2);
+        }
+
+        .rope-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 4px;
+            height: 40px;
+            background: #000;
+            border-radius: 2px;
+        }
+
+        .rope-knot {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 36px; /* 稍微增大绾结 */
+            height: 36px;
+            background: #fbbf24;
+            border: 3px solid #f59e0b;
+            border-radius: 50%;
+            transition: left 0.5s ease-in-out;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            color: #000;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3); /* 添加阴影 */
+        }
+
+        .player-avatar {
+            position: absolute;
+            top: 100%; /* 放在结子下方 */
+            transform: translateY(10px); /* 向下偏移一些距离 */
+            width: 70px; /* 稍微增大头像 */
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            border: 3px solid;
+            z-index: 5; /* 确保在绾子上方 */
+        }
+
+        .my-avatar {
+            left: 10%; /* 放在左侧结子下方 */
+            background: #3b82f6;
+            border-color: #1e40af;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .opponent-avatar {
+            right: 10%; /* 放在右侧结子下方 */
+            background: #ef4444;
+            border-color: #dc2626;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .win-zone {
+            /* 完全隐藏获胜区域色块 */
+            display: none;
+        }
+
+        .my-win-zone {
+            display: none;
+        }
+
+        .opponent-win-zone {
+            display: none;
+        }
+
+        /* 对战状态栏 */
+        .battle-status {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 16px;
+        }
+
+        /* 输入区域样式调整 */
+        .word-input-container {
+            display: inline-block;
+            margin: 0 5px;
+            position: relative;
+        }
+
+        .word-input {
+            background: rgba(255, 255, 255, 0.9);
+            color: #1f2937;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-size: 30px; /* 增加2号字体 */
+            font-weight: bold;
+            text-align: center;
+            min-width: 60px; /* 减小最小宽度 */
+            width: auto; /* 自动宽度 */
+            min-height: 50px;
+            transition: width 0.2s ease; /* 添加宽度过渡动画 */
+        }
+
+        .word-input:focus {
+            outline: none;
+            border-color: #fbbf24;
+            box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.3);
+        }
+
+        /* 音频播放按钮 */
+        .audio-button {
+            background: rgba(255, 255, 255, 0.9);
+            color: #1f2937;
+            border: 2px solid #fbbf24;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin: 0 auto 20px;
+        }
+
+        .audio-button:hover {
+            background: #fbbf24;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        /* 游戏动作统计区样式 */
+        .action-stats-area {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 16px;
+            max-height: 200px;
+        }
+
+        .action-stats-container {
+            max-height: 120px;
+            overflow-y: auto;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 6px;
+            padding: 8px;
+        }
+
+        .action-record {
+            padding: 4px 8px;
+            margin-bottom: 2px;
+            border-radius: 4px;
+            font-size: 14px;
+            line-height: 1.4;
+            border-left: 3px solid transparent;
+        }
+
+        .action-record.my-action {
+            background: rgba(34, 197, 94, 0.2);
+            border-left-color: #22c55e;
+            color: #dcfce7;
+        }
+
+        .action-record.opponent-action {
+            background: rgba(239, 68, 68, 0.2);
+            border-left-color: #ef4444;
+            color: #fecaca;
+        }
+
+        .action-record.correct {
+            font-weight: bold;
+        }
+
+        .action-record.incorrect {
+            opacity: 0.8;
+        }
+
+        /* 滚动条样式 */
+        .action-stats-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .action-stats-container::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 3px;
+        }
+
+        .action-stats-container::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+        }
+
+        .action-stats-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body class="flex flex-col h-screen p-4 md:p-6">
+
+    <!-- 1. 双人对战状态栏 -->
+    <div class="battle-status flex justify-between items-center text-sm md:text-base">
+        <div class="flex items-center space-x-4">
+            <span id="my-info" class="font-bold">我: <span id="my-nickname">玩家1</span> (<span id="my-score">0</span>分)</span>
+        </div>
+        <div class="text-center">
+            <span class="text-lg font-bold">关卡三: 词力拔河</span>
+        </div>
+        <div class="flex items-center space-x-4">
+            <span id="opponent-info" class="font-bold">对手: <span id="opponent-nickname">玩家2</span> (<span id="opponent-score">0</span>分)</span>
+        </div>
+    </div>
+
+    <!-- 2. 小游戏区域 -->
+    <div class="minigame-area">
+        <div class="text-center mb-4">
+            <h3 class="text-xl font-bold mb-2">词力拔河</h3>
+            <p class="text-sm opacity-75">答对拉绳2格，答错对方得1格，拉过7格线获胜</p>
+        </div>
+
+        <!-- 拔河容器 -->
+        <div class="tug-of-war-container">
+            <!-- 我的获胜区域 -->
+            <div class="win-zone my-win-zone"></div>
+
+            <!-- 我的头像 -->
+            <div class="player-avatar my-avatar" id="my-avatar">😎</div>
+
+            <!-- 绳子轨道 -->
+            <div class="rope-track">
+                <!-- 绳子标记 -->
+                <div class="rope-markers">
+                    <!-- 20个标记点 -->
+                    <div class="rope-marker"></div><div class="rope-marker"></div><div class="rope-marker"></div><div class="rope-marker"></div><div class="rope-marker"></div>
+                    <div class="rope-marker"></div><div class="rope-marker"></div><div class="rope-marker"></div><div class="rope-marker"></div><div class="rope-marker"></div>
+                    <div class="rope-marker"></div><div class="rope-marker"></div><div class="rope-marker"></div><div class="rope-marker"></div><div class="rope-marker"></div>
+                    <div class="rope-marker"></div><div class="rope-marker"></div><div class="rope-marker"></div><div class="rope-marker"></div><div class="rope-marker"></div>
+                </div>
+
+                <!-- 中心线 -->
+                <div class="rope-center"></div>
+
+                <!-- 绳结 -->
+                <div id="rope-knot" class="rope-knot" style="left: 50%;">🪢</div>
+            </div>
+
+            <!-- 对手头像 -->
+            <div class="player-avatar opponent-avatar" id="opponent-avatar">🤖</div>
+
+            <!-- 对手获胜区域 -->
+            <div class="win-zone opponent-win-zone"></div>
+        </div>
+
+        <!-- 隐藏游戏状态文字 -->
+        <div class="flex justify-center text-sm" style="display: none;">
+            <span id="game-status" class="font-bold text-lg">拔河进行中</span>
+            <!-- 隐藏优势信息 -->
+            <span id="my-advantage" style="display: none;">我的优势: 0</span>
+            <span id="opponent-advantage" style="display: none;">对手优势: 0</span>
+        </div>
+    </div>
+
+    <!-- 3. 游戏动作统计区 -->
+    <div class="action-stats-area">
+        <div class="text-center mb-2">
+            <h4 class="text-lg font-bold">游戏动作记录</h4>
+        </div>
+        <div id="action-stats-container" class="action-stats-container">
+            <!-- 动作记录将在这里显示 -->
+        </div>
+    </div>
+
+    <!-- 4. 答题区域 -->
+    <div class="flex-grow flex flex-col items-center justify-center text-center px-4 relative">
+        <!-- 音频播放按钮 -->
+        <div class="mb-6">
+            <button id="audio-button" class="audio-button" title="点击播放音频">
+                🔊
+            </button>
+        </div>
+
+        <!-- 提示文字 -->
+        <div class="mb-10 md:mb-16">
+            <p class="text-gray-200 text-2xl md:text-3xl mb-2">请听音频，写出对应的英文单词/词组：</p>
+            <p id="audio-hint" class="text-lg opacity-75">点击上方按钮播放音频</p>
+        </div>
+
+        <!-- 输入区域 -->
+        <div id="input-area" class="mb-8 md:mb-12">
+            <!-- 动态生成的输入框将在这里显示 -->
+        </div>
+
+        <!-- 确认按钮 -->
+        <div class="flex flex-col items-center w-full max-w-md mt-auto pb-8">
+             <button id="confirm-button" class="confirm-btn w-full bg-yellow-500 hover:bg-yellow-600 disabled:bg-gray-400 disabled:opacity-70 disabled:cursor-not-allowed text-gray-900 font-bold text-3xl py-4 px-10 rounded-lg shadow-xl focus:outline-none focus:ring-4 focus:ring-yellow-300">
+                 确认
+             </button>
+        </div>
+
+         <!-- 反馈区域 -->
+        <div id="feedback-area" class="">
+            <span id="feedback-icon" class="inline-block mr-2"></span>
+            <span id="feedback-message"></span>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        lucide.createIcons();
+
+        // 元素引用
+        const audioButtonEl = document.getElementById('audio-button');
+        const audioHintEl = document.getElementById('audio-hint');
+        const inputAreaEl = document.getElementById('input-area');
+        const confirmButtonEl = document.getElementById('confirm-button');
+        const attemptCounterEl = document.getElementById('attempt-counter');
+        const timerDisplayEl = document.getElementById('timer-display');
+        const levelIndicatorEl = document.getElementById('level-indicator');
+        const questionProgressEl = document.getElementById('question-progress');
+        const scoreProgressEl = document.getElementById('score-progress');
+        const feedbackAreaEl = document.getElementById('feedback-area');
+        const feedbackIconEl = document.getElementById('feedback-icon');
+        const feedbackMessageEl = document.getElementById('feedback-message');
+
+        // 双人对战相关元素
+        const myNicknameEl = document.getElementById('my-nickname');
+        const myScoreEl = document.getElementById('my-score');
+        const opponentNicknameEl = document.getElementById('opponent-nickname');
+        const opponentScoreEl = document.getElementById('opponent-score');
+
+        // 小游戏相关元素
+        const ropeKnotEl = document.getElementById('rope-knot');
+        const myAdvantageEl = document.getElementById('my-advantage');
+        const opponentAdvantageEl = document.getElementById('opponent-advantage');
+        const gameStatusEl = document.getElementById('game-status');
+
+        // 游戏状态
+        let currentInputs = [];
+        let currentAudioUrl = null;
+        let gameState = {
+            ropePosition: 0, // -10到10，负数表示我方优势，正数表示对方优势
+            winThreshold: 7, // 设置为7，让游戏更早结束
+            gameEnded: false
+        };
+
+        // 动作记录管理
+        let actionRecords = [];
+        const maxRecords = 20; // 最多保存20条记录
+        const visibleRecords = 4; // 显示最近4条
+
+        // 动作记录管理函数（第三关：词力拔河）
+        function addActionRecord(playerId, playerNickname, isCorrect, isMyAction) {
+            const timestamp = new Date().toLocaleTimeString('zh-CN', {
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+
+            // 计算绳子移动情况
+            let moveDescription = '';
+            let newPosition = gameState.ropePosition;
+
+            if (isMyAction) {
+                if (isCorrect) {
+                    moveDescription = '向我方移2格';
+                } else {
+                    moveDescription = '向对方移1格';
+                }
+            } else {
+                if (isCorrect) {
+                    moveDescription = '向对方移2格';
+                } else {
+                    moveDescription = '向我方移1格';
+                }
+            }
+
+            const record = {
+                id: Date.now() + Math.random(),
+                timestamp,
+                playerId,
+                playerNickname,
+                isCorrect,
+                isMyAction,
+                moveDescription,
+                newPosition,
+                message: `${playerNickname} ${isCorrect ? '答对' : '答错'}，${moveDescription}，当前位置${newPosition}`
+            };
+
+            // 添加到记录数组
+            actionRecords.push(record);
+
+            // 保持最大记录数量
+            if (actionRecords.length > maxRecords) {
+                actionRecords = actionRecords.slice(-maxRecords);
+            }
+
+            // 更新显示
+            updateActionRecordsDisplay();
+
+            console.log('添加动作记录:', record);
+        }
+
+        function updateActionRecordsDisplay() {
+            const container = document.getElementById('action-stats-container');
+            if (!container) return;
+
+            // 获取最近的记录（最多4条）
+            const recentRecords = actionRecords.slice(-visibleRecords);
+
+            // 清空容器
+            container.innerHTML = '';
+
+            if (recentRecords.length === 0) {
+                container.innerHTML = '<div class="text-center text-gray-400 text-sm">暂无动作记录</div>';
+                return;
+            }
+
+            // 按时间顺序显示（最新的在下方）
+            recentRecords.forEach(record => {
+                const recordEl = document.createElement('div');
+                recordEl.className = `action-record ${record.isMyAction ? 'my-action' : 'opponent-action'} ${record.isCorrect ? 'correct' : 'incorrect'}`;
+                recordEl.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <span class="flex-1">${record.message}</span>
+                        <span class="text-xs opacity-75 ml-2">${record.timestamp}</span>
+                    </div>
+                `;
+                container.appendChild(recordEl);
+            });
+
+            // 自动滚动到底部
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // 存储本地的游戏数据
+        let localBattleGameData = null;
+
+        // 初始化双人对战信息
+        function initializeBattleInfo() {
+            // 优先使用本地存储的数据
+            const gameData = localBattleGameData || (window.parent && window.parent.battleGameData);
+            if (gameData) {
+                const player = gameData.player;
+                const opponent = gameData.opponent;
+
+                myNicknameEl.textContent = player.nickname || '我';
+                opponentNicknameEl.textContent = opponent.nickname || '对手';
+
+                // 更新头像显示
+                const myAvatarEl = document.getElementById('my-avatar');
+                const opponentAvatarEl = document.getElementById('opponent-avatar');
+
+                if (myAvatarEl) {
+                    myAvatarEl.textContent = player.avatar || '😎';
+                }
+
+                if (opponentAvatarEl) {
+                    opponentAvatarEl.textContent = opponent.avatar || '🤖';
+                }
+
+                console.log('双人对战关卡3初始化完成');
+            }
+        }
+
+        // 更新绳子位置
+        function updateRopePosition(position) {
+            const oldPosition = gameState.ropePosition;
+            gameState.ropePosition = Math.max(-10, Math.min(10, position));
+
+
+
+            // 计算绳结位置 (50%是中心，负数向左，正数向右)
+            // 范围是-10到+10，对应0%到100%
+            // 公式：percentage = 50 + (position / 10) * 50
+            // 当position=-10时，percentage=0%（最左边）
+            // 当position=0时，percentage=50%（中间）
+            // 当position=+10时，percentage=100%（最右边）
+            const percentage = 50 + (gameState.ropePosition / 10) * 50;
+            const clampedPercentage = Math.max(0, Math.min(100, percentage));
+
+
+
+            ropeKnotEl.style.left = `${clampedPercentage}%`;
+
+            // 更新优势显示
+            if (gameState.ropePosition < 0) {
+                myAdvantageEl.textContent = `我的优势: ${Math.abs(gameState.ropePosition)}`;
+                opponentAdvantageEl.textContent = `对手优势: 0`;
+            } else if (gameState.ropePosition > 0) {
+                myAdvantageEl.textContent = `我的优势: 0`;
+                opponentAdvantageEl.textContent = `对手优势: ${gameState.ropePosition}`;
+            } else {
+                myAdvantageEl.textContent = `我的优势: 0`;
+                opponentAdvantageEl.textContent = `对手优势: 0`;
+            }
+
+            // 检查游戏结束条件
+            if (!gameState.gameEnded && Math.abs(gameState.ropePosition) >= gameState.winThreshold) {
+                gameState.gameEnded = true;
+                if (gameState.ropePosition <= -gameState.winThreshold) {
+                    gameStatusEl.textContent = '我方获胜！';
+                    gameStatusEl.className = 'font-bold text-green-300';
+
+                    // 通知主游戏管理器关卡结束
+                    window.parent.postMessage({
+                        action: 'levelEnded',
+                        payload: { level: 3, winner: 'my' }
+                    }, '*');
+                } else {
+                    gameStatusEl.textContent = '对手获胜！';
+                    gameStatusEl.className = 'font-bold text-red-300';
+
+                    // 通知主游戏管理器关卡结束
+                    window.parent.postMessage({
+                        action: 'levelEnded',
+                        payload: { level: 3, winner: 'opponent' }
+                    }, '*');
+                }
+            } else if (!gameState.gameEnded) {
+                gameStatusEl.textContent = '拔河进行中';
+                gameStatusEl.className = 'font-bold';
+            }
+        }
+
+        // 处理答题结果对小游戏的影响
+        function handleAnswerResult(isCorrect, isMyAnswer) {
+            // 获取玩家信息用于记录
+            let playerNickname, opponentNickname;
+            if (window.parent && window.parent.battleGameData) {
+                playerNickname = window.parent.battleGameData.player.nickname || '我';
+                opponentNickname = window.parent.battleGameData.opponent.nickname || '对手';
+            } else {
+                playerNickname = '我';
+                opponentNickname = '对手';
+            }
+
+            let positionChange = 0;
+
+            if (isMyAnswer) {
+                // 我的答题结果
+                positionChange = isCorrect ? -2 : 1; // 答对我方拉2格，答错对方得1格
+
+                // 播放拉河游戏音效
+                if (isCorrect) {
+                    playBattleSound('success'); // 成功拉绳音效
+                } else {
+                    playBattleSound('click'); // 失误音效
+                }
+            } else {
+                // 对手的答题结果
+                positionChange = isCorrect ? 2 : -1; // 对手答对拉2格，答错我方得1格
+            }
+
+            // 更新绳子位置
+            updateRopePosition(gameState.ropePosition + positionChange);
+
+            // 在位置更新后添加动作记录
+            if (isMyAnswer) {
+                addActionRecord('my_player', playerNickname, isCorrect, true);
+            } else {
+                addActionRecord('opponent_player', opponentNickname, isCorrect, false);
+            }
+        }
+
+        // 动态调整输入框宽度的函数
+        function adjustInputWidth(input) {
+            const value = input.value;
+            const expectedWord = input.dataset.expectedWord || '';
+
+            // 计算所需宽度：基于输入内容长度和期望单词长度的最大值
+            const contentLength = Math.max(value.length, expectedWord.length, 3);
+
+            // 使用字符宽度计算，每个字符大约1.2ch（考虑字体和间距）
+            const newWidth = Math.max(60, contentLength * 24 + 32); // 24px per character + padding
+
+            input.style.width = newWidth + 'px';
+        }
+
+        // 创建统一长度的多个输入框（不暴露单词长度）
+        function createInputsForAnswer(englishAnswer) {
+            inputAreaEl.innerHTML = '';
+            currentInputs = [];
+
+            const words = englishAnswer.split(' ');
+            const uniformWidth = 120; // 统一的默认宽度
+
+            words.forEach((word, wordIndex) => {
+                const wordContainer = document.createElement('div');
+                wordContainer.className = 'word-input-container';
+
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.className = 'word-input';
+                input.placeholder = '___'; // 统一的占位符，不暴露长度
+                input.style.width = uniformWidth + 'px'; // 统一默认宽度
+                input.style.minWidth = uniformWidth + 'px';
+                input.dataset.wordIndex = wordIndex;
+                input.dataset.expectedWord = word.toLowerCase();
+                // 移除 maxLength 限制
+
+                input.addEventListener('input', (e) => {
+                    const value = e.target.value;
+
+                    // 播放打字音效
+                    if (value.length > 0) {
+                        playTypingSound();
+                    }
+
+                    // 禁止空格输入（空格用于导航）
+                    if (value.includes(' ')) {
+                        e.target.value = value.replace(/\s/g, '');
+                        return;
+                    }
+
+                    // 动态调整输入框宽度
+                    adjustInputWidth(e.target);
+                });
+
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (!confirmButtonEl.disabled) {
+                            confirmButtonEl.click();
+                        }
+                    } else if (e.key === ' ') {
+                        // 空格键切换到下一个输入框
+                        e.preventDefault();
+                        const currentIndex = parseInt(input.dataset.wordIndex);
+                        if (currentIndex < currentInputs.length - 1) {
+                            currentInputs[currentIndex + 1].focus();
+                        }
+                    } else if (e.key === 'Backspace' && input.value === '') {
+                        // 当前输入框为空时，退格键跳转到上一个输入框
+                        e.preventDefault();
+                        const currentIndex = parseInt(input.dataset.wordIndex);
+                        if (currentIndex > 0) {
+                            currentInputs[currentIndex - 1].focus();
+                        }
+                    }
+                });
+
+                // 设置初始宽度
+                adjustInputWidth(input);
+
+                currentInputs.push(input);
+                wordContainer.appendChild(input);
+                inputAreaEl.appendChild(wordContainer);
+
+                if (wordIndex < words.length - 1) {
+                    const spacer = document.createElement('span');
+                    spacer.textContent = ' ';
+                    spacer.className = 'text-2xl mx-1';
+                    inputAreaEl.appendChild(spacer);
+                }
+            });
+
+            if (currentInputs.length > 0) {
+                setTimeout(() => currentInputs[0].focus(), 100);
+            }
+        }
+
+        // 显示题目
+        function displayQuestion(questionData) {
+            console.log("Displaying question:", questionData);
+
+            // 设置音频URL
+            currentAudioUrl = questionData.audioUrl;
+
+            if (questionData.english) {
+                createInputsForAnswer(questionData.english);
+            }
+
+            // 双人对战模式不显示答案提示，增加竞争性
+            audioHintEl.textContent = '点击上方按钮播放音频';
+
+            feedbackAreaEl.style.display = 'none';
+            confirmButtonEl.disabled = false;
+        }
+
+        // 播放音频
+        function playAudio() {
+            if (!currentAudioUrl) {
+                console.error('没有音频URL');
+                audioHintEl.textContent = '音频未加载，请稍后重试';
+                return;
+            }
+
+            console.log('尝试播放音频:', currentAudioUrl);
+
+            // 显示加载状态
+            if (audioHintEl) {
+                audioHintEl.textContent = '音频播放中...';
+            }
+            if (audioButtonEl) {
+                audioButtonEl.disabled = true;
+            }
+
+            try {
+                // 检查是否是TTS URL
+                if (currentAudioUrl.startsWith('tts://responsivevoice/')) {
+                    // 使用ResponsiveVoice播放
+                    const word = decodeURIComponent(currentAudioUrl.replace('tts://responsivevoice/', ''));
+                    console.log('使用ResponsiveVoice播放:', word);
+
+                    // 检查ResponsiveVoice是否可用
+                    if (typeof responsiveVoice !== 'undefined') {
+                        responsiveVoice.speak(word, 'US English Female', {
+                            rate: 0.8,
+                            pitch: 1,
+                            volume: 0.7,
+                            onstart: () => {
+                                console.log('ResponsiveVoice开始播放');
+                                if (audioHintEl) {
+                                    audioHintEl.textContent = '音频播放中...';
+                                }
+                            },
+                            onend: () => {
+                                console.log('ResponsiveVoice播放结束');
+                                if (audioHintEl) {
+                                    audioHintEl.textContent = '音频播放完成，请输入答案';
+                                }
+                                if (audioButtonEl) {
+                                    audioButtonEl.disabled = false;
+                                }
+                            },
+                            onerror: (error) => {
+                                console.error('ResponsiveVoice播放错误:', error);
+                                // 尝试使用Web Speech API作为备用
+                                tryWebSpeechAPI(word);
+                            }
+                        });
+                    } else {
+                        console.log('ResponsiveVoice不可用，尝试Web Speech API');
+                        tryWebSpeechAPI(word);
+                    }
+                } else {
+                    // 直接使用 Audio API 播放（用于本地音频文件）
+                    const audio = new Audio(currentAudioUrl);
+                    audio.volume = 0.7;
+                    audio.crossOrigin = 'anonymous';
+
+                    audio.addEventListener('canplay', () => {
+                        console.log('音频可以播放');
+                        if (audioHintEl) {
+                            audioHintEl.textContent = '音频播放中...';
+                        }
+                    });
+
+                    audio.addEventListener('ended', () => {
+                        console.log('音频播放结束');
+                        if (audioHintEl) {
+                            audioHintEl.textContent = '音频播放完成，请输入答案';
+                        }
+                        if (audioButtonEl) {
+                            audioButtonEl.disabled = false;
+                        }
+                    });
+
+                    audio.addEventListener('error', (event) => {
+                        console.error('音频播放错误:', event);
+                        // 尝试使用Web Speech API作为备用
+                        const word = extractWordFromUrl(currentAudioUrl);
+                        if (word) {
+                            tryWebSpeechAPI(word);
+                        } else {
+                            if (audioHintEl) {
+                                audioHintEl.textContent = '音频播放失败，请重试';
+                            }
+                            if (audioButtonEl) {
+                                audioButtonEl.disabled = false;
+                            }
+                        }
+                    });
+
+                    audio.play().catch(error => {
+                        console.error('音频播放失败:', error);
+                        // 尝试使用Web Speech API作为备用
+                        const word = extractWordFromUrl(currentAudioUrl);
+                        if (word) {
+                            tryWebSpeechAPI(word);
+                        } else {
+                            if (audioHintEl) {
+                                audioHintEl.textContent = '音频播放失败，请重试';
+                            }
+                            if (audioButtonEl) {
+                                audioButtonEl.disabled = false;
+                            }
+                        }
+                    });
+                }
+
+            } catch (error) {
+                console.error('音频播放异常:', error);
+                if (audioHintEl) {
+                    audioHintEl.textContent = '音频播放失败，请重试';
+                }
+                if (audioButtonEl) {
+                    audioButtonEl.disabled = false;
+                }
+            }
+        }
+
+        // 尝试使用Web Speech API
+        function tryWebSpeechAPI(word) {
+            console.log('尝试使用Web Speech API播放:', word);
+
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(word);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.8;
+                utterance.pitch = 1;
+                utterance.volume = 0.7;
+
+                utterance.onstart = () => {
+                    console.log('Web Speech API开始播放');
+                    if (audioHintEl) {
+                        audioHintEl.textContent = '音频播放中...';
+                    }
+                };
+
+                utterance.onend = () => {
+                    console.log('Web Speech API播放结束');
+                    if (audioHintEl) {
+                        audioHintEl.textContent = '音频播放完成，请输入答案';
+                    }
+                    if (audioButtonEl) {
+                        audioButtonEl.disabled = false;
+                    }
+                };
+
+                utterance.onerror = (error) => {
+                    console.error('Web Speech API播放错误:', error);
+                    if (audioHintEl) {
+                        audioHintEl.textContent = '音频播放失败，请重试';
+                    }
+                    if (audioButtonEl) {
+                        audioButtonEl.disabled = false;
+                    }
+                };
+
+                speechSynthesis.speak(utterance);
+            } else {
+                console.error('浏览器不支持Web Speech API');
+                if (audioHintEl) {
+                    audioHintEl.textContent = '浏览器不支持语音播放';
+                }
+                if (audioButtonEl) {
+                    audioButtonEl.disabled = false;
+                }
+            }
+        }
+
+        // 从URL中提取单词
+        function extractWordFromUrl(url) {
+            try {
+                // 尝试从TTS URL中提取单词
+                if (url.includes('text=')) {
+                    const match = url.match(/text=([^&]+)/);
+                    return match ? decodeURIComponent(match[1]) : null;
+                }
+                return null;
+            } catch (error) {
+                console.error('提取单词失败:', error);
+                return null;
+            }
+        }
+
+        // 更新显示信息
+        function updateLevelDisplay(data) {
+            // 双人对战模式不需要这些显示元素，安全检查
+            if (levelIndicatorEl) {
+                levelIndicatorEl.textContent = `关卡: ${data.currentLevel || '3'}`;
+            }
+            if (questionProgressEl) {
+                questionProgressEl.textContent = `题目: ${data.questionNumber || '--'} / ${data.totalQuestions || '--'}`;
+            }
+            if (scoreProgressEl) {
+                scoreProgressEl.textContent = `答对: ${data.score || '0'} / ${data.targetScore || '--'}`;
+            }
+            if (attemptCounterEl) {
+                attemptCounterEl.textContent = data.attemptsLeft !== undefined ? `尝试: ${data.attemptsLeft}` : '';
+                attemptCounterEl.classList.toggle('hidden', data.attemptsLeft === undefined);
+            }
+
+            // 只有在明确传入timerValue时才更新计时器
+            if (timerDisplayEl && data.timerValue !== undefined && data.timerValue !== null) {
+                timerDisplayEl.textContent = data.timerValue;
+                if (data.timerValue > 5) {
+                    timerDisplayEl.classList.remove('warning');
+                }
+            }
+
+            // 更新双人对战分数
+            if (data.myScore !== undefined && myScoreEl) {
+                myScoreEl.textContent = data.myScore;
+            }
+            if (data.opponentScore !== undefined && opponentScoreEl) {
+                opponentScoreEl.textContent = data.opponentScore;
+            }
+        }
+
+        // 更新计时器显示
+        function updateTimerDisplay(seconds) {
+            if (timerDisplayEl) {
+                timerDisplayEl.textContent = seconds;
+                if (seconds <= 5 && seconds > 0) {
+                    timerDisplayEl.classList.add('warning');
+                } else {
+                    timerDisplayEl.classList.remove('warning');
+                }
+            }
+        }
+
+        // 设置计时器警告
+        function setTimerWarning(warning) {
+            if (timerDisplayEl) {
+                if (warning) {
+                    timerDisplayEl.classList.add('warning');
+                } else {
+                    timerDisplayEl.classList.remove('warning');
+                }
+            }
+        }
+
+        // 播放音效函数
+        function playAudioFeedback(isCorrect) {
+            try {
+                const audioFile = isCorrect ? 'correct.wav' : 'error.wav';
+                const audio = new Audio(`../audio/${audioFile}`);
+                audio.volume = 0.5; // 设置音量为50%
+                audio.play().catch(error => {
+                    console.log('音效播放失败:', error);
+                });
+            } catch (error) {
+                console.log('音效加载失败:', error);
+            }
+        }
+
+        // 播放打字音效
+        function playTypingSound() {
+            try {
+                // 检查是否关闭音效
+                const soundEnabled = localStorage.getItem('soundEnabled');
+                if (soundEnabled === 'false') {
+                    return;
+                }
+
+                // 使用专门的打字音效
+                const audio = new Audio(`../audio/typing.wav`);
+                audio.volume = 0.3; // 适中的音量
+                audio.play().catch(error => {
+                    // 静默失败，不输出错误信息
+                });
+            } catch (error) {
+                // 静默失败
+            }
+        }
+
+        // 播放双人模式音效
+        function playBattleSound(soundName) {
+            try {
+                // 检查是否关闭音效
+                const soundEnabled = localStorage.getItem('soundEnabled');
+                if (soundEnabled === 'false') {
+                    return;
+                }
+
+                // 播放音效
+                const audio = new Audio(`../audio/${soundName}.wav`);
+                audio.volume = 0.5; // 设置音量为50%
+                audio.play().catch(error => {
+                    console.warn(`播放音效 ${soundName} 失败:`, error);
+                });
+            } catch (error) {
+                console.warn(`加载音效 ${soundName} 失败:`, error);
+            }
+        }
+
+        // 显示反馈
+        function showFeedback(feedbackData) {
+            const { isCorrect, message, correctAnswer, userAnswer } = feedbackData;
+
+            // 播放音效
+            playAudioFeedback(isCorrect);
+
+            feedbackIconEl.innerHTML = isCorrect ?
+                '<i data-lucide="check-circle" class="w-6 h-6 text-green-400"></i>' :
+                '<i data-lucide="x-circle" class="w-6 h-6 text-red-400"></i>';
+
+            let feedbackText = message || (isCorrect ? '正确！' : '错误！');
+            // 双人对战模式不显示正确答案，增加竞争性
+            // if (!isCorrect && correctAnswer) {
+            //     feedbackText += ` 正确答案是: ${correctAnswer}`;
+            // }
+
+            feedbackMessageEl.textContent = feedbackText;
+            feedbackAreaEl.style.display = 'block';
+
+            lucide.createIcons();
+
+            // 处理小游戏状态更新
+            handleAnswerResult(isCorrect, true);
+
+            setTimeout(() => {
+                feedbackAreaEl.style.display = 'none';
+            }, 2000);
+        }
+
+        // 加载ResponsiveVoice库
+        function loadResponsiveVoice() {
+            if (typeof responsiveVoice === 'undefined') {
+                const script = document.createElement('script');
+                script.src = 'https://code.responsivevoice.org/responsivevoice.js?key=FREE_KEY';
+                script.onload = () => {
+                    console.log('ResponsiveVoice库加载成功');
+                };
+                script.onerror = () => {
+                    console.warn('ResponsiveVoice库加载失败，将使用Web Speech API');
+                };
+                document.head.appendChild(script);
+            }
+        }
+
+        // 页面加载时加载ResponsiveVoice
+        loadResponsiveVoice();
+
+        // 音频按钮事件
+        audioButtonEl.addEventListener('click', playAudio);
+
+        // 确认按钮事件
+        confirmButtonEl.addEventListener('click', () => {
+            // 获取所有输入框的值并组合
+            const answers = currentInputs.map(input => input.value.trim().toLowerCase());
+            const combinedAnswer = answers.join(' ');
+
+            if (combinedAnswer.trim()) {
+                confirmButtonEl.disabled = true;
+
+                // 发送答案到父页面进行检查
+                window.parent.postMessage({
+                    action: 'checkBattleAnswer',
+                    payload: {
+                        answer: combinedAnswer,
+                        level: 3,
+                        gameMode: 'battle'
+                    }
+                }, '*');
+            }
+        });
+
+        // 页面加载时初始化
+        window.addEventListener('load', () => {
+            initializeBattleInfo();
+
+            // 初始化统计区显示
+            updateActionRecordsDisplay();
+
+            if (window.parent && window.parent.postMessage) {
+                window.parent.postMessage({
+                    action: 'requestBattleLevelData',
+                    level: 3
+                }, '*');
+            }
+        });
+
+        // 监听来自父页面的消息
+        window.addEventListener('message', (event) => {
+            if (event.data && event.data.action) {
+                console.log("Battle Level 3 received message:", event.data);
+
+                switch (event.data.action) {
+                    case 'updateDisplay':
+                        updateLevelDisplay(event.data.payload);
+                        break;
+                    case 'showQuestion':
+                        displayQuestion(event.data.payload);
+                        break;
+                    // 双人对战模式不使用计时器，移除相关处理
+                    // case 'updateTimer':
+                    // case 'setTimerWarning':
+                    case 'showFeedback':
+                        showFeedback(event.data.payload);
+                        break;
+                    case 'disableConfirm':
+                        confirmButtonEl.disabled = true;
+                        break;
+                    case 'enableConfirm':
+                        confirmButtonEl.disabled = false;
+                        break;
+                    case 'updateMinigame':
+                        // 更新小游戏状态
+                        if (event.data.payload.ropePosition !== undefined) {
+                            updateRopePosition(event.data.payload.ropePosition);
+                        }
+                        break;
+                    case 'opponentAnswer':
+                        // 处理对手的答题结果
+                        handleAnswerResult(event.data.payload.isCorrect, false);
+                        break;
+                    case 'initTestData':
+                        // 初始化测试数据
+                        console.log('第三关收到测试初始化数据:', event.data.payload);
+                        if (event.data.payload) {
+                            localBattleGameData = event.data.payload;
+                            initializeBattleInfo();
+                        }
+                        break;
+                    case 'simulateAnswer':
+                        // 模拟答题
+                        console.log('第三关模拟答题:', event.data.payload);
+                        if (event.data.payload) {
+                            handleAnswerResult(event.data.payload.isCorrect, event.data.payload.isMyAnswer);
+                        }
+                        break;
+                    case 'clearRecords':
+                        // 清空记录
+                        console.log('第三关清空记录');
+                        actionRecords = [];
+                        updateActionRecordsDisplay();
+                        break;
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>

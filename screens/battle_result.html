@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>对战结果 - 单词闯关</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        body {
+            /* 双人对战结果页背景 */
+            background: linear-gradient(135deg, #1e40af 0%, #7c3aed 50%, #dc2626 100%);
+            font-family: 'Arial', sans-serif;
+            overflow-y: auto;
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .result-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .result-title {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .result-title.victory {
+            color: #10b981;
+            text-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+        }
+
+        .result-title.defeat {
+            color: #ef4444;
+            text-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+        }
+
+        .players-comparison {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 32px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+        }
+
+        .player-info {
+            text-align: center;
+            padding: 16px;
+            border-radius: 12px;
+        }
+
+        .my-info {
+            background: rgba(59, 130, 246, 0.2);
+            border: 2px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .opponent-info {
+            background: rgba(239, 68, 68, 0.2);
+            border: 2px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .player-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            border: 3px solid;
+        }
+
+        .my-avatar {
+            background: #3b82f6;
+            border-color: #1e40af;
+        }
+
+        .opponent-avatar {
+            background: #ef4444;
+            border-color: #dc2626;
+        }
+
+        .vs-divider {
+            font-size: 48px;
+            font-weight: bold;
+            color: #fbbf24;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+        }
+
+        .level-results {
+            margin-bottom: 32px;
+        }
+
+        .level-result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            border-left: 4px solid;
+        }
+
+        .level-result-item.victory {
+            border-left-color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .level-result-item.defeat {
+            border-left-color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .level-result-item.draw {
+            border-left-color: #fbbf24;
+            background: rgba(251, 191, 36, 0.1);
+        }
+
+        /* 错题汇总样式 - 保留原有设计 */
+        .wrong-answers-section {
+            margin-bottom: 32px;
+        }
+
+        .wrong-answers-container {
+            max-height: 300px;
+            overflow-y: auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .wrong-answer-item {
+            background: rgba(255, 255, 255, 0.9);
+            color: #1f2937;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+            border-left: 4px solid #ef4444;
+        }
+
+        .wrong-answer-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .action-button {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 18px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 140px;
+        }
+
+        .primary-button {
+            background: #10b981;
+            color: white;
+        }
+
+        .primary-button:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+
+        .secondary-button {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .secondary-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .players-comparison {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .vs-divider {
+                font-size: 32px;
+                margin: 8px 0;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .action-button {
+                width: 100%;
+                max-width: 280px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="result-container">
+        <!-- 1. 胜负结果标题 -->
+        <div id="result-title" class="result-title">
+            <h1 class="text-4xl md:text-6xl font-bold mb-4">🏆 胜利！🏆</h1>
+            <p class="text-xl opacity-75">恭喜你在对战中获胜！</p>
+        </div>
+
+        <!-- 2. 双方对比 -->
+        <div class="players-comparison">
+            <!-- 我的信息 -->
+            <div class="player-info my-info">
+                <div class="player-avatar my-avatar">👤</div>
+                <h3 id="my-nickname" class="text-xl font-bold mb-2">我</h3>
+                <div class="space-y-1">
+                    <p>总分: <span id="my-total-score" class="font-bold text-2xl">8</span></p>
+                    <p>用时: <span id="my-total-time" class="font-medium">3分25秒</span></p>
+                    <p>答对: <span id="my-correct-answers" class="font-medium">8</span>题</p>
+                </div>
+            </div>
+
+            <!-- VS -->
+            <div class="vs-divider">VS</div>
+
+            <!-- 对手信息 -->
+            <div class="player-info opponent-info">
+                <div class="player-avatar opponent-avatar">🤖</div>
+                <h3 id="opponent-nickname" class="text-xl font-bold mb-2">对手</h3>
+                <div class="space-y-1">
+                    <p>总分: <span id="opponent-total-score" class="font-bold text-2xl">6</span></p>
+                    <p>用时: <span id="opponent-total-time" class="font-medium">4分12秒</span></p>
+                    <p>答对: <span id="opponent-correct-answers" class="font-medium">6</span>题</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. 关卡详情 -->
+        <div class="level-results">
+            <h3 class="text-2xl font-bold mb-4 text-center">关卡详情</h3>
+            <div id="level-results-container">
+                <!-- 关卡结果将由JavaScript动态生成 -->
+            </div>
+        </div>
+
+        <!-- 4. 错题汇总 (保留原有功能) -->
+        <div id="wrong-answers-section" class="wrong-answers-section">
+            <h3 class="text-2xl font-bold mb-4 text-center">错题回顾</h3>
+            <div id="wrong-answers-container" class="wrong-answers-container">
+                <!-- 错题将由JavaScript动态生成 -->
+            </div>
+        </div>
+
+        <!-- 5. 操作按钮 -->
+        <div class="action-buttons">
+            <button id="play-again-button" class="action-button primary-button">
+                再来一局
+            </button>
+            <button id="back-home-button" class="action-button secondary-button">
+                返回首页
+            </button>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        lucide.createIcons();
+
+        // 元素引用
+        const resultTitleEl = document.getElementById('result-title');
+        const myNicknameEl = document.getElementById('my-nickname');
+        const myTotalScoreEl = document.getElementById('my-total-score');
+        const myTotalTimeEl = document.getElementById('my-total-time');
+        const myCorrectAnswersEl = document.getElementById('my-correct-answers');
+
+        const opponentNicknameEl = document.getElementById('opponent-nickname');
+        const opponentTotalScoreEl = document.getElementById('opponent-total-score');
+        const opponentTotalTimeEl = document.getElementById('opponent-total-time');
+        const opponentCorrectAnswersEl = document.getElementById('opponent-correct-answers');
+
+        const levelResultsContainerEl = document.getElementById('level-results-container');
+        const wrongAnswersSectionEl = document.getElementById('wrong-answers-section');
+        const wrongAnswersContainerEl = document.getElementById('wrong-answers-container');
+
+        const playAgainButtonEl = document.getElementById('play-again-button');
+        const backHomeButtonEl = document.getElementById('back-home-button');
+
+        // 小游戏名称映射
+        const minigameNames = {
+            1: '警察抓小偷',
+            2: '登天梯',
+            3: '词力拔河'
+        };
+
+        // 格式化时间
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            return `${minutes}分${remainingSeconds.toString().padStart(2, '0')}秒`;
+        }
+
+        // 显示对战结果
+        function displayBattleResult(resultData) {
+            console.log('显示对战结果:', resultData);
+
+            // 播放结果音效
+            playBattleSound(resultData.isVictory ? 'challenge_win' : 'challenge_lose');
+
+            // 更新胜负标题
+            const isVictory = resultData.isVictory;
+            if (isVictory) {
+                resultTitleEl.innerHTML = `
+                    <h1 class="text-4xl md:text-6xl font-bold mb-4">🏆 胜利！🏆</h1>
+                    <p class="text-xl opacity-75">恭喜你在对战中获胜！</p>
+                `;
+                resultTitleEl.className = 'result-title victory';
+            } else {
+                resultTitleEl.innerHTML = `
+                    <h1 class="text-4xl md:text-6xl font-bold mb-4">💪 失败</h1>
+                    <p class="text-xl opacity-75">虽败犹荣，继续加油！</p>
+                `;
+                resultTitleEl.className = 'result-title defeat';
+            }
+
+            // 更新玩家信息
+            myNicknameEl.textContent = resultData.player.nickname || '我';
+            myTotalScoreEl.textContent = resultData.player.totalScore || 0;
+            myTotalTimeEl.textContent = formatTime(resultData.player.totalTime || 0);
+            myCorrectAnswersEl.textContent = resultData.player.correctAnswers || 0;
+
+            opponentNicknameEl.textContent = resultData.opponent.nickname || '对手';
+            opponentTotalScoreEl.textContent = resultData.opponent.totalScore || 0;
+            opponentTotalTimeEl.textContent = formatTime(resultData.opponent.totalTime || 0);
+            opponentCorrectAnswersEl.textContent = resultData.opponent.correctAnswers || 0;
+
+            // 显示关卡结果
+            displayLevelResults(resultData.levelResults || []);
+
+            // 显示错题汇总 (保留原有功能)
+            displayWrongAnswers(resultData.wrongAnswers || []);
+        }
+
+        // 显示关卡结果
+        function displayLevelResults(levelResults) {
+            levelResultsContainerEl.innerHTML = '';
+
+            levelResults.forEach((result) => {
+                // 使用result对象中的level属性，而不是数组索引
+                const level = result.level || 1;
+                const minigameName = minigameNames[level] || `关卡${level}`;
+
+                const div = document.createElement('div');
+                div.className = `level-result-item ${result.result}`;
+
+                let resultIcon = '';
+                let resultText = '';
+
+                switch (result.result) {
+                    case 'victory':
+                        resultIcon = '✓';
+                        resultText = '胜利';
+                        break;
+                    case 'defeat':
+                        resultIcon = '✗';
+                        resultText = '失败';
+                        break;
+                    case 'draw':
+                        resultIcon = '=';
+                        resultText = '平局';
+                        break;
+                    default:
+                        resultIcon = '?';
+                        resultText = '未知';
+                }
+
+                div.innerHTML = `
+                    <div>
+                        <span class="font-bold">关卡${level} (${minigameName}):</span>
+                        <span class="ml-2">${result.description || ''}</span>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="text-2xl mr-2">${resultIcon}</span>
+                        <span class="font-bold">${resultText}</span>
+                    </div>
+                `;
+
+                levelResultsContainerEl.appendChild(div);
+            });
+        }
+
+        // 显示错题汇总 (保留原有功能)
+        function displayWrongAnswers(wrongAnswers) {
+            if (!wrongAnswers || wrongAnswers.length === 0) {
+                wrongAnswersSectionEl.style.display = 'none';
+                return;
+            }
+
+            wrongAnswersSectionEl.style.display = 'block';
+            wrongAnswersContainerEl.innerHTML = '';
+
+            wrongAnswers.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'wrong-answer-item';
+
+                // 处理用户答案显示
+                let userAnswerDisplay = '';
+                let userAnswerClass = 'text-red-600 font-semibold';
+
+                if (item.userAnswer === 'TIMEOUT' || item.userAnswer === '超时') {
+                    userAnswerDisplay = '超时';
+                    userAnswerClass = 'text-orange-600 font-semibold';
+                } else {
+                    userAnswerDisplay = item.userAnswer || '未作答';
+                }
+
+                div.innerHTML = `
+                    <p class="font-medium text-gray-600">关卡：<span class="level-number">${item.level}</span></p>
+                    <p>题目：<span class="question-text">${item.question || 'N/A'}</span></p>
+                    <p>正确答案：<span class="correct-answer text-green-700 font-semibold">${item.correctAnswer || 'N/A'}</span></p>
+                    <p>你的回答：<span class="user-answer ${userAnswerClass}">${userAnswerDisplay}</span></p>
+                `;
+
+                wrongAnswersContainerEl.appendChild(div);
+            });
+        }
+
+        // 播放双人模式音效
+        function playBattleSound(soundName) {
+            try {
+                // 检查是否关闭音效
+                const soundEnabled = localStorage.getItem('soundEnabled');
+                if (soundEnabled === 'false') {
+                    return;
+                }
+
+                // 播放音效
+                const audio = new Audio(`../audio/${soundName}.wav`);
+                audio.volume = 0.5; // 设置音量为50%
+                audio.play().catch(error => {
+                    console.warn(`播放音效 ${soundName} 失败:`, error);
+                });
+            } catch (error) {
+                console.warn(`加载音效 ${soundName} 失败:`, error);
+            }
+        }
+
+        // 按钮事件处理
+        playAgainButtonEl.addEventListener('click', () => {
+            // 播放点击音效
+            playBattleSound('click');
+
+            // 重新开始匹配
+            if (window.parent && window.parent.postMessage) {
+                window.parent.postMessage({ action: 'navigate', screen: 'battle_info_input' }, '*');
+            }
+        });
+
+        backHomeButtonEl.addEventListener('click', () => {
+            // 播放点击音效
+            playBattleSound('click');
+
+            // 返回首页
+            if (window.parent && window.parent.postMessage) {
+                window.parent.postMessage({ action: 'navigate', screen: 'welcome' }, '*');
+            }
+        });
+
+        // 页面加载时获取结果数据
+        window.addEventListener('load', () => {
+            // 从父页面获取对战结果数据
+            if (window.parent && window.parent.battleResultData) {
+                console.log('使用实际游戏结果数据:', window.parent.battleResultData);
+                displayBattleResult(window.parent.battleResultData);
+            } else {
+                console.log('未找到实际游戏结果，使用默认数据');
+                // 默认数据（仅用于测试）
+                const defaultData = {
+                    isVictory: false, // 改为失败以区分默认数据
+                    player: {
+                        nickname: '测试玩家',
+                        totalScore: 1,
+                        totalTime: 205,
+                        correctAnswers: 3
+                    },
+                    opponent: {
+                        nickname: '测试对手',
+                        totalScore: 2,
+                        totalTime: 252,
+                        correctAnswers: 6
+                    },
+                    levelResults: [
+                        { level: 1, result: 'defeat', description: '测试数据 - 警察被小偷逃脱' },
+                        { level: 2, result: 'defeat', description: '测试数据 - 对手先到达20层' },
+                        { level: 3, result: 'victory', description: '测试数据 - 成功拉过8格线' }
+                    ],
+                    wrongAnswers: []
+                };
+                displayBattleResult(defaultData);
+            }
+        });
+
+        // 监听来自父页面的消息
+        window.addEventListener('message', (event) => {
+            if (event.data && event.data.action === 'showBattleResult') {
+                displayBattleResult(event.data.payload);
+            }
+        });
+
+    </script>
+</body>
+</html>

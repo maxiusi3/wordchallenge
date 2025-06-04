@@ -1,0 +1,1395 @@
+[
+  {
+    "word": "old",
+    "meaning": "adj. 陈旧的，古老的；年老的\nn. 古时",
+    "us_pron": "[oʊld]"
+  },
+  {
+    "word": "young",
+    "meaning": "n. 年轻人；（动物的）崽，仔\nadj. 年轻的；初期的；没有经验的",
+    "us_pron": "[jʌŋ]"
+  },
+  {
+    "word": "funny",
+    "meaning": "n. 滑稽人物；笑话，有趣的故事；滑稽连环漫画栏；（英）（比赛用）单人双桨小艇\nadj. 有趣的，好笑的，滑稽的；（口）稀奇的，古怪的，奇异的；有病的，不舒服的；狡猾的，欺骗（性）的，可疑的，不光明",
+    "us_pron": "[ˈfʌni]"
+  },
+  {
+    "word": "kind",
+    "meaning": "n. 种类；性质\nadj. 和蔼的；宽容的；令人感激的",
+    "us_pron": "[kaɪnd]"
+  },
+  {
+    "word": "strict",
+    "meaning": "adj. 严格的；绝对的；精确的；详细的",
+    "us_pron": "[strɪkt]"
+  },
+  {
+    "word": "polite",
+    "meaning": "adj. 有礼貌的，客气的；文雅的；上流的；优雅的",
+    "us_pron": "[pəˈlaɪt]"
+  },
+  {
+    "word": "hard-working",
+    "meaning": "adj. 勤勉的；勤奋的；勤劳的",
+    "us_pron": "[ˌhɑːrd ˈwɜːrkɪŋ]"
+  },
+  {
+    "word": "helpful",
+    "meaning": "adj. 有帮助的；有益的",
+    "us_pron": "[ˈhelpfl]"
+  },
+  {
+    "word": "clever",
+    "meaning": "adj. 聪明的；机灵的；熟练的\n[ 比较级cleverer 最高级 cleverest ]",
+    "us_pron": "[ˈklevər]"
+  },
+  {
+    "word": "shy",
+    "meaning": "n. 投掷；惊跳\nadj. 害羞的；畏缩的，胆怯的\nvi. 投；畏缩；惊退；厌恶\nvt. 投；乱掷",
+    "us_pron": "[ʃaɪ]"
+  },
+  {
+    "word": "know",
+    "meaning": "vt. 知道；认识；懂得\nvi. 了解；熟悉；确信",
+    "us_pron": "[noʊ]"
+  },
+  {
+    "word": "our",
+    "meaning": "pron. 我们的",
+    "us_pron": "[ɑːr]"
+  },
+  {
+    "word": "Ms",
+    "meaning": "abbr. 存贮系统（Memory System）；主存储器（Main Storage）；主程序装置（Master Sequecer）；中速，平均速度（Medium Speed）；主（总）开关（Master Switch）",
+    "us_pron": "[mɪz]"
+  },
+  {
+    "word": "will",
+    "meaning": "n. 意志；决心；情感；遗嘱；意图；心愿\nvt. 决心要；遗赠；用意志力使\nvi. 愿意；下决心\naux. 将；愿意；必须",
+    "us_pron": "[wɪl]"
+  },
+  {
+    "word": "sometimes",
+    "meaning": "adv. 有时，间或",
+    "us_pron": "[ˈsʌmtaɪmz]"
+  },
+  {
+    "word": "robot",
+    "meaning": "n. 机器人；遥控设备，自动机械；机械般工作的人",
+    "us_pron": "[ˈroʊbɑːt]"
+  },
+  {
+    "word": "him",
+    "meaning": "pron. 他（宾格）",
+    "us_pron": "[hɪm; ɪm]"
+  },
+  {
+    "word": "speak",
+    "meaning": "vi. 说话；演讲；表明；陈述\nvt. 讲话；发言；讲演",
+    "us_pron": "[spiːk]"
+  },
+  {
+    "word": "finish",
+    "meaning": "n. 结束；完美；回味（葡萄酒）\nvt. 完成；结束；用完\nvi. 结束，终止；终结",
+    "us_pron": "[ˈfɪnɪʃ]"
+  },
+  {
+    "word": "Monday",
+    "meaning": "n. 星期一",
+    "us_pron": "[ˈmʌndeɪ]"
+  },
+  {
+    "word": "Tuesday",
+    "meaning": "n. 星期二",
+    "us_pron": "[ˈtuːzdeɪ]"
+  },
+  {
+    "word": "Wednesday",
+    "meaning": "n. 星期三",
+    "us_pron": "[ˈwenzdeɪ]"
+  },
+  {
+    "word": "Thursday",
+    "meaning": "n. 星期四",
+    "us_pron": "[ˈθɜːrzdeɪ]"
+  },
+  {
+    "word": "Friday",
+    "meaning": "n. 星期五",
+    "us_pron": "[ˈfraɪdeɪ]"
+  },
+  {
+    "word": "Saturday",
+    "meaning": "n. 星期六",
+    "us_pron": "[ˈsætərdeɪ]"
+  },
+  {
+    "word": "Sunday",
+    "meaning": "n. 星期日；礼拜日",
+    "us_pron": "[ˈsʌndeɪ]"
+  },
+  {
+    "word": "weekend",
+    "meaning": "n. 周末，周末休假；周末聚会\nadj. 周末的，周末用的\nvi. 度周末",
+    "us_pron": "[ˈwiːkend]"
+  },
+  {
+    "word": "wash",
+    "meaning": "n. 洗涤；洗的衣服；化妆水；冲积物\nvt. 洗涤；洗刷；冲走；拍打\nvi. 洗澡；被冲蚀",
+    "us_pron": "[wɑːʃ]"
+  },
+  {
+    "word": "wash my clothes",
+    "meaning": "洗我的衣服；洗衣服"
+  },
+  {
+    "word": "watch",
+    "meaning": "n. 手表；监视；守护；值班人\nvt. 观察；注视；看守；警戒\nvi. 观看，注视；守侯，看守",
+    "us_pron": "[wɑːtʃ]"
+  },
+  {
+    "word": "watch TV",
+    "meaning": "v. 看电视"
+  },
+  {
+    "word": "do",
+    "meaning": "vi. 行，足够；生长\nn. 要求；规定；C大调音阶中的第一音\nv. 做；干；学习；研究；进行；完成；解答；整理；算出；引起；行过\naux. 助动词（构成疑问句和否定句）；（代替动词）；（用于加强语气）\nn. （口语）事件；（主英国口语）诈骗；（主英国、新西兰口语）宴会；（口语）必须做到的事情",
+    "us_pron": "[duː; də; du; doʊ]"
+  },
+  {
+    "word": "do homework",
+    "meaning": "做作业；做家庭作业；做功课"
+  },
+  {
+    "word": "read",
+    "meaning": "n. 阅读；读物\nadj. 有学问的\nvi. 读；读起来\nvt. 阅读；读懂，理解",
+    "us_pron": "[riːd]"
+  },
+  {
+    "word": "read books",
+    "meaning": "读书；看书；阅读"
+  },
+  {
+    "word": "play",
+    "meaning": "n. 游戏；比赛；剧本\nvt. 游戏；扮演；演奏；播放；同…比赛\nvi. 演奏；玩耍；上演；参加比赛",
+    "us_pron": "[pleɪ]"
+  },
+  {
+    "word": "play football",
+    "meaning": "na. 踢足球；对难办的事采取踢皮球的态度"
+  },
+  {
+    "word": "cooking",
+    "meaning": "n. 烹饪\nadj. 烹调的\nv. 烹调；筹划（cook的ing形式）",
+    "us_pron": "[ˈkʊkɪŋ]"
+  },
+  {
+    "word": "often",
+    "meaning": "adv. 常常，时常",
+    "us_pron": "[ˈɔːf(ə)n]"
+  },
+  {
+    "word": "park",
+    "meaning": "n. 公园；[交] 停车场\nvt. 停放；放置；寄存\nvi. 停放车辆",
+    "us_pron": "[pɑːrk]"
+  },
+  {
+    "word": "tired",
+    "meaning": "v. 疲倦；对…腻烦（tire的过去分词形式）\nadj. 疲倦的；厌倦的，厌烦的",
+    "us_pron": "[ˈtaɪərd]"
+  },
+  {
+    "word": "sport",
+    "meaning": "n. 运动；游戏；娱乐；运动会；玩笑\nadj. 运动的\nvt. 游戏；参加体育运动；夸耀\nvi. 游戏",
+    "us_pron": "[spɔːrt]"
+  },
+  {
+    "word": "play sports",
+    "meaning": "做运动；进行体育运动；进行体育活动"
+  },
+  {
+    "word": "should",
+    "meaning": "aux. 应该；就；可能；将要",
+    "us_pron": "[ʃəd; ʃʊd]"
+  },
+  {
+    "word": "every",
+    "meaning": "adj. 每一的，每个的；每隔…的",
+    "us_pron": "[ˈevri]"
+  },
+  {
+    "word": "day",
+    "meaning": "n. 一天；时期；白昼\nadj. 日间的；逐日的\nadv. 每天；经常在白天地",
+    "us_pron": "[deɪ]"
+  },
+  {
+    "word": "schedule",
+    "meaning": "n. 时间表；计划表；一览表\nvt. 安排，计划；编制目录；将……列入计划表",
+    "us_pron": "[ˈskedʒuːl]"
+  },
+  {
+    "word": "sandwich",
+    "meaning": "n. 三明治；夹心面包\nvt. 夹入；挤进；把...做成三明治",
+    "us_pron": "[ˈsænwɪtʃ; ˈsænwɪdʒ]"
+  },
+  {
+    "word": "salad",
+    "meaning": "n. 色拉；尤指莴苣",
+    "us_pron": "[ˈsæləd]"
+  },
+  {
+    "word": "hamburger",
+    "meaning": "n. 汉堡包，火腿汉堡；牛肉饼，肉饼；碎牛肉",
+    "us_pron": "[ˈhæmbɜːrɡər]"
+  },
+  {
+    "word": "ice cream",
+    "meaning": "n. 【食】冰淇淋",
+    "us_pron": "[ˈaɪs kriːm]"
+  },
+  {
+    "word": "tea",
+    "meaning": "n. 茶叶；茶树；茶点\nvt. 给…沏茶\nvi. 喝茶；进茶点",
+    "us_pron": "[tiː]"
+  },
+  {
+    "word": "fresh",
+    "meaning": "n. 开始；新生；泛滥\nadj. 新鲜的；清新的；淡水的；无经验的\nadv. 刚刚，才；最新地",
+    "us_pron": "[freʃ]"
+  },
+  {
+    "word": "healthy",
+    "meaning": "adj. 健康的，健全的；有益于健康的",
+    "us_pron": "[ˈhelθi]"
+  },
+  {
+    "word": "delicious",
+    "meaning": "adj. 美味的；可口的",
+    "us_pron": "[dɪˈlɪʃəs]"
+  },
+  {
+    "word": "hot",
+    "meaning": "adj. 热的；辣的；热情的；激动的；紧迫的\nvt. 增加；给…加温\nadv. 热；紧迫地\nvi. 变热",
+    "us_pron": "[hɑːt]"
+  },
+  {
+    "word": "sweet",
+    "meaning": "n. 糖果；乐趣；芳香；宝贝\nadj. 甜的；悦耳的；芳香的；亲切的\n（俚）酷毙了",
+    "us_pron": "[swiːt]"
+  },
+  {
+    "word": "drink",
+    "meaning": "n. 酒，饮料；喝酒\nvt. 喝，饮；吸收；举杯庆贺\nvi. 喝酒；饮水；干杯",
+    "us_pron": "[drɪŋk]"
+  },
+  {
+    "word": "thirsty",
+    "meaning": "adj. 口渴的，口干的；渴望的，热望的",
+    "us_pron": "[ˈθɜːrsti]"
+  },
+  {
+    "word": "favourite",
+    "meaning": "n. 特别喜爱的人（或物）\nadj. 特别受喜爱的",
+    "us_pron": "[ˈfeɪvərɪt]"
+  },
+  {
+    "word": "food",
+    "meaning": "n. 食物；养料",
+    "us_pron": "[fuːd]"
+  },
+  {
+    "word": "Dear",
+    "meaning": "n. 亲爱的人\nadj. 亲爱的；尊敬的；昂贵的\nadv. 高价地；疼爱地\nint. 哎呀",
+    "us_pron": "[dɪr]"
+  },
+  {
+    "word": "onion",
+    "meaning": "n. 洋葱；洋葱头",
+    "us_pron": "[ˈʌnjən]"
+  },
+  {
+    "word": "sing",
+    "meaning": "n. 演唱；鸣声；呼啸声\nvt. 唱；用诗赞颂；唱着使\nvi. 唱歌；歌颂；鸣叫；呼号",
+    "us_pron": "[sɪŋ]"
+  },
+  {
+    "word": "song",
+    "meaning": "n. 歌曲；歌唱；诗歌；鸣声",
+    "us_pron": "[sɔŋ]"
+  },
+  {
+    "word": "sing English songs",
+    "meaning": "唱英文歌"
+  },
+  {
+    "word": "play the pipa",
+    "meaning": "弹琵琶"
+  },
+  {
+    "word": "kung fu",
+    "meaning": "n. 功夫（中国拳术）\nv. 用功夫击打(对手)",
+    "us_pron": "[ˌkʌŋ ˈfuː]"
+  },
+  {
+    "word": "do kung fu",
+    "meaning": "练功夫"
+  },
+  {
+    "word": "dance",
+    "meaning": "n. 舞蹈；舞会；舞曲\nadj. 舞蹈的；用于跳舞的\nvt. 跳舞；使跳跃\nvi. 跳舞；跳跃；飘扬",
+    "us_pron": "[dæns]"
+  },
+  {
+    "word": "draw",
+    "meaning": "n. 平局；抽签\nvi. 拉；拖\nvt. 画；拉；吸引",
+    "us_pron": "[drɔː]"
+  },
+  {
+    "word": "cartoon",
+    "meaning": "n. 卡通片，[电影] 动画片；连环漫画\nvt. 为…画漫画\nvi. 画漫画",
+    "us_pron": "[kɑːrˈtuːn]"
+  },
+  {
+    "word": "draw cartoons",
+    "meaning": "画卡通"
+  },
+  {
+    "word": "cook",
+    "meaning": "n. 厨师，厨子\nvt. 烹调，煮\nvi. 烹调，做菜",
+    "us_pron": "[kʊk]"
+  },
+  {
+    "word": "swim",
+    "meaning": "n. 游泳；漂浮；眩晕\nadj. 游泳时穿戴的\nvi. 游泳；漂浮；浸；眩晕\nvt. 游过；使浮起",
+    "us_pron": "[swɪm]"
+  },
+  {
+    "word": "play basketball",
+    "meaning": "打篮球；玩篮球；篮球锻炼知多少"
+  },
+  {
+    "word": "ping-pong",
+    "meaning": "n. 乒乓球；桌球",
+    "us_pron": "[ˈpɪŋ pɑːŋ]"
+  },
+  {
+    "word": "play ping-pong",
+    "meaning": "打乒乓球"
+  },
+  {
+    "word": "speak English",
+    "meaning": "说英语；讲英语；相信我会讲英文"
+  },
+  {
+    "word": "we'll",
+    "meaning": "abbr. 我们将（we shall，we will）"
+  },
+  {
+    "word": "we will",
+    "meaning": "我们将"
+  },
+  {
+    "word": "party",
+    "meaning": "n. 政党，党派；聚会，派对；当事人 [复数 parties]\nvi. 参加社交聚会 [ 过去式 partied 过去分词 partied 现在分词 partying ]",
+    "us_pron": "[ˈpɑːrti]"
+  },
+  {
+    "word": "next",
+    "meaning": "adv. 然后；下次；其次\nadj. 下一个的；其次的；贴近的\nn. 下一个\nprep. 靠近；居于…之后",
+    "us_pron": "[nekst]"
+  },
+  {
+    "word": "wonderful",
+    "meaning": "adj. 极好的，精彩的，绝妙的；奇妙的；美妙；胜；神妙",
+    "us_pron": "[ˈwʌndərf(ə)l]"
+  },
+  {
+    "word": "learn",
+    "meaning": "vt. 学习；得知；认识到\nvi. 学习；获悉",
+    "us_pron": "[lɜːrn]"
+  },
+  {
+    "word": "any",
+    "meaning": "adj. 任何的；所有的；丝毫\npron. 任何；任何一个；若干\nadv. 稍微；少许",
+    "us_pron": "[ˈeni]"
+  },
+  {
+    "word": "problem",
+    "meaning": "n. 难题；引起麻烦的人\nadj. 成问题的；难处理的",
+    "us_pron": "[ˈprɑːbləm]"
+  },
+  {
+    "word": "no problem",
+    "meaning": "n. 没问题"
+  },
+  {
+    "word": "want",
+    "meaning": "n. 需要；缺乏；贫困；必需品\nvt. 需要；希望；应该；缺少\nvi. 需要；缺少",
+    "us_pron": "[wɑːnt]"
+  },
+  {
+    "word": "send",
+    "meaning": "n. 上升运动\nvi. 派人；寄信\nvt. 发送，寄；派遣；使进入；发射",
+    "us_pron": "[send]"
+  },
+  {
+    "word": "email",
+    "meaning": "n. 电子信函\nvt. 给…发电子邮件",
+    "us_pron": "[ˈiːmeɪl]"
+  },
+  {
+    "word": "at",
+    "meaning": "prep. 在（表示存在或出现的地点、场所、位置、空间）；以（某种价格、速度等）；向；达；因为；朝；忙于\nn. 阿特（老挝货币基本单位att）；[化]砹（极不稳定放射性元素）\nabbr. 密封的（airtight）；气温（air temperature）",
+    "us_pron": "[ət; æt]"
+  },
+  {
+    "word": "clock",
+    "meaning": "n. 时钟；计时器\nvt. 记录；记时\nvi. 打卡；记录时间",
+    "us_pron": "[klɑːk]"
+  },
+  {
+    "word": "plant",
+    "meaning": "n. 工厂，车间；植物；设备；庄稼\nvt. 种植；培养；栽培；安置\nvi. 种植",
+    "us_pron": "[plænt]"
+  },
+  {
+    "word": "bottle",
+    "meaning": "n. 瓶子；一瓶的容量\nvt. 控制；把…装入瓶中\nvi. （街头艺人演出后）收拢钱币",
+    "us_pron": "[ˈbɑːtl]"
+  },
+  {
+    "word": "water bottle",
+    "meaning": "un. 水壶；采水瓶；采水器；采水样器"
+  },
+  {
+    "word": "bike",
+    "meaning": "n. 自行车；脚踏车\nvi. 骑自行车（或摩托车）",
+    "us_pron": "[baɪk]"
+  },
+  {
+    "word": "photo",
+    "meaning": "n. 照片",
+    "us_pron": "[ˈfoʊtoʊ]"
+  },
+  {
+    "word": "front",
+    "meaning": "n. 前面；正面；前线\nadj. 前面的；正面的\nvt. 面对；朝向；对付\nvi. 朝向\nadv. 在前面；向前",
+    "us_pron": "[frʌnt]"
+  },
+  {
+    "word": "in front of",
+    "meaning": "na. 在…的前面",
+    "us_pron": "[ɪn frʌnt ʌv]"
+  },
+  {
+    "word": "between",
+    "meaning": "prep. 在…之间\nadv. 在中间",
+    "us_pron": "[bɪˈtwiːn]"
+  },
+  {
+    "word": "above",
+    "meaning": "prep. 超过；在……上面；在……之上\nn. 上文\nadj. 上文的\nadv. 在上面；在上文",
+    "us_pron": "[əˈbʌv]"
+  },
+  {
+    "word": "beside",
+    "meaning": "prep. 在旁边；与…相比；和…无关",
+    "us_pron": "[bɪˈsaɪd]"
+  },
+  {
+    "word": "behind",
+    "meaning": "prep. 落后于；支持；晚于\nn. 屁股\nadv. 在后地；在原处",
+    "us_pron": "[bɪˈhaɪnd]"
+  },
+  {
+    "word": "there",
+    "meaning": "n. 那个地方\nadv. 在那里；在那边；在那点上\nint. 你瞧",
+    "us_pron": "[ðer]"
+  },
+  {
+    "word": "grandparent",
+    "meaning": "n. 祖父母；祖父或祖母；外祖父母；外祖父或外祖母",
+    "us_pron": "[ˈɡrænperənt]"
+  },
+  {
+    "word": "their",
+    "meaning": "pron. 他们的，她们的；它们的",
+    "us_pron": "[ðer]"
+  },
+  {
+    "word": "house",
+    "meaning": "n. 住宅；家庭；机构；议会；某种用途的建筑物\nvt. 覆盖；给…房子住；把…储藏在房内\nvi. 住",
+    "us_pron": "[haʊs]"
+  },
+  {
+    "word": "lot",
+    "meaning": "n. 份额；许多；命运；阄\nadv. （与形容词和副词连用）很，非常；（与动词连用）非常\npron. 大量，许多\nvt. 分组，把…划分（常与out连用）；把（土地）划分成块\nvi. 抽签，拈阄",
+    "us_pron": "[lɑːt]"
+  },
+  {
+    "word": "lots of",
+    "meaning": "adj. 许多；很多"
+  },
+  {
+    "word": "flower",
+    "meaning": "n. 花；精华；开花植物\nvt. 使开花；用花装饰\nvi. 成熟，发育；开花；繁荣；旺盛",
+    "us_pron": "[ˈflaʊər]"
+  },
+  {
+    "word": "move",
+    "meaning": "n. 移动；步骤；迁居；策略\nvi. 移动；搬家，迁移；离开\nvt. 移动；感动",
+    "us_pron": "[muːv]"
+  },
+  {
+    "word": "dirty",
+    "meaning": "adj. 下流的，卑鄙的；肮脏的；恶劣的；暗淡的\nvt. 弄脏\nvi. 变脏",
+    "us_pron": "[ˈdɜːrti]"
+  },
+  {
+    "word": "everywhere",
+    "meaning": "n. 每个地方\nadv. 到处",
+    "us_pron": "[ˈevriwer]"
+  },
+  {
+    "word": "mouse",
+    "meaning": "n. 鼠标；老鼠；胆小羞怯的人\nvt. 探出\nvi. 捕鼠；窥探",
+    "us_pron": "[maʊs]"
+  },
+  {
+    "word": "live",
+    "meaning": "adj. 活的；生动的；实况转播的；精力充沛的\nvt. 经历；度过\nvi. 活；居住；生存",
+    "us_pron": "[lɪv; laɪv]"
+  },
+  {
+    "word": "nature",
+    "meaning": "n. 自然；性质；本性；种类",
+    "us_pron": "[ˈneɪtʃər]"
+  },
+  {
+    "word": "forest",
+    "meaning": "n. 森林\nvt. 植树于，使成为森林",
+    "us_pron": "[ˈfɔːrɪst]"
+  },
+  {
+    "word": "river",
+    "meaning": "n. 河，江",
+    "us_pron": "[ˈrɪvər]"
+  },
+  {
+    "word": "lake",
+    "meaning": "n. 湖；深红色颜料；胭脂红\nvt. （使）血球溶解\nvi. （使）血球溶解",
+    "us_pron": "[leɪk]"
+  },
+  {
+    "word": "mountain",
+    "meaning": "n. 山；山脉",
+    "us_pron": "[ˈmaʊntn]"
+  },
+  {
+    "word": "hill",
+    "meaning": "n. 小山；丘陵；斜坡；山冈",
+    "us_pron": "[hɪl]"
+  },
+  {
+    "word": "tree",
+    "meaning": "n. 树；木料；树状物\nvt. 把...赶上树\nvi. 爬上树；逃上树",
+    "us_pron": "[triː]"
+  },
+  {
+    "word": "bridge",
+    "meaning": "n. 桥；桥牌；桥接器；船桥\nvt. 架桥；渡过",
+    "us_pron": "[brɪdʒ]"
+  },
+  {
+    "word": "building",
+    "meaning": "n. 建筑；建筑物\nv. 建筑；建立；增加（build的ing形式）",
+    "us_pron": "[ˈbɪldɪŋ]"
+  },
+  {
+    "word": "village",
+    "meaning": "n. 村庄；村民；（动物的）群落",
+    "us_pron": "[ˈvɪlɪdʒ]"
+  },
+  {
+    "word": "house",
+    "meaning": "n. 住宅；家庭；机构；议会；某种用途的建筑物\nvt. 覆盖；给…房子住；把…储藏在房内\nvi. 住",
+    "us_pron": "[haʊs]"
+  },
+  {
+    "word": "boating",
+    "meaning": "n. 划船\nv. 划船（boat的ing形式）\nadj. 划船的",
+    "us_pron": "[ˈboʊtɪŋ]"
+  },
+  {
+    "word": "go boating",
+    "meaning": "na. 乘船〔尤指划船〕游玩"
+  },
+  {
+    "word": "aren't",
+    "meaning": "abbr. 不是（are not）"
+  },
+  {
+    "word": "are not",
+    "meaning": "不是"
+  },
+  {
+    "word": "rabbit",
+    "meaning": "n. 兔子，野兔\nvt. 让…见鬼去吧\nvi. 猎兔",
+    "us_pron": "[ˈræbɪt]"
+  },
+  {
+    "word": "high",
+    "meaning": "n. 高水平；天空；由麻醉品引起的快感；高压地带\nadj. 高的；高级的；崇高的；高音调的\nadv. 高；奢侈地",
+    "us_pron": "[haɪ]"
+  },
+  {
+    "word": "eat breakfast",
+    "meaning": "吃早饭；吃早餐；食早餐",
+    "us_pron": "[iːt ˈbrekfəst]"
+  },
+  {
+    "word": "have ... class",
+    "meaning": "上课；指上课；该上课了"
+  },
+  {
+    "word": "play sports",
+    "meaning": "做运动；进行体育运动；进行体育活动"
+  },
+  {
+    "word": "exercise",
+    "meaning": "n. 运动；练习；运用；操练；礼拜；典礼\nvt. 锻炼；练习；使用；使忙碌；使惊恐\nvi. 运动；练习",
+    "us_pron": "[ˈeksərsaɪz]"
+  },
+  {
+    "word": "do morning exercises",
+    "meaning": "做早操；晨练；做早操要说"
+  },
+  {
+    "word": "eat dinner",
+    "meaning": "吃晚饭；吃晚餐；吃饭"
+  },
+  {
+    "word": "clean my room",
+    "meaning": "打扫我的房间"
+  },
+  {
+    "word": "go for a walk",
+    "meaning": "v. 出去散步"
+  },
+  {
+    "word": "go shopping",
+    "meaning": "na. 去买东西"
+  },
+  {
+    "word": "take",
+    "meaning": "vi. 拿；获得\nvt. 拿，取；采取；接受（礼物等）；买，花费；耗费（时间等）\nn. 捕获量；看法；利益，盈益；（入场券的）售得金额",
+    "us_pron": "[teɪk]"
+  },
+  {
+    "word": "dancing",
+    "meaning": "n. 跳舞；舞蹈\nv. 跳舞；摇晃（dance的ing形式）",
+    "us_pron": "[ˈdænsɪŋ]"
+  },
+  {
+    "word": "take a dancing class",
+    "meaning": "上舞蹈课"
+  },
+  {
+    "word": "when",
+    "meaning": "conj. 考虑到；既然；当…时；在…时；如果\nn. 时间，时候；日期；场合\nadv. 什么时候，何时；（用于时间的表达方式之后）在那时；其时；当时\npron. 那时；什么时侯",
+    "us_pron": "[wen]"
+  },
+  {
+    "word": "after",
+    "meaning": "conj. 在……之后\nprep. 在……之后\nadj. 以后的\nadv. 后来，以后",
+    "us_pron": "[ˈæftər]"
+  },
+  {
+    "word": "start",
+    "meaning": "n. 开始；起点\nvt. 开始；启动\nvi. 出发",
+    "us_pron": "[stɑːrt]"
+  },
+  {
+    "word": "usually",
+    "meaning": "adv. 通常，经常",
+    "us_pron": "[ˈjuːʒuəli; ˈjuːʒəli]"
+  },
+  {
+    "word": "Spain",
+    "meaning": "n. 西班牙",
+    "us_pron": "[speɪn]"
+  },
+  {
+    "word": "late",
+    "meaning": "adj. 晚的；迟的；已故的；最近的\nadv. 晚；迟；最近；在晚期",
+    "us_pron": "[leɪt]"
+  },
+  {
+    "word": "a.m.",
+    "meaning": "abbr. 上午，午前（ante meridiem）",
+    "us_pron": "[ˌeɪ ˈem]"
+  },
+  {
+    "word": "p.m.",
+    "meaning": "abbr. (=prime minister)总理；首相；午后\nn. 总理（全写为 prime minister）",
+    "us_pron": "[ˌpiː ˈem]"
+  },
+  {
+    "word": "why",
+    "meaning": "int. 哎呀！什么？\nadv. 为什么",
+    "us_pron": "[waɪ]"
+  },
+  {
+    "word": "shop",
+    "meaning": "n. 商店；店铺\nvt. 购物\nvi. 购物；买东西",
+    "us_pron": "[ʃɑːp]"
+  },
+  {
+    "word": "work",
+    "meaning": "n. 工作；[物] 功；产品；操作；职业；行为；事业；工厂；著作；文学、音乐或艺术作品\nvt. 使工作；操作；经营；使缓慢前进\nvi. 工作；运作；起作用",
+    "us_pron": "[wɜːrk]"
+  },
+  {
+    "word": "last",
+    "meaning": "n. 末尾，最后；上个；鞋楦（做鞋的模型）\nadj. 最后的；最近的，最新的；仅剩的；最不可能…的\nvi. 持续；维持，够用；持久\nvt. 度过，拖过；使维持\nadv. 最后地；上次，最近；最后一点",
+    "us_pron": "[læst]"
+  },
+  {
+    "word": "sound",
+    "meaning": "n. 声音，语音；噪音；海峡；吵闹；听力范围；[医] 探条\nadj. 健全的，健康的；合理的；可靠的；有效彻底的\nvt. 听（诊）；测量，测…深；使发声；试探；宣告\nvi. 听起来；发",
+    "us_pron": "[saʊnd]"
+  },
+  {
+    "word": "also",
+    "meaning": "conj. 并且；另外\nadv. 也；而且；同样",
+    "us_pron": "[ˈɔːlsoʊ]"
+  },
+  {
+    "word": "busy",
+    "meaning": "adj. 忙碌的；热闹的；正被占用的\nvt. 使忙于",
+    "us_pron": "[ˈbɪzi]"
+  },
+  {
+    "word": "need",
+    "meaning": "n. 需要，要求；缺乏；必要之物\nvt. 需要\nvi. 需要",
+    "us_pron": "[niːd]"
+  },
+  {
+    "word": "play",
+    "meaning": "n. 游戏；比赛；剧本\nvt. 游戏；扮演；演奏；播放；同…比赛\nvi. 演奏；玩耍；上演；参加比赛",
+    "us_pron": "[pleɪ]"
+  },
+  {
+    "word": "letter",
+    "meaning": "n. 信；字母，文字；证书；文学，学问；字面意义\nvt. 写字母于\nvi. 写印刷体字母",
+    "us_pron": "[ˈletər]"
+  },
+  {
+    "word": "live",
+    "meaning": "adj. 活的；生动的；实况转播的；精力充沛的\nvt. 经历；度过\nvi. 活；居住；生存",
+    "us_pron": "[lɪv; laɪv]"
+  },
+  {
+    "word": "island",
+    "meaning": "n. 岛；岛屿；安全岛；岛状物\nadj. 岛的\nvt. 孤立；使成岛状",
+    "us_pron": "[ˈaɪlənd]"
+  },
+  {
+    "word": "always",
+    "meaning": "adv. 永远，一直；总是；常常",
+    "us_pron": "[ˈɔːlweɪz]"
+  },
+  {
+    "word": "cave",
+    "meaning": "n. 洞穴，窑洞\nvi. 凹陷，塌落；投降\nvt. 使凹陷，使塌落；在…挖洞穴",
+    "us_pron": "[keɪv]"
+  },
+  {
+    "word": "go swimming",
+    "meaning": "na. 去游泳"
+  },
+  {
+    "word": "win",
+    "meaning": "n. 赢；胜利\nvt. 赢得；在…中获胜；劝诱\nvi. 赢；获胜；成功",
+    "us_pron": "[wɪn]"
+  },
+  {
+    "word": "spring",
+    "meaning": "n. 春天；弹簧；泉水；活力；跳跃\nadj. 春天的\nvt. 使跳起；使爆炸；突然提出；使弹开\nvi. 生长；涌出；跃出；裂开",
+    "us_pron": "[sprɪŋ]"
+  },
+  {
+    "word": "summer",
+    "meaning": "n. 夏季；全盛时期\nadj. 夏季的\nvi. 避暑；过夏天",
+    "us_pron": "[ˈsʌmər]"
+  },
+  {
+    "word": "autumn",
+    "meaning": "n. 秋天；成熟期；渐衰期，凋落期\nadj. 秋天的，秋季的",
+    "us_pron": "[ˈɔːtəm; ˈɑːtəm]"
+  },
+  {
+    "word": "winter",
+    "meaning": "n. 冬季；年岁；萧条期\nadj. 冬天的；越冬的\nvi. 过冬",
+    "us_pron": "[ˈwɪntər]"
+  },
+  {
+    "word": "season",
+    "meaning": "n. 时期；季节；赛季\nvt. 给…调味；使适应\nvi. 变得成熟；变干燥",
+    "us_pron": "[ˈsiːzn]"
+  },
+  {
+    "word": "picnic",
+    "meaning": "n. 野餐\nvi. 去野餐",
+    "us_pron": "[ˈpɪknɪk]"
+  },
+  {
+    "word": "go on a picnic",
+    "meaning": "去野餐；去野炊；搞野餐"
+  },
+  {
+    "word": "pick",
+    "meaning": "n. 选择；鹤嘴锄；挖；掩护\nvi. 挑选；采摘；挖\nvt. 拾取；精选；采摘；掘",
+    "us_pron": "[pɪk]"
+  },
+  {
+    "word": "pick apples",
+    "meaning": "摘苹果；就像去摘苹果；采摘苹果"
+  },
+  {
+    "word": "snowman",
+    "meaning": "n. 雪人",
+    "us_pron": "[ˈsnoʊmæn]"
+  },
+  {
+    "word": "make a snowman",
+    "meaning": "堆雪人；做雪人；堆一个雪人"
+  },
+  {
+    "word": "go swimming",
+    "meaning": "na. 去游泳"
+  },
+  {
+    "word": "which",
+    "meaning": "adj. 哪一个；哪一些\npron. 哪/那一个；哪/那一些",
+    "us_pron": "[wɪtʃ]"
+  },
+  {
+    "word": "best",
+    "meaning": "n. 最好的人，最好的事物；最佳状态\nadj. 最好的\nvt. 打败，胜过\nadv. 最好地",
+    "us_pron": "[best]"
+  },
+  {
+    "word": "snow",
+    "meaning": "n. 雪，积雪；下雪\nvt. 使纷纷落下；使变白\nvi. 降雪",
+    "us_pron": "[snoʊ]"
+  },
+  {
+    "word": "good job",
+    "meaning": "做得好；干得好；干的好"
+  },
+  {
+    "word": "because",
+    "meaning": "conj. 因为",
+    "us_pron": "[bɪˈkəz]"
+  },
+  {
+    "word": "vacation",
+    "meaning": "n. 假期；（房屋）搬出\nvi. 休假，度假",
+    "us_pron": "[veɪˈkeɪʃn; vəˈkeɪʃn]"
+  },
+  {
+    "word": "all",
+    "meaning": "n. 全部\nadj. 全部的\nadv. 全然地；越发\npron. 全部",
+    "us_pron": "[ɔːl]"
+  },
+  {
+    "word": "pink",
+    "meaning": "n. 粉红色；化身，典范；石竹花；头面人物\nadj. 粉红的；比较激进的；石竹科的；脸色发红的\nvt. 扎，刺，戳；使…变粉红色；使…面红耳赤\nvi. 变粉红色",
+    "us_pron": "[pɪŋk]"
+  },
+  {
+    "word": "lovely",
+    "meaning": "adj. 可爱的；令人愉快的；爱恋的；秀丽的，优美的\nn. 美女；可爱的东西",
+    "us_pron": "[ˈlʌvli]"
+  },
+  {
+    "word": "leaf",
+    "meaning": "n. 叶子；（书籍等的）一张；扇页\nvi. 生叶；翻书页\nvt. 翻…的页，匆匆翻阅",
+    "us_pron": "[liːf]"
+  },
+  {
+    "word": "fall",
+    "meaning": "n. 下降；秋天；瀑布\nadj. 秋天的\nvi. 落下；变成；来临；减弱\nvt. 砍倒；击倒",
+    "us_pron": "[fɔːl]"
+  },
+  {
+    "word": "paint",
+    "meaning": "vt. 油漆；绘画；装饰；涂色于；描绘；（用语言，文字等）描写；擦脂粉等\nvi. 油漆；描绘；绘画；化妆\nn. 油漆；颜料，涂料；绘画作品；胭脂等化妆品；色彩，装饰",
+    "us_pron": "[peɪnt]"
+  },
+  {
+    "word": "January",
+    "meaning": "n. 一月",
+    "us_pron": "[ˈdʒænjueri]"
+  },
+  {
+    "word": "February",
+    "meaning": "n. 二月",
+    "us_pron": "[ˈfebrueri]"
+  },
+  {
+    "word": "March",
+    "meaning": "n. 三月",
+    "us_pron": "[mɑːrtʃ]"
+  },
+  {
+    "word": "April",
+    "meaning": "n. 四月",
+    "us_pron": "[ˈeɪprəl]"
+  },
+  {
+    "word": "May",
+    "meaning": "aux. 可以，能够；可能，也许；祝，愿；会，能",
+    "us_pron": "[meɪ]"
+  },
+  {
+    "word": "June",
+    "meaning": "n. 六月；琼（人名，来源于拉丁语，含义是“年轻气盛的六月”）",
+    "us_pron": "[dʒuːn]"
+  },
+  {
+    "word": "July",
+    "meaning": "n. 七月",
+    "us_pron": "[dʒʊˈlaɪ]"
+  },
+  {
+    "word": "August",
+    "meaning": "n. 八月（简写为Aug）\nadj. 威严的；令人敬畏的",
+    "us_pron": "[ˈɔːɡəst]"
+  },
+  {
+    "word": "September",
+    "meaning": "n. 九月",
+    "us_pron": "[sepˈtembər]"
+  },
+  {
+    "word": "October",
+    "meaning": "n. [天] 十月",
+    "us_pron": "[ɑːkˈtoʊbər]"
+  },
+  {
+    "word": "November",
+    "meaning": "n. 十一月",
+    "us_pron": "[noʊˈvembər]"
+  },
+  {
+    "word": "December",
+    "meaning": "n. 十二月",
+    "us_pron": "[dɪˈsembər]"
+  },
+  {
+    "word": "few",
+    "meaning": "n. 很少数\nadj. 很少的；几乎没有的\npron. 很少",
+    "us_pron": "[fjuː]"
+  },
+  {
+    "word": "a few",
+    "meaning": "na. 几个；〔反语〕很多；〈俚〉一点点"
+  },
+  {
+    "word": "thing",
+    "meaning": "n. 事情；东西；事物；情况",
+    "us_pron": "[θɪŋ]"
+  },
+  {
+    "word": "meet",
+    "meaning": "vt. 满足；遇见；对付\nvi. 相遇；接触\nn. 集会\nadj. 合适的；适宜的",
+    "us_pron": "[miːt]"
+  },
+  {
+    "word": "sports meet",
+    "meaning": "un. 运动会"
+  },
+  {
+    "word": "Easter",
+    "meaning": "n. 复活节",
+    "us_pron": "[ˈiːstər]"
+  },
+  {
+    "word": "trip",
+    "meaning": "n. 旅行；绊倒；差错\nvt. 绊倒；使犯错\nvi. 绊倒；远足；犯错误；轻快地走",
+    "us_pron": "[trɪp]"
+  },
+  {
+    "word": "year",
+    "meaning": "n. 年；年度；历年；年纪；一年的期间；某年级的学生",
+    "us_pron": "[jɪr]"
+  },
+  {
+    "word": "plant",
+    "meaning": "n. 工厂，车间；植物；设备；庄稼\nvt. 种植；培养；栽培；安置\nvi. 种植",
+    "us_pron": "[plænt]"
+  },
+  {
+    "word": "contest",
+    "meaning": "n. 竞赛；争夺；争论\nvt. 争辩；质疑\nvi. 竞争；争辩",
+    "us_pron": "[ˈkɑːntest]"
+  },
+  {
+    "word": "the Great Wall",
+    "meaning": "长城；万里长城；中国万里长城"
+  },
+  {
+    "word": "national",
+    "meaning": "adj. 国家的；国民的；民族的；国立的\nn. 国民",
+    "us_pron": "[ˈnæʃnəl]"
+  },
+  {
+    "word": "National Day",
+    "meaning": "na. 国庆日"
+  },
+  {
+    "word": "American",
+    "meaning": "n. 美国人，美洲人；美国英语\nadj. 美国的，美洲的；地道美国式的",
+    "us_pron": "[əˈmerɪkən]"
+  },
+  {
+    "word": "Thanksgiving",
+    "meaning": "n. 感恩"
+  },
+  {
+    "word": "Christmas",
+    "meaning": "n. 圣诞节；圣诞节期间",
+    "us_pron": "[ˈkrɪsməs]"
+  },
+  {
+    "word": "holiday",
+    "meaning": "n. 假日；节日；休息日\nvi. 外出度假",
+    "us_pron": "[ˈhɑːlədeɪ]"
+  },
+  {
+    "word": "game",
+    "meaning": "n. 游戏；比赛\nadj. 勇敢的\nvi. 赌博",
+    "us_pron": "[ɡeɪm]"
+  },
+  {
+    "word": "roll",
+    "meaning": "n. 卷，卷形物；名单；摇晃\nvt. 卷；滚动，转动；辗\nvi. 卷；滚动；转动；起伏，摇晃",
+    "us_pron": "[roʊl]"
+  },
+  {
+    "word": "look for",
+    "meaning": "v. 寻找；探索；渴望；盼望",
+    "us_pron": "[ˈlʊk fɔːr]"
+  },
+  {
+    "word": "chocolate",
+    "meaning": "n. 巧克力，巧克力糖；巧克力色\nadj. 巧克力色的；巧克力口味的",
+    "us_pron": "[ˈtʃɔːklət]"
+  },
+  {
+    "word": "bunny",
+    "meaning": "n. 兔子（特别是小兔子）；可爱女郎",
+    "us_pron": "[ˈbʌni]"
+  },
+  {
+    "word": "RSVP",
+    "meaning": "abbr. 请回复 Répondez s'il vous plaît.（法语）",
+    "us_pron": "[ˌɑːr es viː ˈpiː]"
+  },
+  {
+    "word": "by",
+    "meaning": "prep. 通过；被；依据；经由；在附近；在……之前\nadv. 通过；经过；附近；[互联网] 白俄罗斯的国家代码顶级域名",
+    "us_pron": "[baɪ]"
+  },
+  {
+    "word": "first",
+    "meaning": "num. 第一\nn. 第一；开始；冠军\nadj. 第一的；基本的；最早的\nadv. 第一；首先；优先；宁愿",
+    "us_pron": "[fɜːrst]"
+  },
+  {
+    "word": "second",
+    "meaning": "num. 第二\nn. 秒；第二名；瞬间；二等品\nadj. 第二的；次要的；附加的\nvt. 支持\nadv. 第二；其次；居第二位",
+    "us_pron": "[ˈsekənd; sɪˈkɑːnd]"
+  },
+  {
+    "word": "third",
+    "meaning": "num. 第三；三分之一\nadj. 第三的；三分之一的",
+    "us_pron": "[θɜːrd]"
+  },
+  {
+    "word": "fourth",
+    "meaning": "num. 第四\nn. 第四，月的第四日；四分之一\nadj. 第四的，第四个的；四分之一的",
+    "us_pron": "[fɔːrθ]"
+  },
+  {
+    "word": "fifth",
+    "meaning": "num. 第五\nn. 第五；五分之一\nadj. 第五的；五分之一的",
+    "us_pron": "[fɪfθ]"
+  },
+  {
+    "word": "twelfth",
+    "meaning": "n. 第十二；月的第十二日\nadj. 第十二的，第十二个的；十二分之一的",
+    "us_pron": "[twelfθ]"
+  },
+  {
+    "word": "twentieth",
+    "meaning": "n. 二十分之一\nnum. 第二十\nadj. 第二十的；二十分之一的",
+    "us_pron": "[ˈtwentiəθ]"
+  },
+  {
+    "word": "twenty-first",
+    "meaning": "num. 第二十一",
+    "us_pron": "[ˌtwenti ˈfɜːrst]"
+  },
+  {
+    "word": "twenty-third",
+    "meaning": "num. 第二十三"
+  },
+  {
+    "word": "thirtieth",
+    "meaning": "n. 第三十；三十分之一\nadj. 第三十个的；三十分之一的\nnum. 第三十；三十分之一",
+    "us_pron": "[ˈθɜːrtiəθ]"
+  },
+  {
+    "word": "special",
+    "meaning": "n. 特使，特派人员；特刊；特色菜；专车；特价商品\nadj. 特别的；专门的，专用的",
+    "us_pron": "[ˈspeʃl]"
+  },
+  {
+    "word": "fool",
+    "meaning": "n. 傻瓜；愚人；受骗者\nvt. 欺骗，愚弄\nadj. 傻的\nvi. 欺骗；开玩笑；戏弄",
+    "us_pron": "[fuːl]"
+  },
+  {
+    "word": "kitten",
+    "meaning": "n. 小猫；小动物\nvi. 产小猫",
+    "us_pron": "[ˈkɪt(ə)n]"
+  },
+  {
+    "word": "diary",
+    "meaning": "n. 日志，日记；日记簿",
+    "us_pron": "[ˈdaɪəri]"
+  },
+  {
+    "word": "still",
+    "meaning": "conj. 仍然；但是；尽管如此\nn. 寂静；剧照；蒸馏室\nadj. 静止的，不动的；寂静的，平静的；不起泡的\nadv. 仍然；更；静止地\nvt. 蒸馏；使…静止；使…平静下来\nvi. 静止；平静；蒸馏",
+    "us_pron": "[stɪl]"
+  },
+  {
+    "word": "noise",
+    "meaning": "n. [环境] 噪音；响声；杂音\nvt. 谣传\nvi. 发出声音；大声议论",
+    "us_pron": "[nɔɪz]"
+  },
+  {
+    "word": "fur",
+    "meaning": "n. 皮，皮子；毛皮；软毛\nn. 水垢\nvt. 用毛皮覆盖；使穿毛皮服装",
+    "us_pron": "[fɜːr]"
+  },
+  {
+    "word": "open",
+    "meaning": "adj. 公开的；敞开的；空旷的；坦率的；营业着的\nvi. 开始；展现\nvt. 公开；打开\nn. 公开；空旷；户外",
+    "us_pron": "[ˈoʊpən]"
+  },
+  {
+    "word": "walk",
+    "meaning": "n. 步行，走；散步\nvi. 走，步行；散步\nvt. 散步；走过",
+    "us_pron": "[wɔːk]"
+  },
+  {
+    "word": "mine",
+    "meaning": "n. 矿，矿藏；矿山，矿井；地雷，水雷\nvt. 开采，采掘；在…布雷\nvi. 开矿，采矿；埋设地雷\npron. 我的",
+    "us_pron": "[maɪn]"
+  },
+  {
+    "word": "yours",
+    "meaning": "pron. 你（们）的东西；你的责任[义务]；你的家属；来信，尊函\nadj. 你（们）的（东西）；信末署名前用语",
+    "us_pron": "[jərz; jɔːrz; jʊrz]"
+  },
+  {
+    "word": "his",
+    "meaning": "pron. 他的",
+    "us_pron": "[hɪz; ɪz]"
+  },
+  {
+    "word": "hers",
+    "meaning": "pron. 她的（所有格）",
+    "us_pron": "[hɜːrz; ɜːrz]"
+  },
+  {
+    "word": "theirs",
+    "meaning": "pron. 他们的；她们的；它们的",
+    "us_pron": "[ðerz]"
+  },
+  {
+    "word": "ours",
+    "meaning": "pron. 我们的",
+    "us_pron": "[ˈaʊərz]"
+  },
+  {
+    "word": "climbing",
+    "meaning": "n. 攀登\nv. 爬（climb的ing形式）\nadj. 上升的；攀缘而登的",
+    "us_pron": "[ˈklaɪmɪŋ]"
+  },
+  {
+    "word": "eating",
+    "meaning": "n. 吃；食物\nv. 吃（eat的ing形式）\nadj. 侵蚀的；可生食的；进餐用的",
+    "us_pron": "[ˈiːtɪŋ]"
+  },
+  {
+    "word": "playing",
+    "meaning": "n. 比赛；演奏\nv. 玩耍（play的ing形式）",
+    "us_pron": "[ˈpleɪɪŋ]"
+  },
+  {
+    "word": "jumping",
+    "meaning": "adj. 跳跃的\nn. 障碍\nvi. 跳（jump的ing形式）",
+    "us_pron": "[ˈdʒʌmpɪŋ]"
+  },
+  {
+    "word": "drinking",
+    "meaning": "n. 喝，饮；喝酒\nv. 饮（drink的ing形式）；喝",
+    "us_pron": "[ˈdrɪŋkɪŋ]"
+  },
+  {
+    "word": "sleeping",
+    "meaning": "n. 睡眠\nadj. 睡着的",
+    "us_pron": "[ˈsliːpɪŋ]"
+  },
+  {
+    "word": "each",
+    "meaning": "adj. 每；各自的\npron. 每个；各自\nadv. 每个；各自",
+    "us_pron": "[iːtʃ]"
+  },
+  {
+    "word": "other",
+    "meaning": "adj. 其他的，另外的\npron. 另外一个",
+    "us_pron": "[ˈʌðər]"
+  },
+  {
+    "word": "each other",
+    "meaning": "pron. 彼此"
+  },
+  {
+    "word": "excited",
+    "meaning": "v. 激动；唤起（excite的过去分词）\nadj. 兴奋的；激动的；活跃的",
+    "us_pron": "[ɪkˈsaɪtɪd]"
+  },
+  {
+    "word": "like",
+    "meaning": "vt. 喜欢；想；愿意\nvi. 喜欢；希望\nprep. 像；如同\nadj. 同样的；相似的\nn. 爱好；同样的人或物\nadv. 可能\nconj. 好像",
+    "us_pron": "[laɪk]"
+  },
+  {
+    "word": "doing morning exercises",
+    "meaning": "做早操"
+  },
+  {
+    "word": "having ... class",
+    "meaning": "上...课"
+  },
+  {
+    "word": "eating lunch",
+    "meaning": "吃午饭"
+  },
+  {
+    "word": "reading a book",
+    "meaning": "读书"
+  },
+  {
+    "word": "listening to music",
+    "meaning": "听音乐"
+  },
+  {
+    "word": "keep",
+    "meaning": "vt. 保持；经营；遵守；饲养\nvi. 保持；继续不断\nn. 保持；生计；生活费",
+    "us_pron": "[kiːp]"
+  },
+  {
+    "word": "keep to the right",
+    "meaning": "na. 靠右边走；走正路"
+  },
+  {
+    "word": "keep your desk clean",
+    "meaning": "保持你的桌子整洁"
+  },
+  {
+    "word": "talk quietly",
+    "meaning": "安静地说话"
+  },
+  {
+    "word": "turn",
+    "meaning": "n. 转弯；变化；(损害或有益于别人的)行为，举动，举止\nvi. 转向；转变；转动\nvt. 转动，使旋转；转弯；翻过来；兑换",
+    "us_pron": "[tɜːrn]"
+  },
+  {
+    "word": "take turns",
+    "meaning": "na. 替换"
+  },
+  {
+    "word": "bamboo",
+    "meaning": "n. 竹，竹子\nadj. 竹制的；土著居民的\nvt. 为…装上篾条",
+    "us_pron": "[ˌbæmˈbuː]"
+  },
+  {
+    "word": "its",
+    "meaning": "pron. 它的",
+    "us_pron": "[ɪts]"
+  },
+  {
+    "word": "show",
+    "meaning": "n. 显示；表演；炫耀\nvt. 显示；说明；演出；展出\nvi. 显示；说明；指示",
+    "us_pron": "[ʃoʊ]"
+  },
+  {
+    "word": "anything",
+    "meaning": "pron. 任何事",
+    "us_pron": "[ˈeniθɪŋ]"
+  },
+  {
+    "word": "else",
+    "meaning": "adj. 别的；其他的\nadv. 其他；否则；另外",
+    "us_pron": "[els]"
+  },
+  {
+    "word": "exhibition",
+    "meaning": "n. 展览，显示；展览会；展览品",
+    "us_pron": "[ˌeksɪˈbɪʃn]"
+  },
+  {
+    "word": "say",
+    "meaning": "vt. 讲；说明；例如；声称；假设；指明\nvi. 讲；表示；念；假定；背诵",
+    "us_pron": "[seɪ]"
+  },
+  {
+    "word": "have a look",
+    "meaning": "v. 看一看"
+  },
+  {
+    "word": "sushi",
+    "meaning": "n. 寿司（生鱼片冷饭团）",
+    "us_pron": "[ˈsuːʃi]"
+  },
+  {
+    "word": "teach",
+    "meaning": "vt. 教；教授；教导\nvi. 教授；讲授；当老师",
+    "us_pron": "[tiːtʃ]"
+  },
+  {
+    "word": "sure",
+    "meaning": "adj. 确信的；可靠的；必定的\nadv. 当然；的确",
+    "us_pron": "[ʃʊr]"
+  },
+  {
+    "word": "Canadian",
+    "meaning": "n. 加拿大人\nadj. 加拿大（人）的",
+    "us_pron": "[kəˈneɪdiən]"
+  },
+  {
+    "word": "Spanish",
+    "meaning": "n. 西班牙语；西班牙人\nadj. 西班牙的；西班牙人的；西班牙语的",
+    "us_pron": "[ˈspænɪʃ]"
+  }
+]
