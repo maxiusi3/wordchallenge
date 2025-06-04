@@ -102,13 +102,43 @@ class FirebaseBattleManager {
             }
 
             console.log('🔍 开始匹配，用户信息:', this.currentUser);
+            console.log('📍 匹配池路径:', `matching/${this.currentUser.grade}`);
+
+            // 检查匹配池是否存在其他玩家
+            const matchingPoolRef = this.database.ref(`matching/${this.currentUser.grade}`);
+            const existingPlayersSnapshot = await matchingPoolRef.once('value');
+            const existingPlayers = existingPlayersSnapshot.val();
+            
+            console.log('👥 当前匹配池状态:', existingPlayers);
+            
+            if (existingPlayers) {
+                const waitingPlayers = Object.entries(existingPlayers)
+                    .filter(([id, player]) => player.status === 'waiting')
+                    .map(([id, player]) => ({ id, ...player }));
+                
+                console.log('⏳ 等待中的玩家:', waitingPlayers);
+                
+                if (waitingPlayers.length > 0) {
+                    console.log('🎯 发现等待中的玩家，尝试直接匹配');
+                }
+            }
 
             // 添加到匹配池
-            const matchingPoolRef = this.database.ref(`matching/${this.currentUser.grade}`);
             const userRef = matchingPoolRef.child(this.currentUser.id);
 
             // 设置用户数据
-            await userRef.set(this.currentUser);
+            try {
+                await userRef.set(this.currentUser);
+                console.log('✅ 成功加入匹配池');
+            } catch (error) {
+                console.error('❌ 加入匹配池失败:', error);
+                if (error.code === 'PERMISSION_DENIED') {
+                    console.log('🚫 Firebase权限被拒绝，请检查数据库安全规则');
+                    console.log('建议的安全规则: { "rules": { ".read": true, ".write": true } }');
+                }
+                this.provideAIOpponent();
+                return;
+            }
 
             // 设置断线时自动移除
             userRef.onDisconnect().remove();
@@ -119,16 +149,18 @@ class FirebaseBattleManager {
             // 监听匹配池变化
             this.matchingRef.on('child_added', this.onMatchingPoolChange);
             this.matchingRef.on('child_changed', this.onMatchingPoolChange);
+            
+            console.log('👂 开始监听匹配池变化');
 
-            // 设置匹配超时（20秒后提供AI对手）
+            // 设置匹配超时（15秒后提供AI对手，缩短等待时间）
             this.matchingTimeout = setTimeout(() => {
                 if (this.isMatching) {
                     console.log('⏰ 匹配超时，提供AI对手');
                     this.provideAIOpponent();
                 }
-            }, 20000);
+            }, 15000);
 
-            console.log('⏳ 正在匹配中，20秒后将提供AI对手...');
+            console.log('⏳ 正在匹配中，15秒后将提供AI对手...');
 
         } catch (error) {
             console.error('开始匹配失败:', error);
@@ -335,6 +367,10 @@ class FirebaseBattleManager {
         console.log('👥 房间中总玩家数:', totalPlayers);
         
         if (roomData.playerReady && totalPlayers >= 2) {
+        const totalPlayers = Object.keys(roomData.players || {}).length;
+        console.log('👥 房间中总玩家数:', totalPlayers);
+        
+        if (roomData.playerReady && totalPlayers >= 2) {
             const readyStates = roomData.playerReady;
             const playerIds = Object.keys(roomData.players || {});
             
@@ -362,6 +398,7 @@ class FirebaseBattleManager {
 
             console.log('📝 玩家准备状态详情:');
             console.log('  - 房间玩家ID列表:', playerIds);
+            console.log('  - 房间玩家ID列表:', playerIds);
             console.log('  - 准备状态对象:', readyStates);
             console.log('  - 已准备玩家数:', readyCount);
             console.log('  - 总玩家数:', totalPlayers);
@@ -379,10 +416,24 @@ class FirebaseBattleManager {
                 this.gameStarted = true;
                 console.log('🎮 所有玩家已准备，开始游戏！');
                 this.triggerEvent('allPlayersReady');
+            } else {
+                console.log('⏳ 等待条件满足，游戏暂未开始');
+                if (allReady && this.gameStarted) {
+                    console.log('  - 原因: 游戏已经开始');
+                } else if (!allReady) {
+                    console.log('  - 原因: 不是所有玩家都准备好');
+                } else if (totalPlayers < 2) {
+                    console.log('  - 原因: 玩家数量不足');
+                } else if (!allPlayersHaveReadyState) {
+                    console.log('  - 原因: 存在玩家没有准备状态记录');
+                }
             } else if (!allReady) {
                 console.log('⏳ 等待更多玩家准备...');
                 console.log('  - 未准备的玩家:', playerIds.filter(playerId => !readyStates[playerId]));
+                console.log('  - 未准备的玩家:', playerIds.filter(playerId => !readyStates[playerId]));
             }
+        } else if (totalPlayers < 2) {
+            console.log('⏳ 等待更多玩家加入房间...');
         } else if (totalPlayers < 2) {
             console.log('⏳ 等待更多玩家加入房间...');
         } else {
@@ -490,6 +541,9 @@ class FirebaseBattleManager {
         if (!this.isMatching) return;
 
         this.isMatching = false;
+        // 重置游戏状态
+        this.gameStarted = false;
+        console.log('🔄 停止匹配时重置游戏状态: gameStarted = false');
         // 重置游戏状态
         this.gameStarted = false;
         console.log('🔄 停止匹配时重置游戏状态: gameStarted = false');
