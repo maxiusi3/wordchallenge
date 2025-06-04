@@ -76,27 +76,52 @@ class FirebaseBattleManager {
      */
     async startMatching(userInfo) {
         if (this.isMatching) {
-            console.log('已在匹配中...');
+            console.log('⚠️ 已在匹配中，忽略重复请求');
             return;
         }
 
         // 重置游戏状态，确保新匹配时状态正确
         this.gameStarted = false;
+        this.lastProcessedActionId = null;
         console.log('🔄 重置游戏状态: gameStarted = false');
+
+        // 验证用户信息
+        if (!userInfo || !userInfo.grade) {
+            console.error('❌ 用户信息无效:', userInfo);
+            this.provideAIOpponent();
+            return;
+        }
 
         try {
             // 检查Firebase连接状态
             if (!this.database) {
-                console.log('❌ Firebase数据库未初始化，使用本地匹配模式');
-                this.provideAIOpponent();
-                return;
+                console.log('❌ Firebase数据库未初始化，等待初始化...');
+                
+                // 等待Firebase初始化
+                let retryCount = 0;
+                const maxRetries = 3;
+                
+                while (!this.database && retryCount < maxRetries) {
+                    console.log(`⏳ 等待Firebase初始化... (${retryCount + 1}/${maxRetries})`);
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    retryCount++;
+                }
+                
+                if (!this.database) {
+                    console.log('❌ Firebase初始化超时，使用本地匹配模式');
+                    this.provideAIOpponent();
+                    return;
+                }
             }
 
             // 测试Firebase连接
             console.log('🔍 测试Firebase连接...');
             try {
                 const testRef = this.database.ref('.info/connected');
-                const snapshot = await testRef.once('value');
+                const snapshot = await Promise.race([
+                    testRef.once('value'),
+                    new Promise((_, reject) => setTimeout(() => reject(new Error('连接测试超时')), 5000))
+                ]);
                 const connected = snapshot.val();
                 
                 if (!connected) {
@@ -120,7 +145,8 @@ class FirebaseBattleManager {
                 avatar: userInfo.avatar || '👤',
                 grade: userInfo.grade,
                 timestamp: firebase.database.ServerValue.TIMESTAMP,
-                status: 'waiting'
+                status: 'waiting',
+                joinTime: Date.now()
             };
 
             // 将用户ID存储到全局变量，供角色分配使用
@@ -133,21 +159,31 @@ class FirebaseBattleManager {
 
             // 检查匹配池是否存在其他玩家
             const matchingPoolRef = this.database.ref(`matching/${this.currentUser.grade}`);
-            const existingPlayersSnapshot = await matchingPoolRef.once('value');
-            const existingPlayers = existingPlayersSnapshot.val();
             
-            console.log('👥 当前匹配池状态:', existingPlayers);
-            
-            if (existingPlayers) {
-                const waitingPlayers = Object.entries(existingPlayers)
-                    .filter(([id, player]) => player.status === 'waiting')
-                    .map(([id, player]) => ({ id, ...player }));
+            try {
+                const existingPlayersSnapshot = await matchingPoolRef.once('value');
+                const existingPlayers = existingPlayersSnapshot.val();
                 
-                console.log('⏳ 等待中的玩家:', waitingPlayers);
+                console.log('👥 当前匹配池状态:', existingPlayers);
                 
-                if (waitingPlayers.length > 0) {
-                    console.log('🎯 发现等待中的玩家，尝试直接匹配');
+                if (existingPlayers) {
+                    const waitingPlayers = Object.entries(existingPlayers)
+                        .filter(([id, player]) => {
+                            // 检查玩家状态和时间戳，过滤掉过期的玩家
+                            const isWaiting = player.status === 'waiting';
+                            const isRecent = !player.joinTime || (Date.now() - player.joinTime < 60000); // 1分钟内
+                            return isWaiting && isRecent;
+                        })
+                        .map(([id, player]) => ({ id, ...player }));
+                    
+                    console.log('⏳ 等待中的有效玩家:', waitingPlayers);
+                    
+                    if (waitingPlayers.length > 0) {
+                        console.log('🎯 发现等待中的玩家，尝试直接匹配');
+                    }
                 }
+            } catch (error) {
+                console.error('❌ 检查匹配池失败:', error);
             }
 
             // 添加到匹配池
@@ -161,7 +197,13 @@ class FirebaseBattleManager {
                 console.error('❌ 加入匹配池失败:', error);
                 if (error.code === 'PERMISSION_DENIED') {
                     console.log('🚫 Firebase权限被拒绝，请检查数据库安全规则');
-                    console.log('建议的安全规则: { "rules": { ".read": true, ".write": true } }');
+                    console.log('💡 建议的安全规则配置:');
+                    console.log('{
+  "rules": {
+    ".read": true,
+    ".write": true
+  }
+}');
                 }
                 this.provideAIOpponent();
                 return;
@@ -179,18 +221,23 @@ class FirebaseBattleManager {
             
             console.log('👂 开始监听匹配池变化');
 
-            // 设置匹配超时（15秒后提供AI对手，缩短等待时间）
+            // 设置匹配超时（12秒后提供AI对手，缩短等待时间）
             this.matchingTimeout = setTimeout(() => {
                 if (this.isMatching) {
                     console.log('⏰ 匹配超时，提供AI对手');
                     this.provideAIOpponent();
                 }
-            }, 15000);
+            }, 12000);
 
-            console.log('⏳ 正在匹配中，15秒后将提供AI对手...');
+            console.log('⏳ 正在匹配中，12秒后将提供AI对手...');
 
         } catch (error) {
-            console.error('开始匹配失败:', error);
+            console.error('❌ 开始匹配失败:', error);
+            console.error('❌ 错误详情:', {
+                name: error.name,
+                message: error.message,
+                stack: error.stack
+            });
             this.stopMatching();
             // 回退到AI对手
             this.provideAIOpponent();
@@ -201,117 +248,170 @@ class FirebaseBattleManager {
      * 处理匹配池变化
      */
     async onMatchingPoolChange(snapshot) {
-        if (!this.isMatching) return;
+        if (!this.isMatching) {
+            console.log('🚫 不在匹配状态，忽略匹配池变化');
+            return;
+        }
 
         const userData = snapshot.val();
         const userId = snapshot.key;
 
+        console.log('📡 匹配池变化:', { userId, userData, isMatching: this.isMatching });
+
         // 忽略自己
         if (userId === this.currentUser.id) {
+            console.log('👤 检测到自己的状态变化');
             // 检查自己是否已被匹配
             if (userData && userData.status === 'matched' && userData.roomId) {
                 console.log('🎯 我已被其他玩家匹配，加入房间:', userData.roomId);
 
-                // 获取房间信息
-                const roomRef = this.database.ref(`rooms/${userData.roomId}`);
-                const roomSnapshot = await roomRef.once('value');
-                const roomData = roomSnapshot.val();
+                try {
+                    // 获取房间信息
+                    const roomRef = this.database.ref(`rooms/${userData.roomId}`);
+                    const roomSnapshot = await roomRef.once('value');
+                    const roomData = roomSnapshot.val();
 
-                if (roomData && roomData.players) {
-                    // 找到对手
-                    const opponentId = Object.keys(roomData.players).find(id => id !== this.currentUser.id);
-                    const opponent = roomData.players[opponentId];
+                    if (roomData && roomData.players) {
+                        // 找到对手
+                        const opponentId = Object.keys(roomData.players).find(id => id !== this.currentUser.id);
+                        const opponent = roomData.players[opponentId];
 
-                    if (opponent) {
-                        // 加入房间
-                        this.joinRoom(userData.roomId, opponent, userData.role);
+                        if (opponent) {
+                            console.log('👥 找到对手，准备加入房间:', opponent);
+                            // 加入房间
+                            this.joinRoom(userData.roomId, opponent, userData.role);
+                        } else {
+                            console.error('❌ 房间中未找到对手');
+                        }
+                    } else {
+                        console.error('❌ 房间数据无效或无玩家信息');
                     }
+                } catch (error) {
+                    console.error('❌ 处理被匹配状态失败:', error);
                 }
             }
             return;
         }
 
+        // 检查对手数据有效性
+        if (!userData) {
+            console.log('⚠️ 用户数据为空，可能是用户离开了匹配池');
+            return;
+        }
+
         // 检查是否是等待中的用户
-        if (userData.status !== 'waiting') return;
+        if (userData.status !== 'waiting') {
+            console.log('⏭️ 用户状态不是waiting，跳过:', userData.status);
+            return;
+        }
+
+        // 检查年级是否匹配
+        if (userData.grade !== this.currentUser.grade) {
+            console.log('📚 年级不匹配，跳过:', userData.grade, 'vs', this.currentUser.grade);
+            return;
+        }
 
         console.log('👥 发现潜在对手:', userData);
 
         try {
-            // 尝试创建房间（原子操作）
-            const roomId = 'room_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
-            const roomRef = this.database.ref(`rooms/${roomId}`);
-
-            // 使用事务确保只有一个玩家能创建房间
-            const result = await roomRef.transaction((currentData) => {
-                if (currentData === null) {
-                    // 房间不存在，创建新房间
-                    return {
-                        id: roomId,
-                        status: 'waiting_for_players',
-                        players: {
-                            [this.currentUser.id]: {
-                                ...this.currentUser,
-                                status: 'ready'
-                            },
-                            [userId]: {
-                                ...userData,
-                                status: 'pending'
-                            }
-                        },
-                        createdAt: firebase.database.ServerValue.TIMESTAMP,
-                        grade: this.currentUser.grade
-                    };
-                } else {
-                    // 房间已存在，取消事务
-                    return undefined;
-                }
-            });
-
-            if (result.committed) {
-                console.log('🏠 成功创建房间:', roomId);
-
-                // 确定性角色分配（基于用户ID排序）
-                const sortedIds = [this.currentUser.id, userId].sort();
-                const player1 = sortedIds[0];
-                const player2 = sortedIds[1];
-
-                // 第一个玩家是警察，第二个玩家是小偷
-                const roles = {
-                    [player1]: 'cop',
-                    [player2]: 'thief'
-                };
-
-                // 更新双方状态为已匹配，并包含角色信息
-                const updates = {};
-                updates[`matching/${this.currentUser.grade}/${this.currentUser.id}/status`] = 'matched';
-                updates[`matching/${this.currentUser.grade}/${this.currentUser.id}/roomId`] = roomId;
-                updates[`matching/${this.currentUser.grade}/${this.currentUser.id}/role`] = roles[this.currentUser.id];
-                updates[`matching/${this.currentUser.grade}/${userId}/status`] = 'matched';
-                updates[`matching/${this.currentUser.grade}/${userId}/roomId`] = roomId;
-                updates[`matching/${this.currentUser.grade}/${userId}/role`] = roles[userId];
-
-                await this.database.ref().update(updates);
-
-                // 在房间中设置角色信息
-                await roomRef.child('roles').set(roles);
-
-                // 初始化玩家准备状态为false
-                await roomRef.child('playerReady').set({
-                    [this.currentUser.id]: false,
-                    [userId]: false
-                });
-
-                console.log('📝 初始化房间准备状态:', {
-                    [this.currentUser.id]: false,
-                    [userId]: false
-                });
-
-                // 加入房间
-                this.joinRoom(roomId, userData, roles[this.currentUser.id]);
+            // 先检查对手是否仍在匹配池中且状态为waiting
+            const opponentRef = this.database.ref(`matching/${userData.grade}/${userId}`);
+            const opponentSnapshot = await opponentRef.once('value');
+            const currentOpponentData = opponentSnapshot.val();
+            
+            if (!currentOpponentData || currentOpponentData.status !== 'waiting') {
+                console.log('⚠️ 对手状态已变化，取消匹配尝试');
+                return;
             }
 
+            // 生成房间ID
+            const roomId = 'room_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+            console.log('🏠 尝试创建房间:', roomId);
+
+            // 确定性角色分配（基于用户ID排序，确保一致性）
+            const sortedIds = [this.currentUser.id, userId].sort();
+            const player1 = sortedIds[0];
+            const player2 = sortedIds[1];
+
+            // 第一个玩家是警察，第二个玩家是小偷
+            const roles = {
+                [player1]: 'cop',
+                [player2]: 'thief'
+            };
+
+            console.log('🎭 角色分配:', roles);
+
+            // 使用原子操作更新匹配状态
+            const updates = {};
+            updates[`matching/${this.currentUser.grade}/${this.currentUser.id}/status`] = 'matched';
+            updates[`matching/${this.currentUser.grade}/${this.currentUser.id}/roomId`] = roomId;
+            updates[`matching/${this.currentUser.grade}/${this.currentUser.id}/role`] = roles[this.currentUser.id];
+            updates[`matching/${this.currentUser.grade}/${userId}/status`] = 'matched';
+            updates[`matching/${this.currentUser.grade}/${userId}/roomId`] = roomId;
+            updates[`matching/${this.currentUser.grade}/${userId}/role`] = roles[userId];
+
+            // 创建房间数据
+            updates[`rooms/${roomId}`] = {
+                id: roomId,
+                status: 'waiting_for_players',
+                players: {
+                    [this.currentUser.id]: {
+                        ...this.currentUser,
+                        status: 'joined'
+                    },
+                    [userId]: {
+                        ...userData,
+                        status: 'joined'
+                    }
+                },
+                roles: roles,
+                playerReady: {
+                    [this.currentUser.id]: false,
+                    [userId]: false
+                },
+                createdAt: firebase.database.ServerValue.TIMESTAMP,
+                grade: this.currentUser.grade
+            };
+
+            console.log('📝 准备执行原子更新操作');
+            
+            // 执行原子更新
+            await this.database.ref().update(updates);
+            
+            console.log('✅ 匹配成功，房间创建完成:', roomId);
+            console.log('📝 房间初始化数据:', {
+                playerReady: {
+                    [this.currentUser.id]: false,
+                    [userId]: false
+                },
+                roles: roles
+            });
+
+            // 加入房间
+            this.joinRoom(roomId, userData, roles[this.currentUser.id]);
+
         } catch (error) {
-            console.error('创建房间失败:', error);
+            console.error('❌ 创建房间失败:', error);
+            console.error('❌ 错误详情:', {
+                name: error.name,
+                message: error.message,
+                code: error.code
+            });
+            
+            // 如果是权限错误，提供更详细的信息
+            if (error.code === 'PERMISSION_DENIED') {
+                console.error('🚫 Firebase权限被拒绝，请检查数据库安全规则');
+                console.log('💡 建议的安全规则配置:');
+                console.log('{
+  "rules": {
+    ".read": true,
+    ".write": true
+  }
+}');
+            }
+            
+            // 匹配失败时，可以考虑重试或提供AI对手
+            console.log('🤖 匹配失败，考虑提供AI对手');
         }
     }
 
@@ -320,10 +420,24 @@ class FirebaseBattleManager {
      */
     async joinRoom(roomId, opponent, myRole) {
         try {
+            console.log('🚪 尝试加入房间:', roomId);
+            console.log('👤 对手信息:', opponent);
+            console.log('🎭 我的角色:', myRole);
+
+            if (!roomId || !this.database) {
+                console.error('❌ 房间ID或数据库连接无效');
+                return false;
+            }
+
             this.currentRoom = roomId;
             this.roomRef = this.database.ref(`rooms/${roomId}`);
             this.myRole = myRole; // 保存我的角色
             this.gameStarted = false; // 重置游戏状态
+
+            // 设置断线时自动离开房间
+            if (this.currentUser && this.currentUser.id) {
+                this.roomRef.child(`players/${this.currentUser.id}`).onDisconnect().remove();
+            }
 
             // 停止匹配
             this.stopMatching();
@@ -355,8 +469,16 @@ class FirebaseBattleManager {
                 myRole: myRole
             });
 
+            return true;
+
         } catch (error) {
-            console.error('加入房间失败:', error);
+            console.error('❌ 加入房间失败:', error);
+            console.error('❌ 错误详情:', {
+                name: error.name,
+                message: error.message,
+                code: error.code
+            });
+            return false;
         }
     }
 
@@ -402,29 +524,13 @@ class FirebaseBattleManager {
             console.log('  - 准备状态对象完整结构:', JSON.stringify(readyStates, null, 2));
             console.log('  - 准备状态对象类型:', typeof readyStates);
             console.log('  - 准备状态对象键:', Object.keys(readyStates));
-<<<<<<< HEAD
-=======
             console.log('  - 当前用户ID:', this.currentUser?.id);
             console.log('  - 游戏已开始状态:', this.gameStarted);
->>>>>>> c924c5048b9cadc3928134863dea528f630c0bab
             
             // 逐个检查每个玩家的准备状态
             console.log('🔍 逐个检查玩家准备状态:');
             playerIds.forEach(playerId => {
                 const readyValue = readyStates[playerId];
-<<<<<<< HEAD
-                console.log(`  - 玩家 ${playerId}: ${readyValue} (类型: ${typeof readyValue})`);
-            });
-            
-            // 检查每个玩家是否都已准备
-            const allReady = playerIds.every(playerId => {
-                const isReady = readyStates[playerId] === true;
-                console.log(`  - 玩家 ${playerId} 准备检查: ${readyStates[playerId]} === true -> ${isReady}`);
-                return isReady;
-            });
-            
-            const readyCount = playerIds.filter(playerId => readyStates[playerId] === true).length;
-=======
                 const playerInfo = roomData.players[playerId];
                 console.log(`  - 玩家 ${playerId}: 准备状态=${readyValue} (类型: ${typeof readyValue}), 玩家信息:`, playerInfo);
             });
@@ -445,16 +551,12 @@ class FirebaseBattleManager {
             
             const allReady = readyPlayerIds.length === totalPlayers && notReadyPlayerIds.length === 0;
             const readyCount = readyPlayerIds.length;
->>>>>>> c924c5048b9cadc3928134863dea528f630c0bab
 
             console.log('📝 玩家准备状态详情:');
             console.log('  - 房间玩家ID列表:', playerIds);
             console.log('  - 准备状态对象:', readyStates);
-<<<<<<< HEAD
-=======
             console.log('  - 已准备玩家ID:', readyPlayerIds);
             console.log('  - 未准备玩家ID:', notReadyPlayerIds);
->>>>>>> c924c5048b9cadc3928134863dea528f630c0bab
             console.log('  - 已准备玩家数:', readyCount);
             console.log('  - 总玩家数:', totalPlayers);
             console.log('  - 全部准备:', allReady);
@@ -466,10 +568,6 @@ class FirebaseBattleManager {
             console.log('🔍 额外检查:');
             console.log('  - 所有玩家都有准备状态记录:', allPlayersHaveReadyState);
             console.log('  - 准备状态记录的玩家:', readyStateKeys);
-<<<<<<< HEAD
-
-            if (allReady && !this.gameStarted) {
-=======
             console.log('  - 准备状态键数量:', readyStateKeys.length);
             console.log('  - 玩家ID数量:', playerIds.length);
             
@@ -495,7 +593,6 @@ class FirebaseBattleManager {
             console.log('  - 可以开始游戏:', canStartGame);
 
             if (canStartGame) {
->>>>>>> c924c5048b9cadc3928134863dea528f630c0bab
                 this.gameStarted = true;
                 console.log('🎮 所有玩家已准备，开始游戏！');
                 this.triggerEvent('allPlayersReady');
@@ -668,20 +765,79 @@ class FirebaseBattleManager {
     provideAIOpponent() {
         this.stopMatching();
 
+        if (!this.currentUser) {
+            console.error('❌ 无法提供AI对手：当前用户信息不存在');
+            return;
+        }
+
         const aiOpponent = {
+            id: 'ai_' + Date.now(),
             nickname: 'AI助手',
             avatar: '🤖',
-            grade: this.currentUser?.grade || 'g3'
+            grade: this.currentUser.grade,
+            status: 'joined'
         };
 
         const roomId = 'ai_room_' + Date.now();
 
-        console.log('🤖 提供AI对手:', aiOpponent);
+        // 为AI对战分配角色（玩家总是警察，AI是小偷）
+        const roles = {
+            [this.currentUser.id]: 'cop',
+            [aiOpponent.id]: 'thief'
+        };
 
+        // 设置AI房间的基本信息
+        this.currentRoom = roomId;
+        this.myRole = roles[this.currentUser.id];
+        this.gameStarted = false;
+
+        console.log('🤖 提供AI对手:', aiOpponent);
+        console.log('🎭 AI对战角色分配:', roles);
+        console.log('🏠 AI房间ID:', roomId);
+
+        // 模拟房间状态，用于本地AI对战
+        const mockRoomData = {
+            id: roomId,
+            status: 'waiting_for_players',
+            players: {
+                [this.currentUser.id]: {
+                    ...this.currentUser,
+                    status: 'joined'
+                },
+                [aiOpponent.id]: aiOpponent
+            },
+            roles: roles,
+            playerReady: {
+                [this.currentUser.id]: false,
+                [aiOpponent.id]: false
+            },
+            isAIRoom: true,
+            createdAt: Date.now(),
+            grade: this.currentUser.grade
+        };
+
+        // 存储AI房间数据到本地（用于调试和状态管理）
+        if (typeof window !== 'undefined') {
+            window.currentAIRoom = mockRoomData;
+        }
+
+        // 触发匹配成功事件
         this.triggerEvent('matchFound', {
             opponent: aiOpponent,
-            roomId: roomId
+            roomId: roomId,
+            myRole: this.myRole,
+            isAIMatch: true
         });
+
+        // 延迟触发房间准备事件，确保UI有时间响应
+        setTimeout(() => {
+            console.log('🏠 AI房间准备完成，触发roomReady事件');
+            this.triggerEvent('roomReady', {
+                roomId: roomId,
+                myRole: this.myRole,
+                isAIMatch: true
+            });
+        }, 500);
     }
 
     /**
