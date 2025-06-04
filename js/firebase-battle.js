@@ -338,8 +338,26 @@ class FirebaseBattleManager {
             const readyStates = roomData.playerReady;
             const playerIds = Object.keys(roomData.players || {});
             
+            console.log('🔍 详细调试 - 准备状态检查开始:');
+            console.log('  - 房间玩家ID列表:', playerIds);
+            console.log('  - 准备状态对象完整结构:', JSON.stringify(readyStates, null, 2));
+            console.log('  - 准备状态对象类型:', typeof readyStates);
+            console.log('  - 准备状态对象键:', Object.keys(readyStates));
+            
+            // 逐个检查每个玩家的准备状态
+            console.log('🔍 逐个检查玩家准备状态:');
+            playerIds.forEach(playerId => {
+                const readyValue = readyStates[playerId];
+                console.log(`  - 玩家 ${playerId}: ${readyValue} (类型: ${typeof readyValue})`);
+            });
+            
             // 检查每个玩家是否都已准备
-            const allReady = playerIds.every(playerId => readyStates[playerId] === true);
+            const allReady = playerIds.every(playerId => {
+                const isReady = readyStates[playerId] === true;
+                console.log(`  - 玩家 ${playerId} 准备检查: ${readyStates[playerId]} === true -> ${isReady}`);
+                return isReady;
+            });
+            
             const readyCount = playerIds.filter(playerId => readyStates[playerId] === true).length;
 
             console.log('📝 玩家准备状态详情:');
@@ -349,6 +367,13 @@ class FirebaseBattleManager {
             console.log('  - 总玩家数:', totalPlayers);
             console.log('  - 全部准备:', allReady);
             console.log('  - 游戏已开始:', this.gameStarted);
+            
+            // 额外的安全检查
+            const readyStateKeys = Object.keys(readyStates);
+            const allPlayersHaveReadyState = playerIds.every(playerId => readyStateKeys.includes(playerId));
+            console.log('🔍 额外检查:');
+            console.log('  - 所有玩家都有准备状态记录:', allPlayersHaveReadyState);
+            console.log('  - 准备状态记录的玩家:', readyStateKeys);
 
             if (allReady && !this.gameStarted) {
                 this.gameStarted = true;
