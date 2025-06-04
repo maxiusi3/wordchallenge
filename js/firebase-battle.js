@@ -85,33 +85,6 @@ class FirebaseBattleManager {
         console.log('🔄 重置游戏状态: gameStarted = false');
 
         try {
-            // 检查Firebase连接状态
-            if (!this.database) {
-                console.log('❌ Firebase数据库未初始化，使用本地匹配模式');
-                this.provideAIOpponent();
-                return;
-            }
-
-            // 测试Firebase连接
-            console.log('🔍 测试Firebase连接...');
-            try {
-                const testRef = this.database.ref('.info/connected');
-                const snapshot = await testRef.once('value');
-                const connected = snapshot.val();
-                
-                if (!connected) {
-                    console.log('❌ Firebase连接断开，使用本地匹配模式');
-                    this.provideAIOpponent();
-                    return;
-                }
-                console.log('✅ Firebase连接正常');
-            } catch (error) {
-                console.error('❌ Firebase连接测试失败:', error);
-                console.log('🔄 回退到本地匹配模式');
-                this.provideAIOpponent();
-                return;
-            }
-
             // 生成用户ID和数据
             const userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
             this.currentUser = {
@@ -129,43 +102,13 @@ class FirebaseBattleManager {
             }
 
             console.log('🔍 开始匹配，用户信息:', this.currentUser);
-            console.log('📍 匹配池路径:', `matching/${this.currentUser.grade}`);
-
-            // 检查匹配池是否存在其他玩家
-            const matchingPoolRef = this.database.ref(`matching/${this.currentUser.grade}`);
-            const existingPlayersSnapshot = await matchingPoolRef.once('value');
-            const existingPlayers = existingPlayersSnapshot.val();
-            
-            console.log('👥 当前匹配池状态:', existingPlayers);
-            
-            if (existingPlayers) {
-                const waitingPlayers = Object.entries(existingPlayers)
-                    .filter(([id, player]) => player.status === 'waiting')
-                    .map(([id, player]) => ({ id, ...player }));
-                
-                console.log('⏳ 等待中的玩家:', waitingPlayers);
-                
-                if (waitingPlayers.length > 0) {
-                    console.log('🎯 发现等待中的玩家，尝试直接匹配');
-                }
-            }
 
             // 添加到匹配池
+            const matchingPoolRef = this.database.ref(`matching/${this.currentUser.grade}`);
             const userRef = matchingPoolRef.child(this.currentUser.id);
 
             // 设置用户数据
-            try {
-                await userRef.set(this.currentUser);
-                console.log('✅ 成功加入匹配池');
-            } catch (error) {
-                console.error('❌ 加入匹配池失败:', error);
-                if (error.code === 'PERMISSION_DENIED') {
-                    console.log('🚫 Firebase权限被拒绝，请检查数据库安全规则');
-                    console.log('建议的安全规则: { "rules": { ".read": true, ".write": true } }');
-                }
-                this.provideAIOpponent();
-                return;
-            }
+            await userRef.set(this.currentUser);
 
             // 设置断线时自动移除
             userRef.onDisconnect().remove();
@@ -176,18 +119,16 @@ class FirebaseBattleManager {
             // 监听匹配池变化
             this.matchingRef.on('child_added', this.onMatchingPoolChange);
             this.matchingRef.on('child_changed', this.onMatchingPoolChange);
-            
-            console.log('👂 开始监听匹配池变化');
 
-            // 设置匹配超时（15秒后提供AI对手，缩短等待时间）
+            // 设置匹配超时（20秒后提供AI对手）
             this.matchingTimeout = setTimeout(() => {
                 if (this.isMatching) {
                     console.log('⏰ 匹配超时，提供AI对手');
                     this.provideAIOpponent();
                 }
-            }, 15000);
+            }, 20000);
 
-            console.log('⏳ 正在匹配中，15秒后将提供AI对手...');
+            console.log('⏳ 正在匹配中，20秒后将提供AI对手...');
 
         } catch (error) {
             console.error('开始匹配失败:', error);
@@ -402,39 +343,26 @@ class FirebaseBattleManager {
             console.log('  - 准备状态对象完整结构:', JSON.stringify(readyStates, null, 2));
             console.log('  - 准备状态对象类型:', typeof readyStates);
             console.log('  - 准备状态对象键:', Object.keys(readyStates));
-            console.log('  - 当前用户ID:', this.currentUser?.id);
-            console.log('  - 游戏已开始状态:', this.gameStarted);
             
             // 逐个检查每个玩家的准备状态
             console.log('🔍 逐个检查玩家准备状态:');
             playerIds.forEach(playerId => {
                 const readyValue = readyStates[playerId];
-                const playerInfo = roomData.players[playerId];
-                console.log(`  - 玩家 ${playerId}: 准备状态=${readyValue} (类型: ${typeof readyValue}), 玩家信息:`, playerInfo);
+                console.log(`  - 玩家 ${playerId}: ${readyValue} (类型: ${typeof readyValue})`);
             });
             
-            // 检查每个玩家是否都已准备 - 使用更严格的检查
-            const readyPlayerIds = [];
-            const notReadyPlayerIds = [];
-            
-            playerIds.forEach(playerId => {
+            // 检查每个玩家是否都已准备
+            const allReady = playerIds.every(playerId => {
                 const isReady = readyStates[playerId] === true;
-                if (isReady) {
-                    readyPlayerIds.push(playerId);
-                } else {
-                    notReadyPlayerIds.push(playerId);
-                }
                 console.log(`  - 玩家 ${playerId} 准备检查: ${readyStates[playerId]} === true -> ${isReady}`);
+                return isReady;
             });
             
-            const allReady = readyPlayerIds.length === totalPlayers && notReadyPlayerIds.length === 0;
-            const readyCount = readyPlayerIds.length;
+            const readyCount = playerIds.filter(playerId => readyStates[playerId] === true).length;
 
             console.log('📝 玩家准备状态详情:');
             console.log('  - 房间玩家ID列表:', playerIds);
             console.log('  - 准备状态对象:', readyStates);
-            console.log('  - 已准备玩家ID:', readyPlayerIds);
-            console.log('  - 未准备玩家ID:', notReadyPlayerIds);
             console.log('  - 已准备玩家数:', readyCount);
             console.log('  - 总玩家数:', totalPlayers);
             console.log('  - 全部准备:', allReady);
@@ -446,45 +374,11 @@ class FirebaseBattleManager {
             console.log('🔍 额外检查:');
             console.log('  - 所有玩家都有准备状态记录:', allPlayersHaveReadyState);
             console.log('  - 准备状态记录的玩家:', readyStateKeys);
-            console.log('  - 准备状态键数量:', readyStateKeys.length);
-            console.log('  - 玩家ID数量:', playerIds.length);
-            
-            // 检查是否存在数据不一致
-            if (!allPlayersHaveReadyState) {
-                console.warn('⚠️ 警告: 存在玩家没有准备状态记录!');
-                console.warn('  - 缺少准备状态的玩家:', playerIds.filter(id => !readyStateKeys.includes(id)));
-            }
-            
-            // 强制检查 - 确保所有条件都满足
-            const canStartGame = allReady && 
-                                !this.gameStarted && 
-                                totalPlayers >= 2 && 
-                                readyCount === totalPlayers &&
-                                allPlayersHaveReadyState;
-            
-            console.log('🎯 游戏开始条件检查:');
-            console.log('  - 全部准备:', allReady);
-            console.log('  - 游戏未开始:', !this.gameStarted);
-            console.log('  - 玩家数量足够:', totalPlayers >= 2);
-            console.log('  - 准备数量匹配:', readyCount === totalPlayers);
-            console.log('  - 所有玩家有状态记录:', allPlayersHaveReadyState);
-            console.log('  - 可以开始游戏:', canStartGame);
 
-            if (canStartGame) {
+            if (allReady && !this.gameStarted) {
                 this.gameStarted = true;
                 console.log('🎮 所有玩家已准备，开始游戏！');
                 this.triggerEvent('allPlayersReady');
-            } else {
-                console.log('⏳ 等待条件满足，游戏暂未开始');
-                if (allReady && this.gameStarted) {
-                    console.log('  - 原因: 游戏已经开始');
-                } else if (!allReady) {
-                    console.log('  - 原因: 不是所有玩家都准备好');
-                } else if (totalPlayers < 2) {
-                    console.log('  - 原因: 玩家数量不足');
-                } else if (!allPlayersHaveReadyState) {
-                    console.log('  - 原因: 存在玩家没有准备状态记录');
-                }
             } else if (!allReady) {
                 console.log('⏳ 等待更多玩家准备...');
                 console.log('  - 未准备的玩家:', playerIds.filter(playerId => !readyStates[playerId]));

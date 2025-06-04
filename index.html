@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>单词闯关 v2.1.0 - 真实对战版本</title>
+    <title>单词闯关 - 真实对战版本</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="css/style.css">
     <!-- 缓存破坏脚本 -->
@@ -130,27 +130,13 @@
           await initializeBattleSystems();
 
           // 导航到欢迎页面
-          navigateTo('welcome');
-      });
+          window.location.href = 'screens/welcome.html';
 
-    </script>
-    <script>
-        // 版本信息和缓存破坏
-        const VERSION = '2.1.0-realmatch';
-        const BUILD_TIME = Date.now();
-
-        // 在控制台显示版本信息
-        console.log(`%c单词闯关游戏 v${VERSION}`, 'color: #4CAF50; font-size: 16px; font-weight: bold;');
-        console.log(`%c构建时间: ${new Date(BUILD_TIME).toLocaleString()}`, 'color: #2196F3;');
-        console.log(`%c真实跨设备对战系统已启用`, 'color: #FF9800; font-weight: bold;');
-
-        // 动态加载JS文件，强制破坏缓存
-        const script = document.createElement('script');
-        script.src = `js/main.js?v=${VERSION}&t=${BUILD_TIME}`;
-        document.head.appendChild(script);
-
-        // 版本信息由 cache-buster.js 处理
-    </script>
-    <!-- 移除Service Worker相关代码，改为纯在线游戏 -->
-</body>
-</html>
+          // 动态加载JS文件
+          const script = document.createElement('script');
+          script.src = 'js/main.js';
+          document.head.appendChild(script);
+      </script>
+      <!-- 移除Service Worker相关代码，改为纯在线游戏 -->
+  </body>
+  </html>
