@@ -46,7 +46,7 @@ class OnlineBattleClient {
                 }
 
                 // Firebase不可用，回退到本地模拟
-                console.log('🔄 Firebase不可用，使用本地模拟模式');
+                console.warn('🔄 Firebase不可用，将使用本地模拟模式。请检查控制台中是否有更早的 Firebase 初始化错误信息 (例如，来自 firebase-config.js 或 firebase-battle.js)，这些错误可能指示具体原因 (如安全规则配置、网络问题或API密钥无效)。');
                 this.useFirebase = false;
 
                 // 加载Socket.IO库
