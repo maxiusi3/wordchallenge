@@ -210,7 +210,11 @@ class FirebaseBattleManager {
             }
 
             // 设置断线时自动移除
-            userRef.onDisconnect().remove();
+            userRef.onDisconnect().remove().then(() => {
+                console.log(`[startMatching] onDisconnect handler set for user [${this.currentUser.id}] in matching pool.`);
+            }).catch((error) => {
+                console.error(`[startMatching] Error setting onDisconnect for user [${this.currentUser.id}] in matching pool:`, error);
+            });
 
             this.isMatching = true;
             this.matchingRef = matchingPoolRef;
@@ -227,9 +231,9 @@ class FirebaseBattleManager {
                     console.log('⏰ 匹配超时，提供AI对手');
                     this.provideAIOpponent();
                 }
-            }, 12000);
+            }, 20000);
 
-            console.log('⏳ 正在匹配中，12秒后将提供AI对手...');
+            console.log('⏳ 正在匹配中，20秒后将提供AI对手...');
 
         } catch (error) {
             console.error('❌ 开始匹配失败:', error);
@@ -248,186 +252,200 @@ class FirebaseBattleManager {
      * 处理匹配池变化
      */
     async onMatchingPoolChange(snapshot) {
+        console.log('[onMatchingPoolChange] Triggered.');
         if (!this.isMatching) {
-            console.log('🚫 不在匹配状态，忽略匹配池变化');
+            console.log('[onMatchingPoolChange] Not in matching state, ignoring. this.isMatching:', this.isMatching);
             return;
         }
 
         const userData = snapshot.val();
         const userId = snapshot.key;
 
-        console.log('📡 匹配池变化详情:', {
+        console.log('[onMatchingPoolChange] Details:', {
             userId,
             userData,
             isMatching: this.isMatching,
-            currentUserId: this.currentUser.id,
-            currentUserGrade: this.currentUser.grade
+            currentUserId: this.currentUser ? this.currentUser.id : 'N/A',
+            currentUserData: this.currentUser,
+            snapshotKey: snapshot.key
         });
+
+        if (!this.currentUser) {
+            console.error('[onMatchingPoolChange] Critical: this.currentUser is null. Aborting further processing.');
+            return;
+        }
 
         // 忽略自己
         if (userId === this.currentUser.id) {
-            // console.log('👤 检测到自己的状态变化，跳过处理'); // Original log, can be removed or kept if desired
-            // 检查自己是否已被匹配
+            console.log(`[onMatchingPoolChange] Detected own data change for user [${userId}]. Current status: ${userData ? userData.status : 'N/A'}.`);
+            // 检查自己是否已被匹配 by another player
             if (userData && userData.status === 'matched' && userData.roomId) {
-                console.log(`[${this.currentUser.id}] My status changed to 'matched'. Room ID: [${userData.roomId}]. Role: [${userData.role}]`);
-
+                console.log(`[onMatchingPoolChange] User [${this.currentUser.id}] status is 'matched'. Room ID: [${userData.roomId}], Role: [${userData.role}]. Attempting to join.`);
                 try {
                     // 获取房间信息
                     const roomRef = this.database.ref(`rooms/${userData.roomId}`);
                     const roomSnapshot = await roomRef.once('value');
                     const roomData = roomSnapshot.val();
+                    console.log(`[onMatchingPoolChange] Fetched room data for [${userData.roomId}]:`, roomData);
 
                     if (roomData && roomData.players) {
                         // 找到对手
                         const opponentId = Object.keys(roomData.players).find(id => id !== this.currentUser.id);
-                        const opponentDataInRoom = roomData.players[opponentId]; // Renamed for clarity
+                        const opponentDataInRoom = roomData.players[opponentId];
 
                         if (opponentDataInRoom) {
-                             console.log(`[${this.currentUser.id}] Found opponent [${opponentId}] in room [${userData.roomId}]. Preparing to join. My role: ${userData.role}`);
-                            // 加入房间
+                             console.log(`[onMatchingPoolChange] User [${this.currentUser.id}] found opponent [${opponentId}] in room [${userData.roomId}]. Preparing to join. My role: ${userData.role}`);
                             this.joinRoom(userData.roomId, opponentDataInRoom, userData.role);
                         } else {
-                            console.error(`[${this.currentUser.id}] Opponent data not found in room [${userData.roomId}].`);
+                            console.error(`[onMatchingPoolChange] User [${this.currentUser.id}] Opponent data not found in room [${userData.roomId}]. Room players:`, roomData.players);
                         }
                     } else {
-                        console.error(`[${this.currentUser.id}] Room data for [${userData.roomId}] is invalid or has no players.`);
+                        console.error(`[onMatchingPoolChange] User [${this.currentUser.id}] Room data for [${userData.roomId}] is invalid or has no players. Room data:`, roomData);
                     }
                 } catch (error) {
-                    console.error(`[${this.currentUser.id}] Error processing matched status for room [${userData.roomId}]:`, error);
+                    console.error(`[onMatchingPoolChange] User [${this.currentUser.id}] Error processing matched status for room [${userData.roomId}]:`, error);
                 }
+            } else {
+                console.log(`[onMatchingPoolChange] User [${userId}] status is not 'matched' or roomId is missing. Status: ${userData ? userData.status : 'N/A'}, RoomId: ${userData ? userData.roomId : 'N/A'}`);
             }
             return;
         }
 
+        console.log(`[onMatchingPoolChange] Processing potential opponent [${userId}]. My User ID: [${this.currentUser.id}]`);
+
         // 检查对手数据有效性
         if (!userData) {
-            console.log('⚠️ 用户数据为空，可能是用户离开了匹配池');
+            console.log(`[onMatchingPoolChange] Opponent [${userId}] data is null, possibly left matching pool. Skipping.`);
             return;
         }
 
-        console.log('🔍 检查对手状态:', {
+        console.log(`[onMatchingPoolChange] Checking opponent [${userId}] status:`, {
             opponentStatus: userData.status,
             opponentGrade: userData.grade,
             myGrade: this.currentUser.grade,
-            opponentId: userId
         });
 
         // 检查是否是等待中的用户
         if (userData.status !== 'waiting') {
-            console.log('⏭️ 用户状态不是waiting，跳过:', userData.status);
+            console.log(`[onMatchingPoolChange] Opponent [${userId}] status is not 'waiting' (it's ${userData.status}). Skipping.`);
             return;
         }
 
         // 检查年级是否匹配
         if (userData.grade !== this.currentUser.grade) {
-            console.log('📚 年级不匹配，跳过:', {
-                opponentGrade: userData.grade,
-                myGrade: this.currentUser.grade
-            });
+            console.log(`[onMatchingPoolChange] Grade mismatch. My grade: ${this.currentUser.grade}, Opponent [${userId}] grade: ${userData.grade}. Skipping.`);
             return;
         }
 
-        console.log('✅ 发现潜在对手，开始匹配流程:', {
-            opponentId: userId,
-            opponentData: userData,
-            myData: this.currentUser
-        });
+        console.log(`[onMatchingPoolChange] Potential opponent [${userId}] found. My User ID: [${this.currentUser.id}]. My Data:`, this.currentUser, `Opponent Data:`, userData);
 
-        // Introduce ID comparison logic for race condition fix
-        const potentialOpponentData = userData;
         const potentialOpponentId = userId;
+        // Re-fetch opponent's data to ensure they are still waiting
+        const opponentRef = this.database.ref(`matching/${this.currentUser.grade}/${potentialOpponentId}`);
+        let currentOpponentData;
+        try {
+            const opponentSnapshot = await opponentRef.once('value');
+            currentOpponentData = opponentSnapshot.val();
+            console.log(`[onMatchingPoolChange] Re-fetched opponent [${potentialOpponentId}] data:`, currentOpponentData);
 
+            if (!currentOpponentData || currentOpponentData.status !== 'waiting') {
+                console.log(`[onMatchingPoolChange] Opponent [${potentialOpponentId}] is no longer waiting or data is null after re-fetch. Status: ${currentOpponentData ? currentOpponentData.status : 'N/A'}. Skipping room creation.`);
+                return;
+            }
+        } catch (error) {
+            console.error(`[onMatchingPoolChange] Error re-fetching opponent [${potentialOpponentId}] data:`, error);
+            return; // Skip room creation if opponent data cannot be confirmed
+        }
+
+
+        // Race condition handling: Player with the smaller ID creates the room
         if (this.currentUser.id < potentialOpponentId) {
-            console.log(`[${this.currentUser.id}] has smaller ID than [${potentialOpponentId}]. Will attempt to create room.`);
+            console.log(`[onMatchingPoolChange] My ID [${this.currentUser.id}] is smaller than opponent's ID [${potentialOpponentId}]. I will create the room.`);
+
             try {
-                // opponentRef is already defined with potentialOpponentId from the previous patch.
-                const opponentSnapshot = await opponentRef.once('value');
-                const currentOpponentData = opponentSnapshot.val();
-
-                if (!currentOpponentData || currentOpponentData.status !== 'waiting') {
-                    console.log(`[${this.currentUser.id}] Opponent [${potentialOpponentId}] status changed or left pool. Cancelling room creation.`);
-                    return;
-                }
-
-                // 生成房间ID
+                // Room creation logic (proceeds with currentOpponentData from re-fetch)
                 const roomId = 'room_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
-                console.log(`[${this.currentUser.id}] Attempting to create room [${roomId}] with [${potentialOpponentId}].`);
+                console.log(`[onMatchingPoolChange] Attempting to create room [${roomId}] with opponent [${potentialOpponentId}].`);
 
-                // 确定性角色分配（基于用户ID排序，确保一致性）
-                const sortedIds = [this.currentUser.id, potentialOpponentId].sort(); // Use potentialOpponentId
+                const sortedIds = [this.currentUser.id, potentialOpponentId].sort();
                 const player1 = sortedIds[0];
                 const player2 = sortedIds[1];
-
-                // 第一个玩家是警察，第二个玩家是小偷
                 const roles = {
                     [player1]: 'cop',
                     [player2]: 'thief'
                 };
-                console.log(`[${this.currentUser.id}] Matched with [${potentialOpponentId}]. My role: ${roles[this.currentUser.id]}, Opponent role: ${roles[potentialOpponentId]}`);
+                console.log(`[onMatchingPoolChange] Room [${roomId}] roles assigned: Player1 (${player1}) is ${roles[player1]}, Player2 (${player2}) is ${roles[player2]}. My role: ${roles[this.currentUser.id]}`);
 
-                // 使用原子操作更新匹配状态
                 const updates = {};
                 updates[`matching/${this.currentUser.grade}/${this.currentUser.id}/status`] = 'matched';
                 updates[`matching/${this.currentUser.grade}/${this.currentUser.id}/roomId`] = roomId;
                 updates[`matching/${this.currentUser.grade}/${this.currentUser.id}/role`] = roles[this.currentUser.id];
-                updates[`matching/${potentialOpponentData.grade}/${potentialOpponentId}/status`] = 'matched'; // Use potentialOpponentData.grade and potentialOpponentId
-                updates[`matching/${potentialOpponentData.grade}/${potentialOpponentId}/roomId`] = roomId;    // Use potentialOpponentData.grade and potentialOpponentId
-                updates[`matching/${potentialOpponentData.grade}/${potentialOpponentId}/role`] = roles[potentialOpponentId]; // Use potentialOpponentData.grade and potentialOpponentId
+                updates[`matching/${currentOpponentData.grade}/${potentialOpponentId}/status`] = 'matched';
+                updates[`matching/${currentOpponentData.grade}/${potentialOpponentId}/roomId`] = roomId;
+                updates[`matching/${currentOpponentData.grade}/${potentialOpponentId}/role`] = roles[potentialOpponentId];
 
-                // 创建房间数据
                 updates[`rooms/${roomId}`] = {
                     id: roomId,
                     status: 'waiting_for_players',
                     players: {
-                        [this.currentUser.id]: {
-                            ...this.currentUser,
-                            status: 'joined'
-                        },
-                        [potentialOpponentId]: { // Use potentialOpponentId
-                            ...potentialOpponentData, // Use potentialOpponentData
-                            status: 'joined'
-                        }
+                        [this.currentUser.id]: { ...this.currentUser, status: 'joined', role: roles[this.currentUser.id] },
+                        [potentialOpponentId]: { ...currentOpponentData, status: 'joined', role: roles[potentialOpponentId] }
                     },
                     roles: roles,
                     playerReady: {
                         [this.currentUser.id]: false,
-                        [potentialOpponentId]: false // Use potentialOpponentId
+                        [potentialOpponentId]: false
                     },
                     createdAt: firebase.database.ServerValue.TIMESTAMP,
-                    grade: this.currentUser.grade
+                    grade: this.currentUser.grade,
+                    createdBy: this.currentUser.id
                 };
 
-                console.log(`[${this.currentUser.id}] Preparing atomic update for room [${roomId}].`);
+                console.log(`[onMatchingPoolChange] Preparing atomic update for room [${roomId}]. Updates object:`, JSON.stringify(updates, null, 2));
 
-                // 执行原子更新
                 await this.database.ref().update(updates);
+                console.log(`[onMatchingPoolChange] Successfully performed atomic update for room [${roomId}].`);
 
-                console.log(`[${this.currentUser.id}] Successfully created room [${roomId}] and updated statuses.`);
-                console.log(`[${this.currentUser.id}] Room [${roomId}] initialized data:`, {
-                    playerReady: {
-                        [this.currentUser.id]: false,
-                        [potentialOpponentId]: false // Use potentialOpponentId
-                    },
-                    roles: roles
-                });
+                // Verification step
+                try {
+                    const roomSnapshot = await this.database.ref(`rooms/${roomId}`).once('value');
+                    const roomDataFromDB = roomSnapshot.val();
+                    console.log(`[onMatchingPoolChange] Verification: Fetched room [${roomId}] data from DB:`, roomDataFromDB);
+                    if (roomDataFromDB && roomDataFromDB.id === roomId && roomDataFromDB.players[this.currentUser.id] && roomDataFromDB.players[potentialOpponentId]) {
+                        console.log(`[onMatchingPoolChange] Verification successful for room [${roomId}]. Players and room ID match.`);
+                    } else {
+                        console.warn(`[onMatchingPoolChange] Verification failed or data mismatch for room [${roomId}]. DB data:`, roomDataFromDB, "Expected players:", this.currentUser.id, potentialOpponentId);
+                    }
 
-                // 加入房间
-                this.joinRoom(roomId, potentialOpponentData, roles[this.currentUser.id]); // Use potentialOpponentData
+                    const player1StatusSnapshot = await this.database.ref(`matching/${this.currentUser.grade}/${this.currentUser.id}/status`).once('value');
+                    const player1RoomIdSnapshot = await this.database.ref(`matching/${this.currentUser.grade}/${this.currentUser.id}/roomId`).once('value');
+                    console.log(`[onMatchingPoolChange] Verification: My matching status: ${player1StatusSnapshot.val()}, roomId: ${player1RoomIdSnapshot.val()}`);
+
+                    const player2StatusSnapshot = await this.database.ref(`matching/${currentOpponentData.grade}/${potentialOpponentId}/status`).once('value');
+                    const player2RoomIdSnapshot = await this.database.ref(`matching/${currentOpponentData.grade}/${potentialOpponentId}/roomId`).once('value');
+                    console.log(`[onMatchingPoolChange] Verification: Opponent [${potentialOpponentId}] matching status: ${player2StatusSnapshot.val()}, roomId: ${player2RoomIdSnapshot.val()}`);
+
+                } catch (verifyError) {
+                    console.error(`[onMatchingPoolChange] Error during verification for room [${roomId}]:`, verifyError);
+                }
+
+                this.joinRoom(roomId, currentOpponentData, roles[this.currentUser.id]);
 
             } catch (error) {
-                console.error(`[${this.currentUser.id}] Error creating room with [${potentialOpponentId}]:`, error);
-                // If room creation fails, it's possible the other player succeeded or an error occurred.
-                // Let the logic in the (userId === this.currentUser.id) block handle potential joins.
+                console.error(`[onMatchingPoolChange] Error creating room [${roomId}] with opponent [${potentialOpponentId}]:`, error);
+                // Reset my status if room creation failed significantly, to allow rematching.
+                // However, if the opponent created the room, the (userId === this.currentUser.id) block should handle it.
+                // Consider more sophisticated error handling here.
+                 console.log(`[onMatchingPoolChange] Potentially resetting my status due to room creation error. My User ID: [${this.currentUser.id}]`);
+                 // this.database.ref(`matching/${this.currentUser.grade}/${this.currentUser.id}`).update({ status: 'waiting', roomId: null, role: null });
             }
         } else if (this.currentUser.id > potentialOpponentId) {
-            console.log(`[${this.currentUser.id}] has larger ID than [${potentialOpponentId}]. Waiting for them to create room.`);
-            // This player does nothing; waits for their status to be changed by the other player.
-            // The existing (userId === this.currentUser.id) block will handle their room join.
-            return;
+            console.log(`[onMatchingPoolChange] My ID [${this.currentUser.id}] is larger than opponent's ID [${potentialOpponentId}]. I will wait for them to create the room.`);
+            // This player does nothing; waits for their status to be changed to 'matched' by the other player.
+            // The (userId === this.currentUser.id) block will handle their room join when their status changes.
         } else {
             // IDs are identical? This should not happen if IDs are generated to be unique.
-            console.error(`[${this.currentUser.id}] Error: Current user ID is identical to opponent ID [${potentialOpponentId}]. This should not happen.`);
-            return;
+            console.error(`[onMatchingPoolChange] Critical Error: My ID [${this.currentUser.id}] is identical to opponent's ID [${potentialOpponentId}]. This should not occur.`);
         }
     }
 
@@ -436,35 +454,61 @@ class FirebaseBattleManager {
      */
     async joinRoom(roomId, opponent, myRole) {
         try {
-            console.log(`[${this.currentUser.id}] Attempting to join room [${roomId}]. Opponent:`, opponent, `My role: ${myRole}`);
+            console.log(`[joinRoom] User [${this.currentUser ? this.currentUser.id : 'N/A'}] attempting to join room [${roomId}]. Opponent:`, opponent, `My role: ${myRole}`);
 
-            if (!roomId || !this.database) {
-                console.error(`[${this.currentUser.id}] Cannot join room: Room ID or database connection is invalid.`);
+            if (!roomId) {
+                console.error(`[joinRoom] Failed to join room: Room ID is null or undefined. User: [${this.currentUser ? this.currentUser.id : 'N/A'}]`);
+                this.triggerEvent('joinRoomFailed', { error: 'Room ID is invalid' });
+                return false;
+            }
+            if (!this.database) {
+                console.error(`[joinRoom] Failed to join room [${roomId}]: Firebase database connection is not available. User: [${this.currentUser ? this.currentUser.id : 'N/A'}]`);
+                this.triggerEvent('joinRoomFailed', { roomId, error: 'Database connection unavailable' });
+                return false;
+            }
+            if (!this.currentUser || !this.currentUser.id) {
+                console.error(`[joinRoom] Failed to join room [${roomId}]: Current user or user ID is missing. User:`, this.currentUser);
+                this.triggerEvent('joinRoomFailed', { roomId, error: 'Current user data is missing' });
                 return false;
             }
 
+
             this.currentRoom = roomId;
+            console.log(`[joinRoom] Setting this.roomRef for room [${roomId}]. User: [${this.currentUser.id}]`);
             this.roomRef = this.database.ref(`rooms/${roomId}`);
-            this.myRole = myRole; // 保存我的角色
-            this.gameStarted = false; // 重置游戏状态
+            this.myRole = myRole;
+            this.gameStarted = false;
+            console.log(`[joinRoom] User [${this.currentUser.id}] basic room properties set: currentRoom=${this.currentRoom}, myRole=${this.myRole}, gameStarted=${this.gameStarted}`);
 
             // 设置断线时自动离开房间
             if (this.currentUser && this.currentUser.id) {
-                this.roomRef.child(`players/${this.currentUser.id}`).onDisconnect().remove();
+                this.roomRef.child(`players/${this.currentUser.id}`).onDisconnect().remove().then(() => {
+                    console.log(`[joinRoom] onDisconnect handler set for user [${this.currentUser.id}] in room [${roomId}]. Path: rooms/${roomId}/players/${this.currentUser.id}`);
+                }).catch((error) => {
+                    console.error(`[joinRoom] Error setting onDisconnect for user [${this.currentUser.id}] in room [${roomId}]. Path: rooms/${roomId}/players/${this.currentUser.id}:`, error);
+                });
+            } else {
+                // This case should ideally be caught by earlier checks, but included for robustness
+                console.warn(`[joinRoom] Cannot set onDisconnect for room [${roomId}] because currentUser or currentUser.id is missing at the point of setting onDisconnect. CurrentUser:`, this.currentUser);
             }
 
             // 停止匹配
-            this.stopMatching();
+            this.stopMatching(); // This also logs internally if verbose enough
 
             // 监听房间状态
-            this.roomRef.on('value', this.onRoomUpdate.bind(this));
+            console.log(`[joinRoom] Attaching 'value' listener to roomRef for room [${roomId}]. User: [${this.currentUser.id}]`);
+            this.roomRef.on('value', this.onRoomUpdate.bind(this), (error) => {
+                console.error(`[joinRoom] Firebase failed to attach 'value' listener to room [${roomId}]. User: [${this.currentUser.id}]. Error:`, error);
+                this.triggerEvent('joinRoomFailed', { roomId, error: 'Failed to attach room listener', details: error });
+                // Consider further cleanup or retry logic here
+            });
 
-            console.log(`[${this.currentUser.id}] Successfully joined room [${roomId}]. Opponent:`, opponent, `My role: ${myRole}`);
-            console.log(`[${this.currentUser.id}] Room join complete for [${roomId}], listening for updates.`);
+            console.log(`[joinRoom] User [${this.currentUser.id}] successfully joined room [${roomId}]. Opponent:`, opponent, `My role: ${myRole}`);
+            console.log(`[joinRoom] Room join complete for [${roomId}], listening for updates. User: [${this.currentUser.id}]`);
 
             // 等待房间监听完全建立后再触发事件
             setTimeout(() => {
-                console.log(`[${this.currentUser.id}] Room listener for [${roomId}] established. Triggering roomReady.`);
+                console.log(`[joinRoom] Room listener for [${roomId}] likely established. Triggering roomReady. User: [${this.currentUser.id}]`);
                 this.triggerEvent('roomReady', {
                     roomId: roomId,
                     myRole: myRole
@@ -472,12 +516,13 @@ class FirebaseBattleManager {
             }, 500);
 
             // 通知匹配成功，包含角色信息
+            console.log(`[joinRoom] Triggering 'matchFound' event for room [${roomId}]. User: [${this.currentUser.id}]`);
             this.triggerEvent('matchFound', {
                 opponent: {
                     nickname: opponent.nickname,
                     avatar: opponent.avatar,
                     grade: opponent.grade,
-                    id: opponent.id // Ensure opponent ID is passed correctly
+                    id: opponent.id
                 },
                 roomId: roomId,
                 myRole: myRole
@@ -486,12 +531,14 @@ class FirebaseBattleManager {
             return true;
 
         } catch (error) {
-            console.error(`[${this.currentUser.id}] Failed to join room [${roomId}]:`, error);
-            console.error('❌ 错误详情:', { // General error for joinRoom failures, specific error was in onMatchingPoolChange
+            console.error(`[joinRoom] User [${this.currentUser ? this.currentUser.id : 'N/A'}] failed to join room [${roomId}]. Error:`, error);
+            console.error('[joinRoom] Error details:', {
                 name: error.name,
                 message: error.message,
-                code: error.code
+                code: error.code, // Firebase specific error code
+                stack: error.stack
             });
+            this.triggerEvent('joinRoomFailed', { roomId, error: 'Exception during joinRoom', details: error.message });
             return false;
         }
     }

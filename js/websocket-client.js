@@ -203,6 +203,12 @@ class OnlineBattleClient {
                 });
             }
         });
+
+        // 监听Firebase加入房间失败事件
+        window.firebaseBattle.on('joinRoomFailed', (data) => {
+            console.error('🔥 Firebase joinRoomFailed event received by wsClient:', data);
+            this.triggerEvent('matchingError', { message: '加入房间失败: ' + (data.error || '未知错误'), details: data.details });
+        });
     }
 
     /**
@@ -222,7 +228,7 @@ class OnlineBattleClient {
     /**
      * 加入匹配队列
      */
-    joinMatching(grade) {
+    async joinMatching(grade) {
         if (this.useFirebase && window.firebaseBattle) {
             // 使用Firebase匹配系统
             const userInfo = {
@@ -230,8 +236,19 @@ class OnlineBattleClient {
                 avatar: this.playerInfo?.avatar || '👤',
                 grade: grade
             };
-            return window.firebaseBattle.startMatching(userInfo);
+            try {
+                console.log('[wsClient.joinMatching] Attempting to start Firebase matching with userInfo:', userInfo);
+                await window.firebaseBattle.startMatching(userInfo);
+                console.log('[wsClient.joinMatching] firebaseBattle.startMatching successfully initiated.');
+                return true; // Indicate success or handle promise if startMatching returns one
+            } catch (error) {
+                console.error('[wsClient.joinMatching] Error calling firebaseBattle.startMatching:', error);
+                // Propagate a more generic error or the specific one
+                throw new Error('Firebase matching initiation failed: ' + error.message);
+            }
         } else {
+            // Fallback to non-Firebase matching
+            console.log('[wsClient.joinMatching] Using non-Firebase matching for grade:', grade);
             return this.emit('joinMatching', { grade: grade });
         }
     }
@@ -385,17 +402,48 @@ class OnlineBattleClient {
      * 触发事件（用于模拟）
      */
     triggerEvent(event, data) {
-        if (this.eventListeners && this.eventListeners.has(event)) {
+        console.log(`[wsClient] Triggering event: ${event}`, data);
+        // Option 1: Using postMessage for broader communication (e.g., to an iframe parent)
+        if (window.parent) {
+            window.parent.postMessage({ action: 'wsClientEvent', eventName: event, eventData: data }, '*');
+        }
+        // Option 2: Internal message handlers (if you have a system for this in wsClient)
+        // This part is already similar to the existing triggerEvent for mock responses,
+        // but we ensure it's generalized for any event triggered by wsClient.
+        if (this.messageHandlers.has(event)) {
+            this.messageHandlers.get(event).forEach(handler => {
+                try {
+                    handler(data);
+                } catch (e) {
+                    console.error(`[wsClient] Error in '${event}' event handler:`, e);
+                }
+            });
+        }
+        // For mock/local P2P, the existing this.eventListeners handles this.
+        // We might want to consolidate this.eventListeners and this.messageHandlers
+        // or ensure this new triggerEvent correctly uses this.messageHandlers.
+        // The provided snippet for `triggerEvent` in the prompt uses `this.messageHandlers`,
+        // which is appropriate for wsClient's internal eventing beyond just mock responses.
+        // The existing `triggerEvent` in the file uses `this.eventListeners` which seems to be
+        // specifically for the mock Socket.IO interface.
+        // For clarity, let's assume this new `triggerEvent` is for external notifications
+        // and internal handling via `this.messageHandlers`.
+        // If the original `triggerEvent` was purely for the mock socket, it can remain as is,
+        // or this new one can supersede it if `this.messageHandlers` becomes the standard.
+        // Given the context, this new `triggerEvent` is intended to be more general.
+        // The existing one is fine for the mock socket, let's ensure this one uses messageHandlers.
+        if (this.eventListeners && this.eventListeners.has(event) && !this.useFirebase) { // Only use for mock
             const listeners = this.eventListeners.get(event);
             listeners.forEach(listener => {
                 try {
                     listener(data);
                 } catch (error) {
-                    console.error('事件监听器执行错误:', error);
+                    console.error(`[wsClient] Error in mock event listener for '${event}':`, error);
                 }
             });
         }
     }
+
 
     /**
      * 连接建立
