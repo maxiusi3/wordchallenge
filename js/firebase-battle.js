@@ -266,10 +266,10 @@ class FirebaseBattleManager {
 
         // 忽略自己
         if (userId === this.currentUser.id) {
-            console.log('👤 检测到自己的状态变化，跳过处理');
+            // console.log('👤 检测到自己的状态变化，跳过处理'); // Original log, can be removed or kept if desired
             // 检查自己是否已被匹配
             if (userData && userData.status === 'matched' && userData.roomId) {
-                console.log('🎯 我已被其他玩家匹配，加入房间:', userData.roomId);
+                console.log(`[${this.currentUser.id}] My status changed to 'matched'. Room ID: [${userData.roomId}]. Role: [${userData.role}]`);
 
                 try {
                     // 获取房间信息
@@ -280,20 +280,20 @@ class FirebaseBattleManager {
                     if (roomData && roomData.players) {
                         // 找到对手
                         const opponentId = Object.keys(roomData.players).find(id => id !== this.currentUser.id);
-                        const opponent = roomData.players[opponentId];
+                        const opponentDataInRoom = roomData.players[opponentId]; // Renamed for clarity
 
-                        if (opponent) {
-                            console.log('👥 找到对手，准备加入房间:', opponent);
+                        if (opponentDataInRoom) {
+                             console.log(`[${this.currentUser.id}] Found opponent [${opponentId}] in room [${userData.roomId}]. Preparing to join. My role: ${userData.role}`);
                             // 加入房间
-                            this.joinRoom(userData.roomId, opponent, userData.role);
+                            this.joinRoom(userData.roomId, opponentDataInRoom, userData.role);
                         } else {
-                            console.error('❌ 房间中未找到对手');
+                            console.error(`[${this.currentUser.id}] Opponent data not found in room [${userData.roomId}].`);
                         }
                     } else {
-                        console.error('❌ 房间数据无效或无玩家信息');
+                        console.error(`[${this.currentUser.id}] Room data for [${userData.roomId}] is invalid or has no players.`);
                     }
                 } catch (error) {
-                    console.error('❌ 处理被匹配状态失败:', error);
+                    console.error(`[${this.currentUser.id}] Error processing matched status for room [${userData.roomId}]:`, error);
                 }
             }
             return;
@@ -333,105 +333,101 @@ class FirebaseBattleManager {
             myData: this.currentUser
         });
 
-        try {
-            // 先检查对手是否仍在匹配池中且状态为waiting
-            const opponentRef = this.database.ref(`matching/${userData.grade}/${userId}`);
-            const opponentSnapshot = await opponentRef.once('value');
-            const currentOpponentData = opponentSnapshot.val();
-            
-            if (!currentOpponentData || currentOpponentData.status !== 'waiting') {
-                console.log('⚠️ 对手状态已变化，取消匹配尝试');
-                return;
-            }
+        // Introduce ID comparison logic for race condition fix
+        const potentialOpponentData = userData;
+        const potentialOpponentId = userId;
 
-            // 生成房间ID
-            const roomId = 'room_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
-            console.log('🏠 尝试创建房间:', roomId);
+        if (this.currentUser.id < potentialOpponentId) {
+            console.log(`[${this.currentUser.id}] has smaller ID than [${potentialOpponentId}]. Will attempt to create room.`);
+            try {
+                // opponentRef is already defined with potentialOpponentId from the previous patch.
+                const opponentSnapshot = await opponentRef.once('value');
+                const currentOpponentData = opponentSnapshot.val();
 
-            // 确定性角色分配（基于用户ID排序，确保一致性）
-            const sortedIds = [this.currentUser.id, userId].sort();
-            const player1 = sortedIds[0];
-            const player2 = sortedIds[1];
+                if (!currentOpponentData || currentOpponentData.status !== 'waiting') {
+                    console.log(`[${this.currentUser.id}] Opponent [${potentialOpponentId}] status changed or left pool. Cancelling room creation.`);
+                    return;
+                }
 
-            // 第一个玩家是警察，第二个玩家是小偷
-            const roles = {
-                [player1]: 'cop',
-                [player2]: 'thief'
-            };
+                // 生成房间ID
+                const roomId = 'room_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6);
+                console.log(`[${this.currentUser.id}] Attempting to create room [${roomId}] with [${potentialOpponentId}].`);
 
-            console.log('🎭 角色分配:', roles);
+                // 确定性角色分配（基于用户ID排序，确保一致性）
+                const sortedIds = [this.currentUser.id, potentialOpponentId].sort(); // Use potentialOpponentId
+                const player1 = sortedIds[0];
+                const player2 = sortedIds[1];
 
-            // 使用原子操作更新匹配状态
-            const updates = {};
-            updates[`matching/${this.currentUser.grade}/${this.currentUser.id}/status`] = 'matched';
-            updates[`matching/${this.currentUser.grade}/${this.currentUser.id}/roomId`] = roomId;
-            updates[`matching/${this.currentUser.grade}/${this.currentUser.id}/role`] = roles[this.currentUser.id];
-            updates[`matching/${this.currentUser.grade}/${userId}/status`] = 'matched';
-            updates[`matching/${this.currentUser.grade}/${userId}/roomId`] = roomId;
-            updates[`matching/${this.currentUser.grade}/${userId}/role`] = roles[userId];
+                // 第一个玩家是警察，第二个玩家是小偷
+                const roles = {
+                    [player1]: 'cop',
+                    [player2]: 'thief'
+                };
+                console.log(`[${this.currentUser.id}] Matched with [${potentialOpponentId}]. My role: ${roles[this.currentUser.id]}, Opponent role: ${roles[potentialOpponentId]}`);
 
-            // 创建房间数据
-            updates[`rooms/${roomId}`] = {
-                id: roomId,
-                status: 'waiting_for_players',
-                players: {
-                    [this.currentUser.id]: {
-                        ...this.currentUser,
-                        status: 'joined'
+                // 使用原子操作更新匹配状态
+                const updates = {};
+                updates[`matching/${this.currentUser.grade}/${this.currentUser.id}/status`] = 'matched';
+                updates[`matching/${this.currentUser.grade}/${this.currentUser.id}/roomId`] = roomId;
+                updates[`matching/${this.currentUser.grade}/${this.currentUser.id}/role`] = roles[this.currentUser.id];
+                updates[`matching/${potentialOpponentData.grade}/${potentialOpponentId}/status`] = 'matched'; // Use potentialOpponentData.grade and potentialOpponentId
+                updates[`matching/${potentialOpponentData.grade}/${potentialOpponentId}/roomId`] = roomId;    // Use potentialOpponentData.grade and potentialOpponentId
+                updates[`matching/${potentialOpponentData.grade}/${potentialOpponentId}/role`] = roles[potentialOpponentId]; // Use potentialOpponentData.grade and potentialOpponentId
+
+                // 创建房间数据
+                updates[`rooms/${roomId}`] = {
+                    id: roomId,
+                    status: 'waiting_for_players',
+                    players: {
+                        [this.currentUser.id]: {
+                            ...this.currentUser,
+                            status: 'joined'
+                        },
+                        [potentialOpponentId]: { // Use potentialOpponentId
+                            ...potentialOpponentData, // Use potentialOpponentData
+                            status: 'joined'
+                        }
                     },
-                    [userId]: {
-                        ...userData,
-                        status: 'joined'
-                    }
-                },
-                roles: roles,
-                playerReady: {
-                    [this.currentUser.id]: false,
-                    [userId]: false
-                },
-                createdAt: firebase.database.ServerValue.TIMESTAMP,
-                grade: this.currentUser.grade
-            };
+                    roles: roles,
+                    playerReady: {
+                        [this.currentUser.id]: false,
+                        [potentialOpponentId]: false // Use potentialOpponentId
+                    },
+                    createdAt: firebase.database.ServerValue.TIMESTAMP,
+                    grade: this.currentUser.grade
+                };
 
-            console.log('📝 准备执行原子更新操作');
-            
-            // 执行原子更新
-            await this.database.ref().update(updates);
-            
-            console.log('✅ 匹配成功，房间创建完成:', roomId);
-            console.log('📝 房间初始化数据:', {
-                playerReady: {
-                    [this.currentUser.id]: false,
-                    [userId]: false
-                },
-                roles: roles
-            });
+                console.log(`[${this.currentUser.id}] Preparing atomic update for room [${roomId}].`);
 
-            // 加入房间
-            this.joinRoom(roomId, userData, roles[this.currentUser.id]);
+                // 执行原子更新
+                await this.database.ref().update(updates);
 
-        } catch (error) {
-            console.error('❌ 创建房间失败:', error);
-            console.error('❌ 错误详情:', {
-                name: error.name,
-                message: error.message,
-                code: error.code
-            });
-            
-            // 如果是权限错误，提供更详细的信息
-            if (error.code === 'PERMISSION_DENIED') {
-                console.error('🚫 Firebase权限被拒绝，请检查数据库安全规则');
-                console.log('💡 建议的安全规则配置:');
-                console.log(`{
-  "rules": {
-    ".read": true,
-    ".write": true
-  }
-}`);
+                console.log(`[${this.currentUser.id}] Successfully created room [${roomId}] and updated statuses.`);
+                console.log(`[${this.currentUser.id}] Room [${roomId}] initialized data:`, {
+                    playerReady: {
+                        [this.currentUser.id]: false,
+                        [potentialOpponentId]: false // Use potentialOpponentId
+                    },
+                    roles: roles
+                });
+
+                // 加入房间
+                this.joinRoom(roomId, potentialOpponentData, roles[this.currentUser.id]); // Use potentialOpponentData
+
+            } catch (error) {
+                console.error(`[${this.currentUser.id}] Error creating room with [${potentialOpponentId}]:`, error);
+                // If room creation fails, it's possible the other player succeeded or an error occurred.
+                // Let the logic in the (userId === this.currentUser.id) block handle potential joins.
             }
-            
-            // 匹配失败时，可以考虑重试或提供AI对手
-            console.log('🤖 匹配失败，考虑提供AI对手');
+        } else if (this.currentUser.id > potentialOpponentId) {
+            console.log(`[${this.currentUser.id}] has larger ID than [${potentialOpponentId}]. Waiting for them to create room.`);
+            // This player does nothing; waits for their status to be changed by the other player.
+            // The existing (userId === this.currentUser.id) block will handle their room join.
+            return;
+        } else {
+            // IDs are identical? This should not happen if IDs are generated to be unique.
+            console.error(`[${this.currentUser.id}] Error: Current user ID is identical to opponent ID [${potentialOpponentId}]. This should not happen.`);
+            return;
         }
     }
 
@@ -440,12 +436,10 @@ class FirebaseBattleManager {
      */
     async joinRoom(roomId, opponent, myRole) {
         try {
-            console.log('🚪 尝试加入房间:', roomId);
-            console.log('👤 对手信息:', opponent);
-            console.log('🎭 我的角色:', myRole);
+            console.log(`[${this.currentUser.id}] Attempting to join room [${roomId}]. Opponent:`, opponent, `My role: ${myRole}`);
 
             if (!roomId || !this.database) {
-                console.error('❌ 房间ID或数据库连接无效');
+                console.error(`[${this.currentUser.id}] Cannot join room: Room ID or database connection is invalid.`);
                 return false;
             }
 
@@ -465,12 +459,12 @@ class FirebaseBattleManager {
             // 监听房间状态
             this.roomRef.on('value', this.onRoomUpdate.bind(this));
 
-            console.log('🎯 匹配成功！对手:', opponent, '我的角色:', myRole);
-            console.log('🔍 房间加入完成，开始监听状态变化');
+            console.log(`[${this.currentUser.id}] Successfully joined room [${roomId}]. Opponent:`, opponent, `My role: ${myRole}`);
+            console.log(`[${this.currentUser.id}] Room join complete for [${roomId}], listening for updates.`);
 
             // 等待房间监听完全建立后再触发事件
             setTimeout(() => {
-                console.log('🏠 房间监听已建立，触发roomReady事件');
+                console.log(`[${this.currentUser.id}] Room listener for [${roomId}] established. Triggering roomReady.`);
                 this.triggerEvent('roomReady', {
                     roomId: roomId,
                     myRole: myRole
@@ -483,7 +477,7 @@ class FirebaseBattleManager {
                     nickname: opponent.nickname,
                     avatar: opponent.avatar,
                     grade: opponent.grade,
-                    id: opponent.id
+                    id: opponent.id // Ensure opponent ID is passed correctly
                 },
                 roomId: roomId,
                 myRole: myRole
@@ -492,8 +486,8 @@ class FirebaseBattleManager {
             return true;
 
         } catch (error) {
-            console.error('❌ 加入房间失败:', error);
-            console.error('❌ 错误详情:', {
+            console.error(`[${this.currentUser.id}] Failed to join room [${roomId}]:`, error);
+            console.error('❌ 错误详情:', { // General error for joinRoom failures, specific error was in onMatchingPoolChange
                 name: error.name,
                 message: error.message,
                 code: error.code
