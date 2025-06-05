@@ -70,7 +70,7 @@
     </div>
 
     <script>
-        const matchingStatus = document.getElementById('matchingStatus');
+        const matchingStatusElement = document.getElementById('matchingStatus'); // Renamed for clarity
         const waitTimeElement = document.getElementById('waitTime');
         const cancelButton = document.getElementById('cancelButton');
         const playerNickname = document.getElementById('playerNickname');
@@ -98,36 +98,52 @@
 
                 // 连接WebSocket并注册用户
                 initializeWebSocket(userInfo);
+            } else {
+                console.error('[matching.html] battleUserInfo not found on parent.');
+                showErrorState('玩家信息加载失败，请刷新。');
             }
+        }
+
+        function showErrorState(message) {
+            console.error('Matching Error UI Update:', message);
+            // const matchingStatusElement = document.getElementById('matchingStatus'); // Already defined globally
+            if (matchingStatusElement) {
+                matchingStatusElement.textContent = message;
+                matchingStatusElement.style.color = '#ffcccc'; // A light red color
+                matchingStatusElement.classList.remove('pulse');
+            }
+            // Optionally, you might want to hide the spinner or change other UI elements
+            const spinner = document.querySelector('.spinner');
+            if (spinner) spinner.style.display = 'none';
         }
 
         // 初始化WebSocket连接
         async function initializeWebSocket(userInfo) {
+            if (!window.parent || !window.parent.wsClient) {
+                console.error('[matching.html] Critical: wsClient is not available on parent.');
+                showErrorState('匹配客户端初始化失败，请刷新页面重试。');
+                return;
+            }
+            const wsClient = window.parent.wsClient;
+
             try {
-                // 连接WebSocket服务器
-                if (window.parent && window.parent.wsClient) {
-                    const wsClient = window.parent.wsClient;
-
-                    // 如果未连接，先连接
-                    if (!wsClient.isConnected) {
-                        await wsClient.connect();
-                    }
-
-                    // 注册用户
-                    wsClient.register(userInfo);
-
-                    // 加入匹配队列
-                    wsClient.joinMatching(userInfo.grade);
-
-                    console.log('已加入匹配队列:', userInfo.grade);
-                } else {
-                    console.error('WebSocket客户端不可用');
-                    // 降级到模拟匹配
-                    console.log('使用模拟匹配模式');
+                if (!wsClient.isConnected) {
+                    console.log('[matching.html] wsClient not connected, calling connect...');
+                    await wsClient.connect(); // Assuming connect is async
+                    console.log('[matching.html] wsClient.connect() completed.');
                 }
+
+                console.log('[matching.html] Registering user with wsClient:', userInfo);
+                // Assuming register is synchronous or fire-and-forget. If it can fail meaningfully, it should be async.
+                wsClient.register(userInfo);
+
+                console.log('[matching.html] Calling wsClient.joinMatching with grade:', userInfo.grade);
+                await wsClient.joinMatching(userInfo.grade); // joinMatching is now async and can throw
+                console.log('[matching.html] Successfully initiated joinMatching.');
+
             } catch (error) {
-                console.error('WebSocket连接失败，使用模拟匹配:', error);
-                // 降级到模拟匹配
+                console.error('[matching.html] Error during WebSocket initialization or joining match queue:', error);
+                showErrorState('匹配服务出错: ' + error.message);
             }
         }
 
@@ -140,18 +156,20 @@
                 waitTimeElement.textContent = waitTime;
 
                 // 根据等待时间更新状态文字
+                if (matchingStatusElement.style.color === 'rgb(255, 204, 204)') return; // Don't update if in error state
+
                 if (waitTime === 30) {
-                    matchingStatus.textContent = statusMessages[2]; // 扩大匹配范围
+                    matchingStatusElement.textContent = statusMessages[2]; // 扩大匹配范围
                 } else if (waitTime === 60) {
-                    matchingStatus.textContent = statusMessages[3]; // 继续寻找
+                    matchingStatusElement.textContent = statusMessages[3]; // 继续寻找
                 } else if (waitTime % 10 === 0 && waitTime < 30) {
                     // 每10秒切换一次状态文字
                     const index = Math.floor(waitTime / 10) % 2;
-                    matchingStatus.textContent = statusMessages[index];
+                    matchingStatusElement.textContent = statusMessages[index];
                 }
 
-                // 模拟匹配成功 (备用机制)
-                if (waitTime >= 15 && Math.random() < 0.1) {
+                // 模拟匹配成功 (备用机制) - only if not in error state
+                if (waitTime >= 15 && Math.random() < 0.1 && matchingStatusElement.style.color !== 'rgb(255, 204, 204)') {
                     simulateMatchFound();
                 }
             }, 1000);
@@ -160,6 +178,9 @@
         // 模拟匹配成功 (备用机制)
         function simulateMatchFound() {
             if (!isMatching) return;
+            // Prevent simulation if a real error is already displayed
+            if (matchingStatusElement.style.color === 'rgb(255, 204, 204)') return;
+
 
             isMatching = false;
             clearInterval(matchingTimer);
@@ -261,6 +282,9 @@
                 if (window.parent && window.parent.postMessage) {
                     window.parent.postMessage({ action: 'navigate', screen: 'battle_ready' }, '*');
                 }
+            } else if (event.data.action === 'wsClientEvent' && event.data.eventName === 'matchingError') {
+                console.error('[matching.html] Received matchingError event from wsClient via postMessage:', event.data.eventData);
+                showErrorState('匹配过程出错: ' + event.data.eventData.message);
             }
         });
 
