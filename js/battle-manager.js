@@ -16,98 +16,17 @@ class BattleWordPool {
     /**
      * 初始化题库
      */
-    async initialize(grade) {
+    initialize(grade, questions) {
         this.grade = grade;
+        this.allQuestions = questions;
         this.usedQuestions.clear();
 
-        console.log(`初始化智能题库: ${grade}`);
-
-        // 加载全部题目
-        await this.loadAllQuestions(grade);
+        console.log(`初始化智能题库: ${grade}，使用预加载题目 ${questions.length} 道`);
 
         // 初始化题库池
         this.refillPool();
 
         console.log(`题库初始化完成: 总题数 ${this.allQuestions.length}, 池大小 ${this.currentPool.length}`);
-    }
-
-    /**
-     * 加载全部题目
-     */
-    async loadAllQuestions(grade) {
-        try {
-            // 标准化年级格式并映射到正确的文件路径
-            let questionPath;
-
-            switch (grade) {
-                case 'g3':
-                case 'grade3':
-                    questionPath = 'data/renjiaoban/grade3.json';
-                    break;
-                case 'g4':
-                case 'grade4':
-                    questionPath = 'data/renjiaoban/grade4.json';
-                    break;
-                case 'g5':
-                case 'grade5':
-                    questionPath = 'data/renjiaoban/grade5.json';
-                    break;
-                case 'g6':
-                case 'grade6':
-                    questionPath = 'data/renjiaoban/grade6.json';
-                    break;
-                case 'g7':
-                case 'grade7':
-                    questionPath = 'data/renjiaoban/grade7.json';
-                    break;
-                case 'g8':
-                case 'grade8':
-                    questionPath = 'data/renjiaoban/grade8.json';
-                    break;
-                case 'g9':
-                case 'grade9':
-                    questionPath = 'data/renjiaoban/grade9.json';
-                    break;
-                case 'grade10':
-                case 'hshf':
-                    questionPath = 'data/renjiaoban/highschool_high_freq.json';
-                    break;
-                case 'grade11':
-                case 'grade12':
-                case 'hsa':
-                    questionPath = 'data/renjiaoban/highschool_all.json';
-                    break;
-                default:
-                    // 对于其他年级，尝试直接映射
-                    if (grade && grade.startsWith('g') && /^g\d+$/.test(grade)) {
-                        questionPath = `data/renjiaoban/grade${grade.substring(1)}.json`;
-                    } else {
-                        questionPath = `data/renjiaoban/${grade}.json`;
-                    }
-                    break;
-            }
-
-            console.log(`加载题库文件: ${questionPath}`);
-            const response = await fetch(questionPath);
-
-            if (!response.ok) {
-                throw new Error(`无法加载题库文件: ${questionPath}`);
-            }
-
-            this.allQuestions = await response.json();
-
-            // 为每个题目添加唯一ID
-            this.allQuestions.forEach((question, index) => {
-                if (!question.id) {
-                    question.id = `${grade}_${index}`;
-                }
-            });
-
-        } catch (error) {
-            console.error('加载题库失败:', error);
-            this.allQuestions = [];
-            throw error;
-        }
     }
 
     /**
@@ -229,6 +148,9 @@ class BattleManager {
         this.playerInfo = null;
         this.opponentInfo = null;
         this.wsClient = null;
+        this.currentGradeQuestions = []; // 用于存储当前年级的题目数据
+        this.aiSimulationTimerIds = []; // Stores timeout IDs for AI opponent simulation, to be cleared on game end/restart.
+        this.nextLevelTimerId = null; // Stores the timeout ID for transitioning to the next level, to be cleared if the game ends or level changes prematurely.
 
         // 初始化智能题库管理器
         this.wordPool = new BattleWordPool();
@@ -245,6 +167,16 @@ class BattleManager {
      * 初始化双人对战
      */
     async initializeBattle(playerInfo, opponentInfo) {
+        // Clear any existing AI simulation timers to prevent interference from previous game states.
+        this.clearAiSimulationTimers();
+
+        // Clear any existing next level timer to prevent interference from previous game states.
+        if (this.nextLevelTimerId) {
+            clearTimeout(this.nextLevelTimerId);
+            this.nextLevelTimerId = null;
+            console.log('[BattleManager.initializeBattle] Cleared previous next level timer.');
+        }
+
         // 完全重置游戏状态，避免上一局数据累积
         this.gameState = {
             isActive: true,
@@ -275,13 +207,19 @@ class BattleManager {
             this.wsClient = window.wsClient;
         }
 
-        // 初始化智能题库
+        // 加载题目数据
         try {
-            await this.wordPool.initialize(playerInfo.grade);
+            const questions = await this.loadGradeData(playerInfo.grade);
+            this.currentGradeQuestions = questions; // 存储加载的题目
+            window.gradeQuestions = questions; // 同步到全局变量
+            console.log(`题目数据加载成功 for grade ${playerInfo.grade}, count: ${questions.length}`);
+
+            // 初始化智能题库
+            this.wordPool.initialize(playerInfo.grade, questions);
             console.log('智能题库初始化成功');
         } catch (error) {
-            console.error('智能题库初始化失败:', error);
-            // 如果智能题库初始化失败，使用传统方式
+            console.error('题目数据加载或智能题库初始化失败:', error);
+            // 可以在这里添加错误处理逻辑，例如使用备用数据或提示用户
         }
 
         // 开始15分钟游戏计时器
@@ -292,6 +230,86 @@ class BattleManager {
 
         // 开始第一关
         this.startLevel(1);
+    }
+
+    /**
+     * 加载指定年级的题目数据
+     */
+    async loadGradeData(grade) {
+        try {
+            // 标准化年级格式并映射到正确的文件路径
+            let questionPath;
+
+            switch (grade) {
+                case 'g3':
+                case 'grade3':
+                    questionPath = 'data/renjiaoban/grade3.json';
+                    break;
+                case 'g4':
+                case 'grade4':
+                    questionPath = 'data/renjiaoban/grade4.json';
+                    break;
+                case 'g5':
+                case 'grade5':
+                    questionPath = 'data/renjiaoban/grade5.json';
+                    break;
+                case 'g6':
+                case 'grade6':
+                    questionPath = 'data/renjiaoban/grade6.json';
+                    break;
+                case 'g7':
+                case 'grade7':
+                    questionPath = 'data/renjiaoban/grade7.json';
+                    break;
+                case 'g8':
+                case 'grade8':
+                    questionPath = 'data/renjiaoban/grade8.json';
+                    break;
+                case 'g9':
+                case 'grade9':
+                    questionPath = 'data/renjiaoban/grade9.json';
+                    break;
+                case 'grade10':
+                case 'hshf':
+                    questionPath = 'data/renjiaoban/highschool_high_freq.json';
+                    break;
+                case 'grade11':
+                case 'grade12':
+                case 'hsa':
+                    questionPath = 'data/renjiaoban/highschool_all.json';
+                    break;
+                default:
+                    // 对于其他年级，尝试直接映射
+                    if (grade && grade.startsWith('g') && /^g\d+$/.test(grade)) {
+                        questionPath = `data/renjiaoban/grade${grade.substring(1)}.json`;
+                    } else {
+                        questionPath = `data/renjiaoban/${grade}.json`;
+                    }
+                    break;
+            }
+
+            console.log(`[BattleManager.loadGradeData] Loading questions from: ${questionPath} for grade: ${grade}`);
+            const response = await fetch(questionPath);
+
+            if (!response.ok) {
+                throw new Error(`Failed to load question file: ${questionPath}`);
+            }
+
+            let questions = await response.json();
+
+            // 为每个题目添加唯一ID
+            questions.forEach((question, index) => {
+                if (!question.id) {
+                    question.id = `${grade}_${index}`;
+                }
+            });
+            console.log(`[BattleManager.loadGradeData] Successfully loaded and processed ${questions.length} questions for grade ${grade}.`);
+            return questions;
+
+        } catch (error) {
+            console.error(`[BattleManager.loadGradeData] Error loading questions for grade ${grade}:`, error);
+            throw error; // Propagate error to be handled by caller
+        }
     }
 
     /**
@@ -433,83 +451,44 @@ class BattleManager {
     }
 
     /**
-     * 加载题库数据
+     * 加载题库数据 (Ensures window.gradeQuestions is populated for the given grade)
+     * This method is now more of a utility to ensure data is available in window.gradeQuestions,
+     * leveraging loadGradeData. The primary loading for the battle's main grade happens in initializeBattle.
      */
     async loadQuestionData(grade) {
         try {
-            console.log('开始加载题库:', grade);
+            console.log(`[BattleManager.loadQuestionData] Requested for grade: ${grade}`);
 
-            // 使用与 loadAllQuestions 相同的映射逻辑
-            let questionPath;
-
-            switch (grade) {
-                case 'g3':
-                case 'grade3':
-                    questionPath = 'data/renjiaoban/grade3.json';
-                    break;
-                case 'g4':
-                case 'grade4':
-                    questionPath = 'data/renjiaoban/grade4.json';
-                    break;
-                case 'g5':
-                case 'grade5':
-                    questionPath = 'data/renjiaoban/grade5.json';
-                    break;
-                case 'g6':
-                case 'grade6':
-                    questionPath = 'data/renjiaoban/grade6.json';
-                    break;
-                case 'g7':
-                case 'grade7':
-                    questionPath = 'data/renjiaoban/grade7.json';
-                    break;
-                case 'g8':
-                case 'grade8':
-                    questionPath = 'data/renjiaoban/grade8.json';
-                    break;
-                case 'g9':
-                case 'grade9':
-                    questionPath = 'data/renjiaoban/grade9.json';
-                    break;
-                case 'grade10':
-                case 'hshf':
-                    questionPath = 'data/renjiaoban/highschool_high_freq.json';
-                    break;
-                case 'grade11':
-                case 'grade12':
-                case 'hsa':
-                    questionPath = 'data/renjiaoban/highschool_all.json';
-                    break;
-                default:
-                    // 对于其他年级，尝试直接映射
-                    if (grade && grade.startsWith('g') && /^g\d+$/.test(grade)) {
-                        questionPath = `data/renjiaoban/grade${grade.substring(1)}.json`;
-                    } else {
-                        questionPath = `data/renjiaoban/${grade}.json`;
-                    }
-                    break;
+            // Check if the requested grade's data is already in currentGradeQuestions
+            // and if it matches the current player's grade context.
+            if (this.playerInfo && this.playerInfo.grade === grade && this.currentGradeQuestions && this.currentGradeQuestions.length > 0) {
+                console.log(`[BattleManager.loadQuestionData] Data for grade ${grade} is already loaded in this.currentGradeQuestions.`);
+                if (window.gradeQuestions !== this.currentGradeQuestions) {
+                    console.log(`[BattleManager.loadQuestionData] Syncing window.gradeQuestions with this.currentGradeQuestions for grade ${grade}.`);
+                    window.gradeQuestions = this.currentGradeQuestions;
+                }
+                return; // Data is already loaded and synced for the primary battle grade.
             }
 
-            console.log('题库文件路径:', questionPath);
+            // If data is not available in currentGradeQuestions for the specific grade,
+            // or if it's for a different grade than the current battle context, load it.
+            console.log(`[BattleManager.loadQuestionData] Data for grade ${grade} not readily available or is different from battle grade. Fetching...`);
+            const questions = await this.loadGradeData(grade); // Use the new centralized loading method
 
-            // 加载题库文件
-            const response = await fetch(questionPath);
-            if (!response.ok) {
-                throw new Error(`无法加载题库文件: ${questionPath}`);
+            // Store it in window.gradeQuestions as this method's contract implies.
+            window.gradeQuestions = questions;
+
+            // If this method is called for the current battle's grade, also update currentGradeQuestions.
+            if (this.playerInfo && this.playerInfo.grade === grade) {
+                this.currentGradeQuestions = questions;
             }
 
-            const questionData = await response.json();
-
-            // 将题库数据存储到全局变量
-            window.gradeQuestions = questionData;
-
-            console.log(`题库加载成功: ${grade}，共 ${questionData.length} 道题`);
+            console.log(`[BattleManager.loadQuestionData] Successfully populated window.gradeQuestions for grade ${grade} with ${questions.length} questions.`);
 
         } catch (error) {
-            console.error('加载题库失败:', error);
-            // 如果加载失败，使用空数组避免错误
-            window.gradeQuestions = [];
-            throw error;
+            console.error(`[BattleManager.loadQuestionData] Failed to load questions for grade ${grade}:`, error);
+            window.gradeQuestions = []; // Ensure consistent state on error
+            throw error; // Propagate error
         }
     }
 
@@ -578,22 +557,24 @@ class BattleManager {
      */
     async getQuestionTraditionalWay(grade) {
         try {
-            // 使用主游戏的题库加载逻辑
-            if (!window.gradeQuestions || window.gradeQuestions.length === 0) {
-                console.log('加载题库数据:', grade);
-                await this.loadQuestionData(grade);
+            // 确保当前年级的题目已经加载
+            if (!this.currentGradeQuestions || this.currentGradeQuestions.length === 0 || this.playerInfo.grade !== grade) {
+                console.log(`[getQuestionTraditionalWay] Questions for grade ${grade} not loaded or mismatch, attempting to load.`);
+                // This scenario should be less common if initializeBattle loads the correct grade's data
+                this.currentGradeQuestions = await this.loadGradeData(grade);
+                window.gradeQuestions = this.currentGradeQuestions; // Sync with global
             }
 
-            if (!window.gradeQuestions || window.gradeQuestions.length === 0) {
-                throw new Error('无法加载题库数据');
+            if (!this.currentGradeQuestions || this.currentGradeQuestions.length === 0) {
+                throw new Error(`[getQuestionTraditionalWay] No questions available for grade ${grade} after attempting load.`);
             }
 
             // 随机选择一个题目
-            const randomIndex = Math.floor(Math.random() * window.gradeQuestions.length);
-            return window.gradeQuestions[randomIndex];
+            const randomIndex = Math.floor(Math.random() * this.currentGradeQuestions.length);
+            return this.currentGradeQuestions[randomIndex];
 
         } catch (error) {
-            console.error('传统方式获取题目失败:', error);
+            console.error('[getQuestionTraditionalWay] Failed to get question:', error);
             return null;
         }
     }
@@ -717,7 +698,7 @@ class BattleManager {
         // 模拟对手的响应时间（竞速模式：5-12秒）
         const responseDelay = 5000 + Math.random() * 7000;
 
-        setTimeout(() => {
+        const opponentAnswerTimerId = setTimeout(() => {
             // 模拟对手答题结果（55%正确率，让游戏更有挑战性）
             const opponentIsCorrect = Math.random() > 0.45;
 
@@ -735,15 +716,17 @@ class BattleManager {
             this.handleOpponentAnswer(opponentActionData);
 
         }, responseDelay);
+        this.aiSimulationTimerIds.push(opponentAnswerTimerId);
 
         // 模拟对手也会继续答题（竞速模式）
         const nextQuestionDelay = 6000 + Math.random() * 9000;
-        setTimeout(() => {
+        const nextAnswerTimerId = setTimeout(() => {
             if (this.gameState.isActive) {
                 // 模拟对手答下一道题
                 this.simulateOpponentNextAnswer();
             }
         }, nextQuestionDelay);
+        this.aiSimulationTimerIds.push(nextAnswerTimerId);
     }
 
     /**
@@ -772,11 +755,22 @@ class BattleManager {
 
         // 继续模拟下一次答题
         const nextDelay = 4000 + Math.random() * 6000;
-        setTimeout(() => {
+        const recursiveSimulateTimerId = setTimeout(() => {
             if (this.gameState.isActive) {
                 this.simulateOpponentNextAnswer();
             }
         }, nextDelay);
+        this.aiSimulationTimerIds.push(recursiveSimulateTimerId);
+    }
+
+    /**
+     * Clears all active AI simulation timers and resets the tracking array.
+     * Essential for preventing AI actions from lingering after a game ends or restarts.
+     */
+    clearAiSimulationTimers() {
+        console.log('[BattleManager.clearAiSimulationTimers] Clearing AI simulation timers.');
+        this.aiSimulationTimerIds.forEach(timerId => clearTimeout(timerId));
+        this.aiSimulationTimerIds = [];
     }
 
     /**
@@ -828,26 +822,35 @@ class BattleManager {
                 this.wordPool.allQuestions : (window.gradeQuestions || []);
 
             if (availableQuestions.length > 0) {
-                const otherQuestions = availableQuestions.filter(q => {
-                    const meaning = this.extractChineseMeaning(q.meaning);
-                    return meaning && meaning !== correctAnswer && meaning.length > 0;
-                });
+                // Optimize by extracting meanings once: map to {question, extractedMeaning}, then filter.
+                const potentialDistractors = availableQuestions
+                    .map(q => ({
+                        question: q,
+                        extractedMeaning: this.extractChineseMeaning(q.meaning)
+                    }))
+                    .filter(item =>
+                        item.extractedMeaning &&
+                        item.extractedMeaning !== correctAnswer &&
+                        item.extractedMeaning.length > 0
+                    );
 
-                console.log('可用的干扰项:', otherQuestions.length);
+                console.log('可用的潜在干扰项:', potentialDistractors.length);
 
-                // 随机打乱干扰项
-                for (let i = otherQuestions.length - 1; i > 0; i--) {
+                // 随机打乱潜在干扰项
+                for (let i = potentialDistractors.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
-                    [otherQuestions[i], otherQuestions[j]] = [otherQuestions[j], otherQuestions[i]];
+                    [potentialDistractors[i], potentialDistractors[j]] = [potentialDistractors[j], potentialDistractors[i]];
                 }
 
-                // 添加3个干扰项
+                // Select distractors using their pre-extracted meanings.
                 let addedCount = 0;
-                for (const q of otherQuestions) {
+                for (const distractor of potentialDistractors) {
                     if (options.length >= 4 || addedCount >= 3) break;
 
-                    const wrongAnswer = this.extractChineseMeaning(q.meaning);
-                    if (wrongAnswer && !options.some(opt => opt.value === wrongAnswer)) {
+                    // Use pre-extracted meaning directly
+                    const wrongAnswer = distractor.extractedMeaning;
+
+                    if (!options.some(opt => opt.value === wrongAnswer)) {
                         options.push({ value: wrongAnswer, display: wrongAnswer });
                         addedCount++;
                     }
@@ -883,19 +886,35 @@ class BattleManager {
      * 确保题库数据可用
      */
     async ensureQuestionDataAvailable() {
-        // 如果全局题库数据不存在，从智能题库复制
-        if (!window.gradeQuestions || window.gradeQuestions.length === 0) {
-            if (this.wordPool.allQuestions.length > 0) {
-                window.gradeQuestions = [...this.wordPool.allQuestions];
-                console.log('从智能题库复制数据到全局变量:', window.gradeQuestions.length);
-            } else {
-                // 如果智能题库也没有数据，尝试加载
-                try {
-                    await this.loadQuestionData(this.playerInfo.grade);
-                } catch (error) {
-                    console.error('加载题库数据失败:', error);
-                }
+        const currentGrade = this.playerInfo.grade;
+        // Check if currentGradeQuestions is populated and matches the current battle's grade
+        if (!this.currentGradeQuestions || this.currentGradeQuestions.length === 0) {
+            console.log(`[ensureQuestionDataAvailable] currentGradeQuestions is empty. Attempting to load for grade: ${currentGrade}`);
+            try {
+                this.currentGradeQuestions = await this.loadGradeData(currentGrade);
+                window.gradeQuestions = this.currentGradeQuestions; // Keep window.gradeQuestions in sync
+                console.log(`[ensureQuestionDataAvailable] Loaded ${this.currentGradeQuestions.length} questions for ${currentGrade}.`);
+            } catch (error) {
+                console.error(`[ensureQuestionDataAvailable] Failed to load questions for ${currentGrade}:`, error);
+                // Ensure window.gradeQuestions is also empty or an empty array in case of error
+                window.gradeQuestions = [];
             }
+        } else if (window.gradeQuestions !== this.currentGradeQuestions) {
+            // If currentGradeQuestions is populated but window.gradeQuestions is not in sync
+            console.log("[ensureQuestionDataAvailable] Syncing window.gradeQuestions with currentGradeQuestions.");
+            window.gradeQuestions = this.currentGradeQuestions;
+        }
+
+        // Additionally, ensure wordPool's questions are also in sync if it's being used as a source elsewhere
+        // For now, wordPool is initialized with questions, so this might be redundant unless wordPool's list can change independently.
+        if (this.wordPool && this.wordPool.allQuestions !== this.currentGradeQuestions) {
+            console.log("[ensureQuestionDataAvailable] Syncing wordPool.allQuestions with currentGradeQuestions. This might indicate an architectural review point.");
+            // This assumes wordPool should always reflect the current battle's grade questions.
+            // If wordPool is meant to hold a different set, this logic needs adjustment.
+            // For now, let's assume it should be in sync with currentGradeQuestions.
+            // this.wordPool.allQuestions = this.currentGradeQuestions; // This might be too direct.
+            // Consider if re-initialization or a dedicated setter in WordPool is better.
+            // For now, relying on initialization path.
         }
     }
 
@@ -1008,6 +1027,14 @@ class BattleManager {
      * 结束当前关卡
      */
     endLevel(winner = null) {
+        // Clear any existing next level timer. This prevents multiple transitions if endLevel is called rapidly
+        // or if a new level transition is being set up.
+        if (this.nextLevelTimerId) {
+            clearTimeout(this.nextLevelTimerId);
+            this.nextLevelTimerId = null;
+            console.log('[BattleManager.endLevel] Cleared previous next level timer.');
+        }
+
         // 防止重复触发
         if (this.gameState.levelEnding) {
             console.log('⚠️ 关卡已在结束中，忽略重复调用');
@@ -1072,7 +1099,7 @@ class BattleManager {
             this.endGame();
         } else {
             // 进入下一关
-            setTimeout(() => {
+            this.nextLevelTimerId = setTimeout(() => {
                 this.startLevel(this.gameState.currentLevel + 1);
             }, 3000);
         }
@@ -1086,6 +1113,14 @@ class BattleManager {
 
         // 清除游戏计时器
         this.clearGameTimer();
+        // Clear AI simulation timers to stop any pending AI actions.
+        this.clearAiSimulationTimers();
+        // Clear next level timer if any, to prevent transitioning after game over.
+        if (this.nextLevelTimerId) {
+            clearTimeout(this.nextLevelTimerId);
+            this.nextLevelTimerId = null;
+            console.log('[BattleManager.endGame] Cleared next level timer.');
+        }
 
         const totalTime = Math.floor((Date.now() - this.gameState.startTime) / 1000);
 
@@ -1234,6 +1269,14 @@ class BattleManager {
      * 静默结束关卡（不发送消息给对手）
      */
     endLevelSilently(winner = null) {
+        // Clear any existing next level timer. This prevents multiple transitions if endLevelSilently is called rapidly
+        // or if a new level transition is being set up.
+        if (this.nextLevelTimerId) {
+            clearTimeout(this.nextLevelTimerId);
+            this.nextLevelTimerId = null;
+            console.log('[BattleManager.endLevelSilently] Cleared previous next level timer.');
+        }
+
         // 防止重复触发
         if (this.gameState.levelEnding) {
             console.log('⚠️ 关卡已在结束中，忽略重复调用');
@@ -1283,7 +1326,7 @@ class BattleManager {
             this.endGame();
         } else {
             // 进入下一关
-            setTimeout(() => {
+            this.nextLevelTimerId = setTimeout(() => {
                 this.startLevel(this.gameState.currentLevel + 1);
             }, 3000);
         }
