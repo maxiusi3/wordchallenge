@@ -36,7 +36,6 @@ class FirebaseManager {
         }
 
         try {
-            console.groupCollapsed("Firebase Initialization Attempt");
             console.log('🔥 正在初始化Firebase...');
 
             // 检查Firebase SDK是否已加载
@@ -51,25 +50,42 @@ class FirebaseManager {
                 this.app = firebase.app();
             }
 
+            // 尝试匿名登录
+            try {
+                console.log('🔒 尝试Firebase匿名登录...');
+                await firebase.auth().signInAnonymously();
+                console.log('✅ Firebase匿名登录成功');
+            } catch (authError) {
+                console.error('❌ Firebase匿名登录失败:', authError.message, '错误码:', authError.code, '错误名:', authError.name, '堆栈:', authError.stack);
+                // 如果匿名登录失败，也认为Firebase不可用
+                console.log('🔄 回退到本地匹配模式 (匿名登录失败)');
+                return false;
+            }
+
             // 获取数据库引用
             this.database = firebase.database();
 
             // 测试数据库连接
-            await this.testDatabaseConnection();
+            try {
+                await this.testDatabaseConnection();
+            } catch (dbError) {
+                console.error('❌ Firebase数据库连接测试失败 (在init中捕获):', dbError.message, '错误码:', dbError.code || 'N/A', '错误名:', dbError.name || 'N/A', '堆栈:', dbError.stack || 'N/A');
+                console.log('🔄 回退到本地匹配模式 (数据库连接测试失败)');
+                return false;
+            }
 
             // 监听连接状态
             this.setupConnectionMonitoring();
 
             this.isInitialized = true;
             console.log('✅ Firebase初始化成功');
-            console.groupEnd();
 
             return true;
         } catch (error) {
-            console.error('❌ Firebase initialization failed comprehensively:', error);
-            console.groupEnd();
+            console.error('❌ Firebase初始化过程中发生意外错误:', error.message, '错误码:', error.code || 'N/A', '错误名:', error.name || 'N/A', '堆栈:', error.stack || 'N/A');
+
             // 如果Firebase初始化失败，回退到本地模拟
-            console.log('🔄 回退到本地匹配模式');
+            console.log('🔄 回退到本地匹配模式 (初始化意外错误)');
             return false;
         }
     }
@@ -94,7 +110,7 @@ class FirebaseManager {
             await testRef.remove();
 
         } catch (error) {
-            console.error('❌ Firebase数据库连接失败 (will mark Firebase as unavailable):', error);
+            console.error('❌ Firebase数据库连接失败:', error.message, '错误码:', error.code, '错误名:', error.name, '堆栈:', error.stack);
 
             if (error.code === 'PERMISSION_DENIED') {
                 console.error('🚫 数据库权限被拒绝，请检查Firebase安全规则');
@@ -134,12 +150,14 @@ class FirebaseManager {
                 {
                     name: 'Google CDN',
                     core: 'https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js',
-                    database: 'https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js'
+                    database: 'https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js',
+                    auth: 'https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js' // 添加Auth SDK
                 },
                 {
                     name: 'jsDelivr CDN',
                     core: 'https://cdn.jsdelivr.net/npm/firebase@9.23.0/compat/firebase-app.js',
-                    database: 'https://cdn.jsdelivr.net/npm/firebase@9.23.0/compat/firebase-database.js'
+                    database: 'https://cdn.jsdelivr.net/npm/firebase@9.23.0/compat/firebase-database.js',
+                    auth: 'https://cdn.jsdelivr.net/npm/firebase@9.23.0/compat/firebase-auth.js' // 添加Auth SDK
                 }
             ];
 
@@ -147,8 +165,7 @@ class FirebaseManager {
 
             const tryLoadFromCdn = () => {
                 if (currentCdnIndex >= cdnSources.length) {
-                    console.error('❌ Firebase SDK load failed: All CDN sources were unreachable.');
-                    reject(new Error('所有CDN源都加载失败'));
+                    reject(new Error('所有CDN源都加载失败，请检查网络连接或CDN可用性。'));
                     return;
                 }
 
@@ -163,8 +180,19 @@ class FirebaseManager {
                     const dbScript = document.createElement('script');
                     dbScript.src = cdn.database;
                     dbScript.onload = () => {
-                        console.log(`✅ Firebase SDK从 ${cdn.name} 加载完成`);
-                        resolve();
+                        // 加载认证库
+                        const authScript = document.createElement('script');
+                        authScript.src = cdn.auth; // 使用上面定义的auth cdn
+                        authScript.onload = () => {
+                            console.log(`✅ Firebase SDK (App, Database, Auth) 从 ${cdn.name} 加载完成`);
+                            resolve();
+                        };
+                        authScript.onerror = () => {
+                            console.warn(`⚠️ ${cdn.name} 认证库加载失败`);
+                            currentCdnIndex++;
+                            tryLoadFromCdn();
+                        };
+                        document.head.appendChild(authScript);
                     };
                     dbScript.onerror = () => {
                         console.warn(`⚠️ ${cdn.name} 数据库库加载失败`);
