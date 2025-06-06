@@ -37,6 +37,7 @@ class FirebaseBattleManager {
                     console.log('✅ Firebase对战系统初始化成功');
                 } else {
                     console.log('⚠️ Firebase不可用，使用本地模式');
+                    console.info('ℹ️ Check previous logs under "Firebase Initialization Attempt" for specific reasons why Firebase Manager failed to initialize.');
                 }
             } else {
                 // 如果Firebase管理器还没有加载，等待一下
@@ -59,6 +60,7 @@ class FirebaseBattleManager {
 
             if (!firebaseReady) {
                 console.log('Firebase不可用，使用本地匹配模式');
+                console.info('ℹ️ Check previous logs under "Firebase Initialization Attempt" for specific reasons why Firebase Manager failed to initialize.');
                 return false;
             }
 
