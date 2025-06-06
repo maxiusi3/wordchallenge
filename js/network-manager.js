@@ -170,7 +170,14 @@ class NetworkManager {
 
     // 显示错误消息
     showError(message, duration = 5000) {
+        // 移除已存在的错误消息
+        const existingError = document.getElementById('network-error-message');
+        if (existingError) {
+            existingError.remove();
+        }
+
         const errorMessage = document.createElement('div');
+        errorMessage.id = 'network-error-message'; // Assign ID
         errorMessage.innerHTML = `
             <div style="
                 position: fixed;
@@ -203,7 +210,14 @@ class NetworkManager {
 
     // 显示成功消息
     showSuccess(message, duration = 3000) {
+        // 移除已存在的成功消息
+        const existingSuccess = document.getElementById('network-success-message');
+        if (existingSuccess) {
+            existingSuccess.remove();
+        }
+
         const successMessage = document.createElement('div');
+        successMessage.id = 'network-success-message'; // Assign ID
         successMessage.innerHTML = `
             <div style="
                 position: fixed;
