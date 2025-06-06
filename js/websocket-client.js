@@ -31,15 +31,19 @@ class OnlineBattleClient {
         }
 
         return new Promise(async (resolve, reject) => {
+            console.groupCollapsed('[wsClient] Connection Attempt');
             try {
                 // 优先尝试Firebase对战系统
                 if (window.firebaseBattle) {
                     const firebaseReady = await window.firebaseBattle.init();
+                    console.log('[wsClient] Firebase init attempt completed. Firebase ready:', firebaseReady);
                     if (firebaseReady) {
                         console.log('✨ 使用Firebase对战系统');
                         this.useFirebase = true;
                         this.isConnected = true;
                         this.setupFirebaseEventListeners();
+                        console.log('[wsClient] Successfully connected using Firebase.');
+                        console.groupEnd();
                         resolve();
                         return;
                     }
@@ -48,13 +52,16 @@ class OnlineBattleClient {
                 // Firebase不可用，回退到本地模拟
                 console.warn('🔄 Firebase不可用，将使用本地模拟模式。请检查控制台中是否有更早的 Firebase 初始化错误信息 (例如，来自 firebase-config.js 或 firebase-battle.js)，这些错误可能指示具体原因 (如安全规则配置、网络问题或API密钥无效)。');
                 this.useFirebase = false;
+                console.log('[wsClient] Firebase not available. Proceeding to fallback options...');
 
                 // 加载Socket.IO库
                 if (typeof io === 'undefined') {
+                    console.log('[wsClient] Attempting to load Socket.IO SDK...');
                     this.loadSocketIO().then(() => {
                         this.initializeSocket(resolve, reject);
                     }).catch(() => {
                         // Socket.IO加载失败，使用本地模拟
+                        console.error('[wsClient] Socket.IO SDK loading failed. Initializing local P2P fallback directly.');
                         this.initializeLocalP2P(resolve, reject);
                     });
                 } else {
@@ -62,9 +69,10 @@ class OnlineBattleClient {
                 }
 
             } catch (error) {
-                console.error('初始化对战系统失败:', error);
+                console.error('[wsClient] Error during connection attempt (e.g., Firebase init failed):', error);
                 // 最终回退到本地模拟
                 this.useFirebase = false;
+                console.log('[wsClient] An error occurred during initial connection phase. Initializing local P2P fallback.');
                 this.initializeLocalP2P(resolve, reject);
             }
         });
@@ -97,6 +105,7 @@ class OnlineBattleClient {
         const serverUrl = 'https://wordchallenge-server.herokuapp.com'; // 示例URL
 
         console.log('正在连接在线对战服务器:', serverUrl);
+        console.log('[wsClient.initializeSocket] NOTE: This version currently defaults to local P2P simulation from this point.');
 
         // 如果无法连接到专用服务器，使用本地P2P模拟
         this.initializeLocalP2P(resolve, reject);
@@ -106,6 +115,7 @@ class OnlineBattleClient {
      * 初始化本地P2P模拟（用于演示）
      */
     initializeLocalP2P(resolve, reject) {
+        console.log('[wsClient.initializeLocalP2P] Initializing local P2P simulation as fallback or direct choice.');
         console.log('使用本地P2P模拟进行对战');
 
         // 模拟Socket.IO接口
@@ -136,6 +146,8 @@ class OnlineBattleClient {
 
         this.setupEventListeners();
         this.onConnect();
+        console.log('[wsClient.initializeLocalP2P] Local P2P simulation initialized. wsClient is NOW CONNECTED (mock).');
+        console.groupEnd(); // Ends the group started by connect()
         resolve();
     }
 
