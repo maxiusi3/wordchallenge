@@ -167,5 +167,8 @@ window.addEventListener('message', (event) => {
 });
 
 // --- 初始化 ---
+console.log("Simplified main.js loaded - Single player mode and admin config removed");
+console.log("Only battle mode and question loading functionality available");
+
 // 导出题库加载函数供双人模式使用
 window.loadQuestionsForGrade = loadQuestionsForGrade;
