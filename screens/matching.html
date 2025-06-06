@@ -119,6 +119,7 @@
 
         // 初始化WebSocket连接
         async function initializeWebSocket(userInfo) {
+            console.log('[matching.html] Called initializeWebSocket().');
             if (!window.parent || !window.parent.wsClient) {
                 console.error('[matching.html] Critical: wsClient is not available on parent.');
                 showErrorState('匹配客户端初始化失败，请刷新页面重试。');
@@ -127,6 +128,7 @@
             const wsClient = window.parent.wsClient;
 
             try {
+                console.log('[matching.html] Checking wsClient connection status. Current wsClient.isConnected is:', wsClient.isConnected);
                 if (!wsClient.isConnected) {
                     console.log('[matching.html] wsClient not connected, calling connect...');
                     await wsClient.connect(); // Assuming connect is async
