@@ -6,6 +6,8 @@
     <title>单词闯关 v2.1.0 - 真实对战版本</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="css/style.css">
+    <!-- 缓存破坏脚本 -->
+    <script src="cache-buster.js"></script>
 <!-- 移除PWA相关配置，改为纯在线游戏 -->
     <!-- 引入 Lucide Icons -->
 </head>
@@ -22,14 +24,34 @@
     <script src="js/firebase-battle.js"></script>
     <script src="js/websocket-client.js"></script>
     <script src="js/battle-manager.js"></script>
-    <script src="js/main.js"></script>
     <script>
       lucide.createIcons();
+
+
+      // const adminIconContainer = document.getElementById('adminEntryIconContainer'); // 已移除
+
+      // if (adminIconContainer) { // 已移除
+      //     adminIconContainer.addEventListener('click', () => { // 已移除
+      //         navigateTo('admin_login'); // 已移除
+      //     }); // 已移除
+      // } // 已移除
+
+      // It's assumed that screenFrame is declared in the outer scope, e.g.:
+      // const screenFrame = document.getElementById('screenFrame');
 
       async function navigateTo(screen) { // 修改为异步函数
           const targetSrc = `screens/${screen}.html`;
           // Ensure we have the most up-to-date references to DOM elements
           const currentScreenFrame = document.getElementById('screenFrame');
+          // const currentAdminIconContainer = document.getElementById('adminEntryIconContainer'); // 已移除
+
+          // 管理员图标的显示/隐藏逻辑已移除，因为它现在由 welcome.html 内部管理
+          // if (currentAdminIconContainer) { // 已移除
+          //     currentAdminIconContainer.classList.remove('hidden'); // 已移除
+          //     if (screen !== 'welcome') { // 已移除
+          //         currentAdminIconContainer.classList.add('hidden'); // 已移除
+          //     } // 已移除
+          // } // 已移除
 
           // 如果是导航到 battle_ready.html，先确保对战系统已初始化
           if (screen === 'battle_ready') {
@@ -63,6 +85,8 @@
                   typeof event.data.screen === 'string') {
                   navigateTo(event.data.screen);
               }
+
+              // 单人模式相关代码已被移除
 
               // 处理双人对战用户信息设置
               if (event.data.action === 'setBattleUserInfo') {
@@ -120,6 +144,23 @@
           navigateTo('welcome');
       });
 
+    </script>
+    <script>
+        // 版本信息和缓存破坏
+        const VERSION = '2.1.0-realmatch';
+        const BUILD_TIME = Date.now();
+
+        // 在控制台显示版本信息
+        console.log(`%c单词闯关游戏 v${VERSION}`, 'color: #4CAF50; font-size: 16px; font-weight: bold;');
+        console.log(`%c构建时间: ${new Date(BUILD_TIME).toLocaleString()}`, 'color: #2196F3;');
+        console.log(`%c真实跨设备对战系统已启用`, 'color: #FF9800; font-weight: bold;');
+
+        // 动态加载JS文件，强制破坏缓存
+        const script = document.createElement('script');
+        script.src = `js/main.js?v=${VERSION}&t=${BUILD_TIME}`;
+        document.head.appendChild(script);
+
+        // 版本信息由 cache-buster.js 处理
     </script>
     <!-- 移除Service Worker相关代码，改为纯在线游戏 -->
 </body>
