@@ -36,6 +36,7 @@ class FirebaseManager {
         }
 
         try {
+            console.groupCollapsed("Firebase Initialization Attempt");
             console.log('🔥 正在初始化Firebase...');
 
             // 检查Firebase SDK是否已加载
@@ -61,11 +62,12 @@ class FirebaseManager {
 
             this.isInitialized = true;
             console.log('✅ Firebase初始化成功');
+            console.groupEnd();
 
             return true;
         } catch (error) {
-            console.error('❌ Firebase初始化失败:', error);
-
+            console.error('❌ Firebase initialization failed comprehensively:', error);
+            console.groupEnd();
             // 如果Firebase初始化失败，回退到本地模拟
             console.log('🔄 回退到本地匹配模式');
             return false;
@@ -92,7 +94,7 @@ class FirebaseManager {
             await testRef.remove();
 
         } catch (error) {
-            console.error('❌ Firebase数据库连接失败:', error);
+            console.error('❌ Firebase数据库连接失败 (will mark Firebase as unavailable):', error);
 
             if (error.code === 'PERMISSION_DENIED') {
                 console.error('🚫 数据库权限被拒绝，请检查Firebase安全规则');
@@ -145,6 +147,7 @@ class FirebaseManager {
 
             const tryLoadFromCdn = () => {
                 if (currentCdnIndex >= cdnSources.length) {
+                    console.error('❌ Firebase SDK load failed: All CDN sources were unreachable.');
                     reject(new Error('所有CDN源都加载失败'));
                     return;
                 }
