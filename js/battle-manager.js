@@ -715,7 +715,7 @@ class BattleManager {
      */
     simulateOpponentResponse(myActionData) {
         // 模拟对手的响应时间（竞速模式：2-8秒）
-        const responseDelay = 2000 + Math.random() * 6000;
+        const responseDelay = 10000 + Math.random() * 5000;
 
         setTimeout(() => {
             // 模拟对手答题结果（55%正确率，让游戏更有挑战性）
@@ -771,7 +771,7 @@ class BattleManager {
         this.handleOpponentAnswer(opponentActionData);
 
         // 继续模拟下一次答题
-        const nextDelay = 4000 + Math.random() * 6000;
+        const nextDelay = 10000 + Math.random() * 5000;
         setTimeout(() => {
             if (this.gameState.isActive) {
                 this.simulateOpponentNextAnswer();
