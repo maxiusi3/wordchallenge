@@ -345,8 +345,8 @@ class FirebaseBattleManager {
 
                         // 更新双方在匹配池中的状态为 'matched'
                         const updates = {};
-                        updates[`matchingPool/${currentUserGrade}/${currentUserId}/status`] = 'matched';
-                        updates[`matchingPool/${currentUserGrade}/${opponentId}/status`] = 'matched';
+updates[`matching/${currentUserGrade}/${currentUserId}/status`] = 'matched';
+updates[`matching/${currentUserGrade}/${opponentId}/status`] = 'matched';
                         this.database.ref().update(updates)
                             .then(() => console.log(`🎉 成功更新匹配池中 ${currentUserId} 和 ${opponentId} 的状态为 'matched'`))
                             .catch(err => console.error('🔥 更新匹配池状态失败:', err));
