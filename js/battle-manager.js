@@ -737,7 +737,7 @@ class BattleManager {
         }, responseDelay);
 
         // 模拟对手也会继续答题（竞速模式）
-        const nextQuestionDelay = 3000 + Math.random() * 5000;
+        const nextQuestionDelay = 10000 + Math.random() * 5000;
         setTimeout(() => {
             if (this.gameState.isActive) {
                 // 模拟对手答下一道题

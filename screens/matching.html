@@ -171,7 +171,7 @@
                 }
 
                 // 模拟匹配成功 (备用机制) - only if not in error state
-                if (waitTime >= 15 && Math.random() < 0.1 && matchingStatusElement.style.color !== 'rgb(255, 204, 204)') {
+                if (waitTime >= 20 && Math.random() < 0.1 && matchingStatusElement.style.color !== 'rgb(255, 204, 204)') {
                     simulateMatchFound();
                 }
             }, 1000);
