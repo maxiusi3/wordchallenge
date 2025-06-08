@@ -474,8 +474,12 @@
                 const player = gameData.player;
                 const opponent = gameData.opponent;
 
-                myNicknameEl.textContent = player.nickname || '我';
-                opponentNicknameEl.textContent = opponent.nickname || '对手';
+                if (myNicknameEl) {
+                    myNicknameEl.textContent = player.nickname || '我';
+                }
+                if (opponentNicknameEl) {
+                    opponentNicknameEl.textContent = opponent.nickname || '对手';
+                }
 
                 // 优先使用Firebase传递的角色信息
                 let myRole = null;
