@@ -457,8 +457,12 @@
                 const player = gameData.player;
                 const opponent = gameData.opponent;
 
-                myNicknameEl.textContent = player.nickname || '我';
-                opponentNicknameEl.textContent = opponent.nickname || '对手';
+                if (myNicknameEl) {
+                    myNicknameEl.textContent = player.nickname || '我';
+                }
+                if (opponentNicknameEl) {
+                    opponentNicknameEl.textContent = opponent.nickname || '对手';
+                }
 
                 // 更新梯子下方的昵称显示
                 myNicknameDisplayEl.textContent = player.nickname || '我';

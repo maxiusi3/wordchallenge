@@ -500,8 +500,12 @@
                 const player = gameData.player;
                 const opponent = gameData.opponent;
 
-                myNicknameEl.textContent = player.nickname || '我';
-                opponentNicknameEl.textContent = opponent.nickname || '对手';
+                if (myNicknameEl) {
+                    myNicknameEl.textContent = player.nickname || '我';
+                }
+                if (opponentNicknameEl) {
+                    opponentNicknameEl.textContent = opponent.nickname || '对手';
+                }
 
                 // 更新头像显示
                 const myAvatarEl = document.getElementById('my-avatar');
