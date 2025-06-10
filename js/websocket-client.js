@@ -372,7 +372,7 @@ class OnlineBattleClient {
                             console.log('🏁 模拟对手关卡结束响应');
                             // 不需要特别响应，让游戏自然结束
                         }
-                    }, 800 + Math.random() * 1500); // 0.8-2.3秒后响应，更加真实
+                    }, 10000 + Math.random() * 5000); // 0.8-2.3秒后响应，更加真实
                 } else {
                     // 真人对战模式：不进行模拟响应
                     console.log('👥 真人对战模式，不模拟对手响应:', data);
@@ -526,7 +526,7 @@ class OnlineBattleClient {
      */
     startMatchingPolling(playerData) {
         let attempts = 0;
-        const maxAttempts = 15; // 减少到15秒，更快提供AI对手
+        const maxAttempts = 20; // 减少到15秒，更快提供AI对手
 
         console.log('开始匹配轮询，将在', maxAttempts, '秒后提供AI对手');
 
